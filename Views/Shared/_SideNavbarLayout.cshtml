@@ -1,0 +1,47 @@
+@using ReACT.Helpers
+
+@{
+    var navbarItems = ViewData["navbar_items"] as IEnumerable<NavbarLayoutItem>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>@ViewData["Title"]</title>
+    <partial name="_LibrariesPartial"/>
+</head>
+
+<div class="drawer drawer-mobile">
+    <div class="drawer-toggle"></div>
+    <div class="drawer-side">
+        <label class="drawer-overlay"></label>
+        <aside class="bg-base-200">
+            <div class="px-5 pb-3 pt-5">
+                <partial name="_LogoPartial"/>
+            </div>
+            <ul class="menu p-4 w-80 text-base-content space-y-2">
+                @if (navbarItems != null)
+                {
+                    @foreach (var item in navbarItems)
+                    {
+                        <li>
+                            <a class="@Html.IsActiveClass(item.Page, cssClass: "active")" asp-page="@item.Page">
+                                <i class="ph-@item.Icon text-2xl pr-0.5"></i>
+                                @item.Name
+                            </a>
+                        </li>
+                    }
+                }
+                
+            </ul>
+        </aside>
+    </div>
+    <div class="drawer-content">
+        @RenderBody()
+    </div>
+</div>
+
+</html>

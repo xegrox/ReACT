@@ -1,0 +1,41 @@
+@{
+    var navbarItems = ViewData["navbar_items"] as IEnumerable<NavbarLayoutItem>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>@ViewData["Title"]</title>
+    <partial name="_LibrariesPartial"/>
+</head>
+<body>
+<div id="top-navbar" class="navbar bg-base-100 p-10" data-turbo-permanent>
+    <div class="flex-1 text-primary gap-x-10">
+        <partial name="_LogoPartial"/>
+        @if (navbarItems != null)
+        {
+            @foreach (var item in navbarItems)
+            {
+                <a class="btn btn-ghost font-bold" asp-page="@item.Page" data-turbo-frame="content" data-turbo-action="advance">
+                    @item.Name
+                </a>
+            }
+        }
+    </div>
+    <div class="flex-none gap-6">
+        <a class="btn btn-outline btn-primary rounded-full">
+            Log in
+        </a>
+        <a class="btn btn-primary rounded-full">
+            Sign up
+        </a>
+    </div>
+</div>
+<turbo-frame id="content">
+    @RenderBody()
+</turbo-frame>
+</body>
+</html>

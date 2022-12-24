@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "phosphor-icons@1.4.2",
+      "destination": "wwwroot/lib/phosphor-icons"
+    },
+    {
+      "library": "@hotwired/turbo@7.2.4",
+      "destination": "wwwroot/lib/hotwired/turbo"
+    }
+  ]
+}

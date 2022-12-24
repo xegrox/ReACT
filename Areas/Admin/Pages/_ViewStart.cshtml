@@ -1,0 +1,13 @@
+﻿@using ReACT.Models
+
+@{
+    Layout = "_SideNavbarLayout";
+    ViewData["navbar_items"] = new List<NavbarLayoutItem>
+    {
+        new("View Collections", "archive-box", "ViewCollections"),
+        new("Manage Users", "users", "ManageUsers"),
+        new("Manage Companies", "buildings", "ManageCompanies"),
+        new("Manage Rewards", "gift", "ManageRewards"),
+        new("Points Settings", "wrench", "PointsSettings")
+    };
+}

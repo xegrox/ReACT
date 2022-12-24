@@ -1,0 +1,10 @@
+﻿@using ReACT.Models
+
+@{
+    Layout = "_SideNavbarLayout";
+    ViewData["navbar_items"] = new List<NavbarLayoutItem>
+    {
+        new("Pickup Locations", "map-pin", "PickupLocations"),
+        new("Scan Recyclable", "arrow-square-in", "ScanRecyclable")
+    };
+}

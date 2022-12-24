@@ -1,0 +1,11 @@
+﻿@using ReACT.Models
+
+@{
+    Layout = "_TopNavbarLayout";
+    ViewData["navbar_items"] = new List<NavbarLayoutItem>
+    {
+        new("About"),
+        new("Forum", page: "forum"),
+        new("Contact")
+    };
+}
