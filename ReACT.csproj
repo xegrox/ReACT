@@ -6289,6 +6289,16 @@
       <_ContentIncludedByDefault Remove="Views\User\Recycle\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\User\Shared\_RedeemModalPartial.cshtml" />
       <_ContentIncludedByDefault Remove="Views\User\_ViewStart.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\User\Components\RedeemModalRewardDetails\Default.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\User\Components\RedeemModalRewardList\Default.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\User\Components\RedeemModalRoot\Default.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\User\ViewComponents\Components\RedeemModalRewardDetails\Default.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\User\ViewComponents\Components\RedeemModalRewardList\Default.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\User\ViewComponents\Components\RedeemModalRoot\Default.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\User\Views\Shared\Components\RedeemModalRewardList\Default.cshtml" />
     </ItemGroup>
 
 </Project>

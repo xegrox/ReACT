@@ -1,0 +1,32 @@
+@model IEnumerable<ReACT.Models.RewardCategory>
+
+<!DOCTYPE html>
+<div class="drawer drawer-mobile h-full">
+    <input type="checkbox" class="drawer-toggle"/>
+    <div id="redeem-modal-content" class="drawer-content px-10 py-5">
+        @await Component.InvokeAsync("RedeemModalRewardList", new { categoryId = Model.First().Id })
+    </div>
+    <div class="drawer-side border-r-2 pr-6">
+        <label class="drawer-overlay"></label>
+        <ul class="menu p-4 w-80 bg-base-100 text-base-content">
+            <div class="input-group mb-5">
+                <span class="border-y-2 border-l-2 bg-transparent border-base-200 pr-0"><i class="ph-magnifying-glass"></i></span>
+                <input type="text" placeholder="Search" class="input w-full border-l-0 border-y-2 border-r-2 border-base-200 focus:outline-0"/>
+            </div>
+            <div x-data="{ activeId: @Model.First().Id }" class="space-y-2">
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <a hx-get="@Url.ActionLink("RewardListFrame", "Redeem", new { categoryId = item.Id })"
+                           hx-target="#redeem-modal-content"
+                           :class="activeId == @item.Id && 'active'"
+                           x-on:click="activeId = @item.Id">
+                            <i class="ph-@item.Icon-bold"></i>
+                            @item.Name
+                        </a>
+                    </li>
+                }
+            </div>
+        </ul>
+    </div>
+</div>

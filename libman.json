@@ -9,6 +9,14 @@
     {
       "library": "@hotwired/turbo@7.2.4",
       "destination": "wwwroot/lib/hotwired/turbo"
+    },
+    {
+      "library": "alpinejs@3.10.5",
+      "destination": "wwwroot/lib/alpinejs"
+    },
+    {
+      "library": "htmx.org@1.8.4",
+      "destination": "wwwroot/lib/htmx.org"
     }
   ]
 }

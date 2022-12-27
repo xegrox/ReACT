@@ -12,13 +12,25 @@
 }
 
 <div class="flex absolute top-0 right-0 p-5 gap-5">
-    <a class="btn btn-sm btn-primary rounded-full gap-1.5">
+    <label class="btn btn-sm btn-primary rounded-full gap-1.5" for="redeem-modal-toggle">
         <i class="ph-gift-bold"></i>
         Redeem
-    </a>
+    </label>
     <div class="flex h-8 px-3 rounded-full border-2 items-center gap-1.5 min-w-[8rem]">
         <i class="ph-moon"></i>
         <p class="flex-1">1000</p>
         <i class="ph-plus-circle text-sm"></i>
     </div>
+</div>
+
+<div x-data>
+    <input type="checkbox" id="redeem-modal-toggle" class="modal-toggle" x-on:change.once="$refs.root.dispatchEvent(new Event('shown'))"/>
+    <label for="redeem-modal-toggle" class="modal cursor-pointer" x-ref="modalRedeem">
+        <label class="modal-box relative w-[80vw] max-w-none h-[85vh]" for="">
+            <label for="redeem-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+                <i class="ph-x"></i>
+            </label>
+            <div hx-get="@Url.ActionLink("ModalRootFrame", "Redeem")" hx-trigger="shown" hx-swap="outerHTML" x-ref="root"></div>
+        </label>
+    </label>    
 </div>

@@ -67,3 +67,8 @@ You may use [LibMan](https://learn.microsoft.com/en-us/aspnet/core/client-side/l
 
 Afterwards, include it in `Views/Shared/_LibrariesPartial.cshtml`
 
+Existing libraries:
+ - [phosphor-icons](https://phosphoricons.com/)
+ - [@hotwire/turbo](https://turbo.hotwired.dev/)
+ - [alpinejs](https://alpinejs.dev)
+ - [htmx.org](https://htmx.org/)
