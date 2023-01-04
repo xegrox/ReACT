@@ -31,8 +31,8 @@ public static class TailwindExtensions
             Arguments = $"-i {input} -o {output} --watch",
             UseShellExecute = false,
             WorkingDirectory = app.Environment.ContentRootPath,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
+            // RedirectStandardOutput = true,
+            // RedirectStandardError = true
         };
 
         var ps = Process.Start(psStartInfo);

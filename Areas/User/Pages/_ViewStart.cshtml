@@ -24,13 +24,13 @@
 </div>
 
 <div x-data>
-    <input type="checkbox" id="redeem-modal-toggle" class="modal-toggle" x-on:change.once="$refs.root.dispatchEvent(new Event('shown'))"/>
+    <input type="checkbox" id="redeem-modal-toggle" class="modal-toggle" x-on:change.once="$dispatch('showRedeemModal')"/>
     <label for="redeem-modal-toggle" class="modal cursor-pointer" x-ref="modalRedeem">
         <label class="modal-box relative w-[80vw] max-w-none h-[85vh]" for="">
             <label for="redeem-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
                 <i class="ph-x"></i>
             </label>
-            <div hx-get="@Url.ActionLink("ModalRootFrame", "Redeem")" hx-trigger="shown" hx-swap="outerHTML" x-ref="root"></div>
+            <div hx-get="@Url.ActionLink("ModalRootFrame", "Redeem")" hx-trigger="showRedeemModal from:#redeem-modal-toggle" hx-swap="outerHTML"></div>
         </label>
     </label>    
 </div>

@@ -1,0 +1,47 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ReACT.Areas.Admin.Views.Shared.ManageRewards.AddCategoryModalPartialModel
+
+@{
+    var success = ViewData["success"] as bool? ?? false;
+}
+<div>
+    <input type="checkbox" id="add-category-modal-toggle" class="modal-toggle"/>
+    <label for="add-category-modal-toggle" class="modal cursor-pointer">
+        <label class="modal-box !p-10 !w-96" for="">
+            <label for="add-category-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+                <i class="ph-x"></i>
+            </label>
+            <h3 class="text-2xl font-semibold mb-6">Add a Category</h3>
+            <turbo-frame id="add-category-modal-body">
+                @if (success)
+                {
+                    <div x-init="$elemById('add-category-modal-toggle').checked = false; $dispatch('success')" x-data></div>
+                }
+                <form asp-page="ManageRewards" asp-page-handler="Category" method="post">
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Name</span>
+                        </label>
+                        <input asp-for="Name" placeholder="Enter Category Name" class="input input-bordered w-full max-w-xs"/>
+                        <span asp-validation-for="Name" class="text-error"></span>
+                    </div>
+                    <div class="h-2"></div>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Icon</span>
+                        </label>
+                        <input asp-for="Icon" placeholder="Enter Icon Name" class="input input-bordered w-full max-w-xs"/>
+                        <span asp-validation-for="Icon" class="text-error"></span>
+                    </div>
+                    <div class="modal-action pt-5">
+                        <button type="submit" class="btn gap-2 flex items-center">
+                            Submit
+                            <i class="text-lg ph-check-bold"></i>
+                        </button>
+                    </div>
+                </form>
+            </turbo-frame>
+        </label>
+    </label>
+</div>
+

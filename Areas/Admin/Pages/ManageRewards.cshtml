@@ -1,6 +1,49 @@
 @page
+@using ReACT.Areas.Admin.Views.Shared.ManageRewards
 @model ReACT.Areas.Admin.Pages.ManageRewards
+@{
+    var categories = ViewData["categories"] as IEnumerable<RewardCategory> ?? Enumerable.Empty<RewardCategory>();
+    var rewards = ViewData["rewards"] as IEnumerable<Reward> ?? Enumerable.Empty<Reward>();
+    var activeCategoryId = ViewData["activeCategoryId"] as int?;
+}
 
-<div>
-    
-</div>
+<turbo-frame id="content-root" class="flex flex-col p-16" x-data x-on:success.document="$el.src = window.location.href">
+    <h3 class="text-2xl font-semibold mb-10">Manage Rewards</h3>
+    <div class="mb-5 flex items-center space-x-3">
+        <div class="flex-none tabs tabs-boxed self-start !p-1.5">
+            @foreach (var c in categories)
+            {
+                <a class="tab @(activeCategoryId == c.Id ? "tab-active" : "")" href="?categoryId=@c.Id" data-turbo-action="replace">@c.Name</a>
+            }
+            <div class="tooltip tooltip-right" data-tip="Add a new category">
+                <label class="btn btn-sm btn-circle btn-ghost ph-plus self-center mx-1" for="add-category-modal-toggle"></label>
+            </div>
+        </div>
+        <div class="flex-1"></div>
+        <div class="flex-none input-group w-auto">
+            <span class="bg-base-200 border-base-200 pr-0">
+                <i class="ph-magnifying-glass"></i>
+            </span>
+            <input type="text" placeholder="Search all categories" class="input input-sm bg-base-200 focus:outline-0"/>
+        </div>
+        <label class="btn btn-sm btn-primary" for="add-reward-modal-toggle">
+            <i class="ph-plus-bold pr-2"></i>
+            Add Reward
+        </label>
+    </div>
+    <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
+</turbo-frame>
+
+<partial name="ManageRewards/_AddRewardModalPartial"/>
+<partial name="ManageRewards/_EditRewardModalPartial"/>
+<partial name="ManageRewards/_AddCategoryModalPartial" model="new AddCategoryModalPartialModel()"/>
+
+@* <turbo-frame id="edit-reward-modal-root" x-data  *@
+@*              x-on:edit-reward.document="$el.src = `@Url.Page("ManageRewards", "EditRewardModalFrame")&rewardId=${event.detail.rewardId}`" *@
+@*              x-on:turbo:frame-load="$elemById('edit-reward-modal-toggle').checked = true"></turbo-frame> *@
+
+@* <div hx-get="@Url.Page("ManageRewards", "EditRewardModalFrame")" *@
+@*      hx-vals="js:{rewardId: event.detail.rewardId}" *@
+@*      hx-trigger="edit-reward from:document" *@
+@*      x-data x-on:htmx:after-settle="$elemById('edit-reward-modal-toggle').checked = true"></div> *@
+

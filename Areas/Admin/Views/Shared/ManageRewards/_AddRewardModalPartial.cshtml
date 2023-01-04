@@ -1,0 +1,202 @@
+<div x-data="AddRewardModal">
+    <input type="checkbox" id="add-reward-modal-toggle" class="modal-toggle"/>
+    <label for="add-reward-modal-toggle" class="modal cursor-pointer" x-on:transitionend.self="if (done) init()">
+        <label class="modal-box relative max-w-none w-auto max-h-none" for="">
+            <label for="add-reward-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+                <i class="ph-x"></i>
+            </label>
+            <div class="flex p-5 h-full space-x-10">
+                <div class="flex flex-col items-center justify-center mx-5 space-y-5">
+                    <a class="border-2 border-base-300 card w-64 bg-base-100 relative">
+                        <figure class="h-36 !block relative">
+                            <img class="absolute" :class="image || 'hidden'" :src="image ? URL.createObjectURL(image) : null"/>
+                            <div class="bg-base-200 w-full h-full text-9xl text-base-content/20 flex items-center justify-center" :class="image && 'hidden'">
+                                <i class="ph-image"></i>
+                            </div>
+                        </figure>
+                        <div class="card-body">
+                            <h2 class="card-title empty:after:content-['---']" x-text="name"></h2>
+                            <p class="flex items-center">
+                                Claim from
+                                <i class="pl-1 pr-0.5 ph-moon-bold"></i>
+                                <span x-text="[...variants].sort((a, b) => a.points - b.points)[0].points"></span>
+                            </p>
+                            <div class="mt-2">
+                                <template x-for="v in [...variants].sort((a, b) => a.points - b.points)">
+                                    <div class="badge badge-outline badge-primary empty:after:content-['--'] mr-1" x-text="v.name"></div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full">
+                            <p class="text-sm opacity-50">Reward Preview</p>
+                            <div class="h-8"></div>
+                        </div>
+                    </a>
+                </div>
+                <div class="divider divider-horizontal"></div>
+                <div class="w-96">
+                    <h3 class="pl-2 text-2xl font-semibold">Add a Reward</h3>
+                    <div class="h-[30rem] relative overflow-hidden">
+                        <div class="h-full w-full flex flex-col pl-1" x-page="1">
+                            <p class="opacity-50 mb-7 pl-1">Enter reward details</p>
+                            <form class="flex-1 flex flex-col space-y-2" x-on:submit.prevent="$page.next()">
+                                <div class="form-control w-full max-w-xs">
+                                    <label class="label">
+                                        <span class="label-text">Category</span>
+                                    </label>
+                                    <select class="select select-bordered" x-model.number="categoryId">
+                                        <template x-for="category in categories">
+                                            <option x-text="category.name" :value="category.id"></option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <div class="form-control w-full max-w-xs">
+                                    <label class="label">
+                                        <span class="label-text">Name</span>
+                                    </label>
+                                    <input placeholder="Enter Reward Name" class="input input-bordered w-full max-w-xs" x-model="name" required/>
+                                </div>
+                                <div class="form-control w-full max-w-xs">
+                                    <label class="label">
+                                        <span class="label-text">Header Image</span>
+                                    </label>
+                                    <input type="file" accept="image/*" class="file-input file-input-bordered w-full max-w-xs" x-on:change="image = $el.files[0]" x-model="imageName" required/>
+                                </div>
+                                <div class="flex-1"></div>
+                                <div class="modal-action">
+                                    <button type="submit" class="btn gap-2 flex items-center">
+                                        Next
+                                        <i class="text-lg ph-arrow-right-bold"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="h-full w-full flex flex-col pl-1" x-page="2">
+                                <p class="opacity-50 mb-7 pl-1">Enter redeem link</p>
+                                <form class="flex-1 flex flex-col space-y-3" x-on:submit.prevent="$page.next()">
+                                    <div class="form-control w-full max-w-xs">
+                                        <label class="label">
+                                            <span class="label-text">Redeem URL</span>
+                                        </label>
+                                        <input type="url" placeholder="Enter Redeem URL" class="input input-bordered w-full max-w-xs" x-model="redeemUrl" required/>
+                                    </div>
+                                    <div class="flex space-x-2 opacity-60 max-w-xs">
+                                        <i class="ph-info-bold pt-0.5"></i>
+                                        <p class="text-sm">
+                                            Please provide a valid url where the user will be able to enter their redeem code. 
+                                        </p>
+                                    </div>
+                                    <div class="flex-1"></div>
+                                    <div class="modal-action">
+                                        <div class="btn btn-ghost gap-2 flex items-center" x-on:click="$page.prev()">
+                                            <i class="text-lg ph-arrow-left-bold"></i>
+                                            Back
+                                        </div>
+                                        <button type="submit" class="btn gap-2 flex items-center">
+                                            Next
+                                            <i class="text-lg ph-arrow-right-bold"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        <div class="h-full w-full flex flex-col pl-1" x-page="3">
+                            <p class="opacity-50 mb-7 pl-1">Add reward variants</p>
+                            <form class="flex-1 flex flex-col space-y-3" x-on:submit.prevent="submitForm()">
+                                <div class="btn btn-xs btn-ghost gap-2 self-end" x-on:click="variants.push({key: ++vc, name: '', points: 1000})">
+                                    <i class="ph-plus-bold"></i>
+                                    Add Row
+                                </div>
+                                <table class="table table-compact border-2 border-base-200 border-spacing-0 border-separate rounded-lg">
+                                    <thead>
+                                    <tr>
+                                        <td class="pl-3 text-xs">Variant Name</td>
+                                        <td class="pl-3 text-xs">Points</td>
+                                        <td></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <template x-for="v in variants" :key="v.key">
+                                        <tr>
+                                            <td class="p-1">
+                                                <input class="input input-xs input-ghost w-full focus:outline-0" placeholder="Input name" x-model="v.name" required/>
+                                            </td>
+                                            <td class="p-1">
+                                                <input class="input input-xs input-ghost w-full focus:outline-0" type="number" min="1" pattern="[0-9]+" placeholder="Input points" x-model.number="v.points" required/>
+                                            </td>
+                                            <td class="p-1">
+                                                <button class="btn btn-xs btn-ghost btn-circle text-error disabled:bg-transparent" x-on:click.prevent="variants.splice(variants.findIndex((e) => e.key == v.key), 1)" :disabled="variants.length <= 1">
+                                                    <i class="ph-minus-bold"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    </tbody>
+                                </table>
+                                <div class="flex-1"></div>
+                                <div class="modal-action">
+                                    <div class="btn btn-ghost gap-2 flex items-center" x-on:click="$page.prev()">
+                                        <i class="text-lg ph-arrow-left-bold"></i>
+                                        Back
+                                    </div>
+                                    <button type="submit" class="btn gap-2 flex items-center">
+                                        Submit
+                                        <i class="text-lg ph-check-bold"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </label>
+</div>
+
+<script type="text/javascript">
+document.addEventListener("alpine:init", () => {
+    Alpine.data("AddRewardModal", () => ({
+        init() {
+            Object.assign(this, this.data())
+            this.$fetchjson('@Url.Page("ManageRewards", "CategoryList")').then(data => {
+                this.categories = data;
+                this.categoryId = data[0]?.id
+            })
+        },
+        data() {
+            return {  
+                variants: [{key: 1, name: '$10', points: 1000}],
+                vc: 1,
+                name: '',
+                categoryId: null,
+                categories: [],
+                redeemUrl: "",
+                imageName: "", // Used to clear image input through x-model
+                image: null,
+                done: false
+            }
+        },
+        submitForm() {
+            const body = new FormData();
+            body.append("name", this.name)
+            body.append("categoryId", this.categoryId)
+            body.append("image", this.image)
+            body.append("redeemUrl", this.redeemUrl)
+            this.variants.forEach((v, i) => {
+                body.append(`variants[${i}].Name`, v.name)
+                body.append(`variants[${i}].Points`, v.points)
+            })
+            fetch("/api/Reward", {
+                method: 'POST',
+                body
+            }).then((response) => {
+                if (response.ok) {
+                    this.done = true
+                    const toggle = this.$elemById('add-reward-modal-toggle') 
+                    toggle.checked = false
+                    this.$dispatch("success")
+                }
+            })
+        }
+    }))
+})
+</script>

@@ -5,6 +5,7 @@ Pages
  - /user
  - /admin
  - /company
+ - /swagger (for testing api)
 
 Icons 
 -----

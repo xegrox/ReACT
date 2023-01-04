@@ -10,9 +10,9 @@ public static class MockRewardsDb
     
     public static readonly List<Reward> Rewards = new()
     {
-        new Reward(1, 1, "Google Play", "https://placeimg.com/400/225/arch", ""),
-        new Reward(2, 1, "Paypal", "https://placeimg.com/400/225/arch", ""),
-        new Reward(3, 2, "Zalora", "https://placeimg.com/400/225/arch", ""),
+        new Reward(1, 1, "Google Play", "https://placeimg.com/400/225/arch", "https://www.google.com"),
+        new Reward(2, 1, "Paypal", "https://placeimg.com/400/225/arch", "https://www.google.com"),
+        new Reward(3, 2, "Zalora", "https://placeimg.com/400/225/arch", "https://www.google.com"),
     };
 
     public static readonly List<RewardVariant> Variants = new()

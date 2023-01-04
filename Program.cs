@@ -2,9 +2,8 @@ using ReACT;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddSwaggerGen();
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AddAreaPageRoute("Home", "/Landing", "/");
@@ -24,6 +23,8 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.RunTailwind("./Styles/input.css", "./wwwroot/css/output.css");
 }
 
