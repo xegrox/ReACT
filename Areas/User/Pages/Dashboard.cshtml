@@ -1,6 +1,81 @@
 @page
 @model ReACT.Areas.User.Pages.Dashboard
 
-<div>
+<div class="hero h-1/3" style="background-image: url('/images/dashboardBG.png');">
+    <div class="hero-overlay bg-opacity-20"></div>
+    <div class="hero-contenttext-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">Points & Rewards</h1>
+        </div>
+    </div>
+</div>
 
+<div class="container mx-auto">
+    <div class="flex flex-wrap justify-center">
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-1/4 p-4">
+            <a href="" class="c-card block bg-primary border-8 border-orange-400 shadow-md hover:shadow-xl rounded-lg overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img class="inset-0 h-2/5 w-2/5 object-cover mx-auto" src="/images/pointsIcon.png" alt="">
+                </div>
+                <div class="p-4 border-t">
+                    <h2 class="mt-2 mb-2 font-bold" style="text-align: center; color: white;">Get more points <i class="ph-arrow-right"></i></h2>
+                </div>
+            </a>
+        </div>
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-1/4 p-4">
+            <a href="@Url.Page("scoreboardRank")" class="c-card block bg-primary border-8 border-orange-400 shadow-md hover:shadow-xl rounded-lg overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img class="inset-0 h-2/5 w-2/5 object-cover mx-auto" src="/images/rankIcon.png" alt="">
+                </div>
+                <div class="p-4 border-t">
+                    <h1 class="mt-2 mb-2 font-bold" style="text-align: center; color: white;">View scoreboard <i class="ph-arrow-right"></i></h1>
+                </div>
+            </a>
+        </div>
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-1/4 p-4">
+            <a href="" class="c-card block bg-primary border-8 border-orange-400 shadow-md hover:shadow-xl rounded-lg overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img class="inset-0 h-2/5 w-2/5 object-cover mx-auto" src="/images/rewardIcon.png" alt="">
+                </div>
+                <div class="p-4 border-t">
+                    <h2 class="mt-2 mb-2 font-bold" style="text-align: center; color: white;">View reward inventory <i class="ph-arrow-right"></i></h2>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto">
+    <div class="flex flex-wrap justify-center">
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-1/4 p-4">
+            <a href="" class="c-card block bg-primary border-8 border-orange-400 shadow-md hover:shadow-xl rounded-lg overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img class="inset-0 h-2/5 w-2/5 object-cover mx-auto" src="/images/historyIcon.png" alt="">
+                </div>
+                <div class="p-4 border-t">
+                    <h2 class="mt-2 mb-2 font-bold" style="text-align: center; color: white;">View points history <i class="ph-arrow-right"></i></h2>
+                </div>
+            </a>
+        </div>
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-1/4 p-4">
+            <a href="@Url.Page("Forest")" class="c-card block bg-primary border-8 border-orange-400 shadow-md hover:shadow-xl rounded-lg overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img class="inset-0 h-2/5 w-2/5 object-cover mx-auto" src="/images/forestIcon.png" alt="">
+                </div>
+                <div class="p-4 border-t">
+                    <h1 class="mt-2 mb-2 font-bold" style="text-align: center; color: white;">View Growing Forest <i class="ph-arrow-right"></i></h1>
+                </div>
+            </a>
+        </div>
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-1/4 p-4">
+            <a href="@Url.Page("cycleOfWaste")" class="c-card block bg-primary border-8 border-orange-400 border-orange-400 shadow-md hover:shadow-xl rounded-lg overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img class="inset-0 h-2/5 w-2/5 object-cover mx-auto" src="/images/spinIcon.png" alt="">
+                </div>
+                <div class="p-4 border-t">
+                    <h2 class="mt-2 mb-2 font-bold" style="text-align: center; color: white;">View Cycle of Waste <i class="ph-arrow-right"></i></h2>
+                </div>
+            </a>
+        </div>
+    </div>
 </div>
