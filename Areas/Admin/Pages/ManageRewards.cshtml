@@ -11,10 +11,29 @@
     <h3 class="text-2xl font-semibold mb-10">Manage Rewards</h3>
     <div class="mb-5 flex items-center space-x-3">
         <div class="flex-none tabs tabs-boxed self-start !p-1.5">
+            <a class="tab @(activeCategoryId == null ? "tab-active" : "") space-x-2" href="?all=true" data-turbo-action="replace">
+                @if (activeCategoryId == null)
+                {
+                    <i class="ph-squares-four text-lg"></i>
+                }
+                <p>All</p>
+            </a>
             @foreach (var c in categories)
             {
-                <a class="tab @(activeCategoryId == c.Id ? "tab-active" : "")" href="?categoryId=@c.Id" data-turbo-action="replace">@c.Name</a>
-                if (activeCategoryId == c.Id) ViewData["activeCategoryName"] = c.Name;
+                if (activeCategoryId == c.Id)
+                {
+                    <a class="tab space-x-2 tab-active" href="?categoryId=@c.Id" data-turbo-action="replace">
+                        <i class="ph-@c.Icon text-lg"></i>
+                        <p>@c.Name</p>
+                    </a>
+                    ViewData["activeCategoryName"] = c.Name;
+                }
+                else
+                {
+                    <a class="tab space-x-1" href="?categoryId=@c.Id" data-turbo-action="replace">
+                        <p>@c.Name</p>
+                    </a>
+                }
             }
             <div class="tooltip tooltip-right" data-tip="Add a new category">
                 <label class="btn btn-sm btn-circle btn-ghost ph-plus self-center mx-1" for="add-category-modal-toggle"></label>
