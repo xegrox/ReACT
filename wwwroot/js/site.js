@@ -1,6 +1,6 @@
 ﻿document.addEventListener('alpine:init', () => {
     Alpine.magic('fetchjson', () => (url) => fetch(url).then((response) => response.json()))
-    Alpine.magic('fetchok', () => (url, method) => fetch(url, {method: method ?? 'GET'}).then((response) => response.ok))
+    Alpine.magic('fetchok', () => (url, method, body) => fetch(url, {method: method ?? 'GET', body}).then((response) => response.ok))
     Alpine.magic('elemById', () => (id) => document.getElementById(id))
     Alpine.magic('page', (el) => getPageController(el, Alpine))
     Alpine.directive('page', (el, { expression }) => {

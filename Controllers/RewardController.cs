@@ -24,7 +24,7 @@ public class RewardController : ControllerBase
         await image.CopyToAsync(imageStream);
 
         var reward = new Reward(
-            id: MockRewardsDb.Rewards.Last().Id + 1,
+            id: (MockRewardsDb.Rewards.LastOrDefault()?.Id ?? 0) + 1,
             name: name,
             categoryId: categoryId,
             imageUrl: imageUrl,
@@ -33,7 +33,7 @@ public class RewardController : ControllerBase
 
         MockRewardsDb.Rewards.Add(reward);
         MockRewardsDb.Variants.AddRange(variants.Select(v => new RewardVariant(
-            id: MockRewardsDb.Variants.Last().Id + 1,
+            id: (MockRewardsDb.Variants.LastOrDefault()?.Id ?? 0) + 1,
             rewardId: reward.Id,
             name: v.Name,
             points: v.Points
@@ -106,7 +106,7 @@ public class RewardController : ControllerBase
             }
 
             MockRewardsDb.Variants.Add(new RewardVariant(
-                id: MockRewardsDb.Variants.Last().Id + 1,
+                id: (MockRewardsDb.Variants.LastOrDefault()?.Id ?? 0) + 1,
                 rewardId: reward.Id,
                 name: variantFormModel.Name,
                 points: variantFormModel.Points
@@ -122,6 +122,29 @@ public class RewardController : ControllerBase
         var reward = MockRewardsDb.Rewards.Find(r => r.Id == id);
         if (reward == null) return new NotFoundResult();
         MockRewardsDb.Rewards.Remove(reward);
+        return new OkResult();
+    }
+
+    [HttpGet("Category")]
+    public ActionResult GetCategories()
+    {
+        return new JsonResult(MockRewardsDb.Categories.Select(category => new
+        {
+            id = category.Id,
+            name = category.Name,
+            icon = category.Icon
+        }));
+    }
+
+    [HttpPost("Category")]
+    public ActionResult CreateCategory(
+        [Required] [FromForm] string name,
+        [Required] [FromForm] string icon)
+    {
+        MockRewardsDb.Categories.Add(new RewardCategory(
+            id: (MockRewardsDb.Categories.LastOrDefault()?.Id ?? 0) + 1,
+            name, icon
+        ));
         return new OkResult();
     }
 

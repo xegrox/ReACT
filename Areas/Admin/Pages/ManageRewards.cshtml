@@ -1,5 +1,4 @@
 @page
-@using ReACT.Areas.Admin.Views.Shared.ManageRewards
 @model ReACT.Areas.Admin.Pages.ManageRewards
 @{
     var categories = ViewData["categories"] as IEnumerable<RewardCategory> ?? Enumerable.Empty<RewardCategory>();
@@ -30,13 +29,13 @@
                 }
                 else
                 {
-                    <a class="tab space-x-1" href="?categoryId=@c.Id" data-turbo-action="replace">
+                    <a class="tab" href="?categoryId=@c.Id" data-turbo-action="replace">
                         <p>@c.Name</p>
                     </a>
                 }
             }
             <div class="tooltip tooltip-right" data-tip="Add a new category">
-                <label class="btn btn-sm btn-circle btn-ghost ph-plus self-center mx-1" for="add-category-modal-toggle"></label>
+                <div class="btn btn-sm btn-circle btn-ghost ph-plus self-center mx-1" x-data x-on:click="$dispatch('add-category')"></div>
             </div>
         </div>
         <div class="flex-1"></div>
@@ -55,6 +54,16 @@
     {
         <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
     }
+    else if (activeCategoryId == null)
+    {
+        <div class="flex-1 flex flex-col items-center justify-center mb-8">
+            <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
+                <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
+            </svg>
+            <p class="opacity-60 text-xl mb-3">No rewards yet, start by adding a category</p>
+            <div class="btn btn-xs btn-ghost text-error" x-data x-on:click="$dispatch('add-category')">Add a category</div>
+        </div>
+    }
     else
     {
         <div class="flex-1 flex flex-col items-center justify-center mb-8">
@@ -70,5 +79,5 @@
 <partial name="ManageRewards/_AddRewardModalPartial"/>
 <partial name="ManageRewards/_EditRewardModalPartial"/>
 <partial name="ManageRewards/_DeleteRewardModalPartial"/>
-<partial name="ManageRewards/_AddCategoryModalPartial" model="new AddCategoryModalPartialModel()"/>
+<partial name="ManageRewards/_AddCategoryModalPartial"/>
 <partial name="ManageRewards/_DeleteCategoryModalPartial"/>

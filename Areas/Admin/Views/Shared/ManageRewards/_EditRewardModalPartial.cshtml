@@ -160,7 +160,7 @@ document.addEventListener("alpine:init", () => {
         },
         async open(id) {
             this.$page.reset()
-            this.categories = await this.$fetchjson('@Url.Page("ManageRewards", "CategoryList")')
+            this.categories = await this.$fetchjson('/api/Reward/Category')
             await this.$fetchjson(`/api/Reward/${id}`).then((data) => {
                 this.id = id
                 this.name = data.name

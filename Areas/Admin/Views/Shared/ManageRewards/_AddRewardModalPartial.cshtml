@@ -157,7 +157,7 @@ document.addEventListener("alpine:init", () => {
     Alpine.data("AddRewardModal", () => ({
         init() {
             Object.assign(this, this.data())
-            this.$fetchjson('@Url.Page("ManageRewards", "CategoryList")').then(data => {
+            this.$fetchjson('/api/Reward/Category').then(data => {
                 this.categories = data;
                 this.categoryId = data[0]?.id
             })
