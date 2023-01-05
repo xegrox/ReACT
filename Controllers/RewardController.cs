@@ -9,7 +9,7 @@ namespace ReACT.Controllers;
 public class RewardController : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult> Create(
+    public async Task<ActionResult> CreateReward(
         [Required] [FromForm] int categoryId,
         [Required] [FromForm] string name,
         [Required] [FromForm] string redeemUrl,
@@ -43,7 +43,7 @@ public class RewardController : ControllerBase
 
 
     [HttpGet("{id:int}")]
-    public ActionResult Get(int id)
+    public ActionResult GetReward(int id)
     {
         var reward = MockRewardsDb.Rewards.Find(r => r.Id == id);
         if (reward == null) return new NotFoundResult();
@@ -60,7 +60,7 @@ public class RewardController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(
+    public async Task<ActionResult> UpdateReward(
         int id,
         [Required] [FromForm] int categoryId,
         [Required] [FromForm] string name,
@@ -113,6 +113,24 @@ public class RewardController : ControllerBase
             ));
         }
 
+        return new OkResult();
+    }
+
+    [HttpDelete("{id:int}")]
+    public ActionResult DeleteReward(int id)
+    {
+        var reward = MockRewardsDb.Rewards.Find(r => r.Id == id);
+        if (reward == null) return new NotFoundResult();
+        MockRewardsDb.Rewards.Remove(reward);
+        return new OkResult();
+    }
+
+    [HttpDelete("Category/{id:int}")]
+    public ActionResult DeleteCategory(int id)
+    {
+        var category = MockRewardsDb.Categories.Find(c => c.Id == id);
+        if (category == null) return new NotFoundResult();
+        MockRewardsDb.Categories.Remove(category);
         return new OkResult();
     }
 }

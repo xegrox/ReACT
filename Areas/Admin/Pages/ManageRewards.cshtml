@@ -7,13 +7,14 @@
     var activeCategoryId = ViewData["activeCategoryId"] as int?;
 }
 
-<turbo-frame id="content-root" class="flex flex-col p-16" x-data x-on:success.document="$el.src = window.location.href">
+<turbo-frame id="content-root" class="flex flex-col p-16 h-full" x-data x-on:success.document="$el.src = window.location.href">
     <h3 class="text-2xl font-semibold mb-10">Manage Rewards</h3>
     <div class="mb-5 flex items-center space-x-3">
         <div class="flex-none tabs tabs-boxed self-start !p-1.5">
             @foreach (var c in categories)
             {
                 <a class="tab @(activeCategoryId == c.Id ? "tab-active" : "")" href="?categoryId=@c.Id" data-turbo-action="replace">@c.Name</a>
+                if (activeCategoryId == c.Id) ViewData["activeCategoryName"] = c.Name;
             }
             <div class="tooltip tooltip-right" data-tip="Add a new category">
                 <label class="btn btn-sm btn-circle btn-ghost ph-plus self-center mx-1" for="add-category-modal-toggle"></label>
@@ -26,24 +27,29 @@
             </span>
             <input type="text" placeholder="Search all categories" class="input input-sm bg-base-200 focus:outline-0"/>
         </div>
-        <label class="btn btn-sm btn-primary" for="add-reward-modal-toggle">
+        <label class="btn btn-sm btn-primary no-animation" for="add-reward-modal-toggle">
             <i class="ph-plus-bold pr-2"></i>
             Add Reward
         </label>
     </div>
-    <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
+    @if (rewards.Any())
+    {
+        <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
+    }
+    else
+    {
+        <div class="flex-1 flex flex-col items-center justify-center mb-8">
+            <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
+                <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
+            </svg>
+            <p class="opacity-60 text-xl mb-3">No rewards in category</p>
+            <div class="btn btn-xs btn-ghost text-error" x-data x-on:click="$dispatch('delete-category', {categoryId: @activeCategoryId, categoryName: '@ViewData["activeCategoryName"]'})">Delete this category</div>
+        </div>
+    }
 </turbo-frame>
 
 <partial name="ManageRewards/_AddRewardModalPartial"/>
 <partial name="ManageRewards/_EditRewardModalPartial"/>
+<partial name="ManageRewards/_DeleteRewardModalPartial"/>
 <partial name="ManageRewards/_AddCategoryModalPartial" model="new AddCategoryModalPartialModel()"/>
-
-@* <turbo-frame id="edit-reward-modal-root" x-data  *@
-@*              x-on:edit-reward.document="$el.src = `@Url.Page("ManageRewards", "EditRewardModalFrame")&rewardId=${event.detail.rewardId}`" *@
-@*              x-on:turbo:frame-load="$elemById('edit-reward-modal-toggle').checked = true"></turbo-frame> *@
-
-@* <div hx-get="@Url.Page("ManageRewards", "EditRewardModalFrame")" *@
-@*      hx-vals="js:{rewardId: event.detail.rewardId}" *@
-@*      hx-trigger="edit-reward from:document" *@
-@*      x-data x-on:htmx:after-settle="$elemById('edit-reward-modal-toggle').checked = true"></div> *@
-
+<partial name="ManageRewards/_DeleteCategoryModalPartial"/>

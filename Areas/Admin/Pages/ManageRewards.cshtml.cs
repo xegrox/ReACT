@@ -12,6 +12,8 @@ public class ManageRewards : PageModel
         categoryId ??= MockRewardsDb.Categories.FirstOrDefault()?.Id;
         if (categoryId != null)
         {
+            var categoryExists = MockRewardsDb.Categories.Any(c => c.Id == categoryId);
+            if (!categoryExists) return RedirectToPage();
             var rewards = MockRewardsDb.Rewards.Where(r => r.CategoryId == categoryId);
             foreach (var reward in rewards)
             {

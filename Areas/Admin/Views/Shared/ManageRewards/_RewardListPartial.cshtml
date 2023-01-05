@@ -46,12 +46,15 @@
                     <p class="font-semibold opacity-60">208</p>
                 </div>
             </td>
-            <td>
-                <div class="tooltip" data-tip="Edit Reward Details" x-data x-on:click="$dispatch('edit-reward', {rewardId: @reward.Id})">
+            <td x-data>
+                <div class="tooltip" data-tip="Edit Reward Details" x-on:click="$dispatch('edit-reward', {rewardId: @reward.Id})">
                     <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
                 </div>
                 <div class="tooltip" data-tip="Manage Reward Codes">
                     <i class="btn btn-sm btn-ghost btn-circle ph-package-bold"></i>
+                </div>
+                <div class="tooltip" data-tip="Delete Reward" x-on:click="$dispatch('delete-reward', {rewardId: @reward.Id, rewardName: '@reward.Name'})">
+                    <i class="btn btn-sm btn-ghost btn-circle ph-trash-bold"></i>
                 </div>
             </td>
         </tr>
