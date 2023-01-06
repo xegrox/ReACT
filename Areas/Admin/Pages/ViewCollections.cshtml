@@ -1,6 +1,58 @@
 @page
-@model ReACT.Areas.Admin.Pages.Collection
+@model ReACT.Areas.Admin.Pages.ViewCollectionModel
 
-<div>
-    
+<div class="flex flex-col p-16">
+    <h3 class="text-2xl font-semibold mb-10">View Collections</h3>
+    <div class="flex-none input-group w-auto mb-5">
+            <span class="bg-base-200 border-base-200 pr-0">
+                <i class="ph-magnifying-glass"></i>
+            </span>
+            <input type="text" placeholder="Search all collections" class="input input-sm bg-base-200 focus:outline-0"/>
+    </div>
+    <div class="overflow-x-auto mt-5">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>Collection ID</th>
+                    <th>Collection Date</th>
+                    <th>Assigned Company</th>
+                    <th>Details</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var collection in Model.CollectionList)
+                {
+                    <tr>
+                        <td>@collection.Id</td>
+                        <td>@collection.CollectionDate</td>
+                        @if (collection.AssignedCompany != null)
+                        {
+                        <td>@collection.AssignedCompany</td>
+                        } else
+                        {
+                            <td>
+                                <div class="tooltip" data-tip="Assign Collector">
+                                    <i class="btn btn-sm btn-ghost btn-circle ph-note-bold"></i>
+                                </div>
+                            </td>
+                        }
+                        <td>
+                            <div class="tooltip" data-tip="View Collection Details">
+                                <a asp-page="/CollectionDetails" asp-route-userId="@collection.UserId" asp-route-collectionId="@collection.Id"><i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i></a>
+                            </div>
+                            <div class="tooltip" data-tip="Edit Collection Details">
+                                <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="tooltip" data-tip="Mark as done">
+                                <i class="btn btn-sm btn-ghost btn-circle ph-check-bold"></i>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

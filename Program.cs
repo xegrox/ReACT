@@ -1,4 +1,5 @@
 using ReACT;
+using ReACT.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AddAreaPageRoute("Company", "/PickupLocations", "/company");
     options.Conventions.AddAreaPageRoute("User", "/Dashboard", "/user");
 });
+
+builder.Services.AddScoped<MockCollectionsDb>();
+builder.Services.AddScoped<MockUsersDb>();
 
 var app = builder.Build();
 
