@@ -1,0 +1,88 @@
+<div x-data="ManageCategoriesModal" x-on:manage-categories.document="open()">
+    <input type="checkbox" id="manage-categories-modal-toggle" class="modal-toggle" x-ref="toggle"/>
+    <label for="manage-categories-modal-toggle" class="modal cursor-pointer">
+        <label class="modal-box !p-10" for="">
+            <label for="manage-categories-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+                <i class="ph-x"></i>
+            </label>
+            <h3 class="text-2xl font-semibold">Manage Categories</h3>
+            <div class="mt-8 flex flex-col">
+                <div class="space-y-3">
+                    <template x-for="c in categories" :key="c.key">
+                        <form class="w-full px-5 py-3 rounded-lg bg-primary/10 flex items-center text-primary" x-on:submit.prevent="c.id ? update(c) : add(c)">
+                            <div class="btn btn-circle btn-sm btn-ghost" :class="c.editMode ? 'border border-primary bg-primary/10 hover:bg-primary/20' : 'pointer-events-none'">
+                                <i class="text-lg" :class="`ph-${c.icon}`"></i>
+                            </div>
+                            <input class="ml-4 input input-sm bg-transparent focus:outline-0 p-0 rounded-none border-0 !text-base" placeholder="Enter name" x-model="c.name" :class="c.editMode ? 'border-b border-primary' : 'pointer-events-none'" required=""/>
+                            <div class="flex-1"></div>
+                            <div class="space-x-1" >
+                                <div x-show="!c.editMode" class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10" x-on:click="c.editMode = true">
+                                    <i class="ph-note-pencil text-lg"></i>
+                                </div>
+                                <button type="submit" x-show="c.editMode" class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10">
+                                    <i class="ph-check text-lg"></i>
+                                </button>
+                                <div class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10" x-on:click.prevent.stop="remove(c)">
+                                    <i class="ph-trash text-lg"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </template>
+                </div>
+                <div class="btn btn-primary gap-2 btn-outline mt-8" x-on:click="addNewCategory()">
+                    <i class="ph-plus-bold"></i>
+                    <p>Add new category</p>
+                </div>
+            </div>
+        </label>
+    </label>
+</div>
+
+<script>
+document.addEventListener("alpine:init", () => {
+    Alpine.data("ManageCategoriesModal", () => ({
+        vc: 0,
+        categories: [],
+        async open() {
+            this.categories = await this.$fetchjson('/api/Reward/Category')
+            this.categories.forEach(c => c.key = this.vc++)
+            this.$refs.toggle.checked = true
+        },
+        addNewCategory() {
+            this.categories.push({
+                key: this.vc++,
+                id: null,
+                icon: "gift",
+                name: "",
+                editMode: true
+            })
+        },
+        async remove(category) {
+            if (category.id != null) {
+                await this.$fetch(`/api/Reward/Category/${category.id}`, "DELETE")
+                this.$dispatch("success")
+            }
+            this.categories.splice(this.categories.findIndex(c => category.id === c.id), 1)
+        },
+        async add(category) {
+            const data = new FormData()
+            data.append("name", category.name)
+            data.append("icon", category.icon)
+            this.$fetchjson("/api/Reward/Category", "POST", data).then(({id}) => {
+                category.id = id
+                category.editMode = false
+                this.$dispatch("success")
+            })
+        },
+        async update(category) {
+            const data = new FormData()
+            data.append("name", category.name)
+            data.append("icon", category.icon)
+            this.$fetch(`/api/Reward/Category/${category.id}`, "PUT", data).then(() => {
+                category.editMode = false
+                this.$dispatch("success")
+            })
+        }
+    }))
+})
+</script>

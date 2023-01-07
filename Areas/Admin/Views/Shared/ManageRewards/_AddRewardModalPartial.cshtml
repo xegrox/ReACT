@@ -1,5 +1,5 @@
-<div x-data="AddRewardModal">
-    <input type="checkbox" id="add-reward-modal-toggle" class="modal-toggle"/>
+<div x-data="AddRewardModal" x-on:add-reward.document="open()">
+    <input x-ref="toggle" type="checkbox" id="add-reward-modal-toggle" class="modal-toggle"/>
     <label for="add-reward-modal-toggle" class="modal cursor-pointer" x-on:transitionend.self="if (done) init()">
         <label class="modal-box relative max-w-none w-auto max-h-none" for="">
             <label for="add-reward-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
@@ -157,10 +157,13 @@ document.addEventListener("alpine:init", () => {
     Alpine.data("AddRewardModal", () => ({
         init() {
             Object.assign(this, this.data())
-            this.$fetchjson('/api/Reward/Category').then(data => {
+        },
+        async open() {
+            await this.$fetchjson('/api/Reward/Category').then(data => {
                 this.categories = data;
                 this.categoryId = data[0]?.id
             })
+            this.$refs.toggle.checked = true
         },
         data() {
             return {  

@@ -34,9 +34,9 @@
                     </a>
                 }
             }
-            <div class="tooltip tooltip-right" data-tip="Add a new category">
-                <div class="btn btn-sm btn-circle btn-ghost ph-plus self-center mx-1" x-data x-on:click="$dispatch('add-category')"></div>
-            </div>
+        </div>
+        <div class="self-stretch aspect-square">
+            <div class="btn animate-none !h-full w-full bg-primary/10 hover:bg-primary/20 !min-h-0 !p-0 btn-ghost text-primary/50 ph-pencil-simple-bold self-center" x-data x-on:click="$dispatch('manage-categories')"></div>
         </div>
         <div class="flex-1"></div>
         <div class="flex-none input-group w-auto">
@@ -45,7 +45,7 @@
             </span>
             <input type="text" placeholder="Search all categories" class="input input-sm bg-base-200 focus:outline-0"/>
         </div>
-        <label class="btn btn-sm btn-primary no-animation" for="add-reward-modal-toggle">
+        <label class="btn btn-sm btn-primary animate-none" x-on:click="$dispatch('add-reward')">
             <i class="ph-plus-bold pr-2"></i>
             Add Reward
         </label>
@@ -61,7 +61,7 @@
                 <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
             </svg>
             <p class="opacity-60 text-xl mb-3">No rewards yet, start by adding a category</p>
-            <div class="btn btn-xs btn-ghost text-error" x-data x-on:click="$dispatch('add-category')">Add a category</div>
+            <div class="btn btn-xs btn-ghost text-error" x-data x-on:click="$dispatch('manage-categories')">Add a category</div>
         </div>
     }
     else
@@ -71,7 +71,7 @@
                 <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
             </svg>
             <p class="opacity-60 text-xl mb-3">No rewards in category</p>
-            <div class="btn btn-xs btn-ghost text-error" x-data x-on:click="$dispatch('delete-category', {categoryId: @activeCategoryId, categoryName: '@ViewData["activeCategoryName"]'})">Delete this category</div>
+            <div class="btn btn-xs btn-ghost text-primary animate-none" x-data x-on:click="$dispatch('add-reward')">Add a reward</div>
         </div>
     }
 </turbo-frame>
@@ -79,5 +79,4 @@
 <partial name="ManageRewards/_AddRewardModalPartial"/>
 <partial name="ManageRewards/_EditRewardModalPartial"/>
 <partial name="ManageRewards/_DeleteRewardModalPartial"/>
-<partial name="ManageRewards/_AddCategoryModalPartial"/>
-<partial name="ManageRewards/_DeleteCategoryModalPartial"/>
+<partial name="ManageRewards/_ManageCategoriesModalPartial"/>

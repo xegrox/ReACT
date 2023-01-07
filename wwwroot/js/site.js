@@ -1,5 +1,8 @@
 ﻿document.addEventListener('alpine:init', () => {
-    Alpine.magic('fetchjson', () => (url) => fetch(url).then((response) => response.json()))
+    const resErr = (url, method) => Promise.reject(new Error(`Error response ${method}: ${url}`))
+    const fetchThrow = (url, method, body) => fetch(url, {method: method ?? 'GET', body}).then((response) => response.ok ? Promise.resolve(response) : resErr(url, method))
+    Alpine.magic('fetch', () => fetchThrow)
+    Alpine.magic('fetchjson', () => (url, method, body) => fetchThrow(url, method, body).then((response) => response.json()))
     Alpine.magic('fetchok', () => (url, method, body) => fetch(url, {method: method ?? 'GET', body}).then((response) => response.ok))
     Alpine.magic('elemById', () => (id) => document.getElementById(id))
     Alpine.magic('page', (el) => getPageController(el, Alpine))

@@ -141,10 +141,25 @@ public class RewardController : ControllerBase
         [Required] [FromForm] string name,
         [Required] [FromForm] string icon)
     {
-        MockRewardsDb.Categories.Add(new RewardCategory(
+        var category = new RewardCategory(
             id: (MockRewardsDb.Categories.LastOrDefault()?.Id ?? 0) + 1,
             name, icon
-        ));
+        );
+        MockRewardsDb.Categories.Add(category);
+        return new JsonResult(category);
+    }
+    
+    
+    [HttpPut("Category/{id:int}")]
+    public ActionResult UpdateCategory(
+        int id,
+        [Required] [FromForm] string name,
+        [Required] [FromForm] string icon)
+    {
+        var category = MockRewardsDb.Categories.Find(c => c.Id == id);
+        if (category == null) return NotFound();
+        category.Name = name;
+        category.Icon = icon;
         return new OkResult();
     }
 
