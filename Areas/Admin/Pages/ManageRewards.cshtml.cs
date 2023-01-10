@@ -1,17 +1,20 @@
+using FuzzySharp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ReACT.Helpers;
 using ReACT.Models;
 
 namespace ReACT.Areas.Admin.Pages;
 
 public class ManageRewards : PageModel
 {
-    public IActionResult OnGet(int? categoryId, bool all)
+    public IActionResult OnGet(int? categoryId, bool all, string? search)
     {
         IEnumerable<Reward> rewards;
         if (all)
         {
-            rewards = MockRewardsDb.Rewards.AsEnumerable();
+            rewards = search == null ? MockRewardsDb.Rewards.AsEnumerable()
+                : MockRewardsDb.Rewards.Where(r => r.Name.FuzzyMatch(search));
         }
         else
         {
@@ -19,7 +22,7 @@ public class ManageRewards : PageModel
             if (categoryId == null) return RedirectToPage("ManageRewards", new { all = true });
             var categoryExists = MockRewardsDb.Categories.Any(c => c.Id == categoryId);
             if (!categoryExists) return RedirectToPage();
-            rewards = MockRewardsDb.Rewards.Where(r => r.CategoryId == categoryId);
+            rewards = MockRewardsDb.Rewards.Where(r => r.CategoryId == categoryId && (search == null || r.Name.FuzzyMatch(search)));
             ViewData["activeCategoryId"] = categoryId;
         }
         
@@ -27,7 +30,8 @@ public class ManageRewards : PageModel
         {
             reward.Variants = MockRewardsDb.Variants.Where(v => v.RewardId == reward.Id).ToList();
         }
-
+        
+        ViewData["search"] = search;
         ViewData["rewards"] = rewards;
         ViewData["categories"] = MockRewardsDb.Categories;
         return Page();

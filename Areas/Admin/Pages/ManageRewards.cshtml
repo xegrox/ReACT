@@ -1,79 +1,95 @@
 @page
 @model ReACT.Areas.Admin.Pages.ManageRewards
 @{
+    var search = ViewData["search"] as string;
     var categories = ViewData["categories"] as IEnumerable<RewardCategory> ?? Enumerable.Empty<RewardCategory>();
     var rewards = ViewData["rewards"] as IEnumerable<Reward> ?? Enumerable.Empty<Reward>();
     var activeCategoryId = ViewData["activeCategoryId"] as int?;
 }
 
-<turbo-frame id="content-root" class="flex flex-col p-16 h-full" x-data x-on:success.document="$el.src = window.location.href">
-    <h3 class="text-2xl font-semibold mb-10">Manage Rewards</h3>
-    <div class="mb-5 flex items-center space-x-3">
-        <div class="flex-none tabs tabs-boxed self-start !p-1.5">
-            <a class="tab @(activeCategoryId == null ? "tab-active" : "") space-x-2" href="?all=true" data-turbo-action="replace">
-                @if (activeCategoryId == null)
+<turbo-frame id="content-root">
+    <div x-data="{search: '@search'}" x-on:success.document="$el.parentElement.src = window.location.href" class="flex flex-col p-16 h-full">
+        <h3 class="text-2xl font-semibold mb-10">Manage Rewards</h3>
+        <div class="mb-5 flex items-center space-x-3">
+            <div class="flex-none tabs tabs-boxed self-start !p-1.5">
+                <a class="tab @(activeCategoryId == null ? "tab-active" : "") space-x-2" href="?all=true" data-turbo-action="replace">
+                    @if (activeCategoryId == null)
+                    {
+                        <i class="ph-squares-four text-lg"></i>
+                    }
+                    <p>All</p>
+                </a>
+                @foreach (var c in categories)
                 {
-                    <i class="ph-squares-four text-lg"></i>
+                    if (activeCategoryId == c.Id)
+                    {
+                        <a class="tab space-x-2 tab-active" href="?categoryId=@c.Id" data-turbo-action="replace">
+                            <i class="ph-@c.Icon text-lg"></i>
+                            <p>@c.Name</p>
+                        </a>
+                        ViewData["activeCategoryName"] = c.Name;
+                    }
+                    else
+                    {
+                        <a class="tab" href="?categoryId=@c.Id" data-turbo-action="replace">
+                            <p>@c.Name</p>
+                        </a>
+                    }
                 }
-                <p>All</p>
-            </a>
-            @foreach (var c in categories)
+            </div>
+            <div class="self-stretch aspect-square">
+                <div class="btn animate-none !h-full w-full bg-primary/10 hover:bg-primary/20 !min-h-0 !p-0 btn-ghost text-primary/50 ph-pencil-simple-bold self-center" x-on:click="$dispatch('manage-categories')"></div>
+            </div>
+            <div class="flex-1"></div>
+            <div class="flex-none input-group w-auto">
+                <span class="bg-base-200 border-base-200 pr-0">
+                    <i class="ph-magnifying-glass"></i>
+                </span>
+                <input type="text" placeholder="Search by name" class="input input-sm bg-base-200 focus:outline-0" x-model="search" x-init="$watch('search', () => $refs.searchTrigger.click())"/>
+                <a :href="$addUrlParam('search', search)" x-ref="searchTrigger" data-turbo-action="replace" data-turbo-frame="content-rewards-list" hidden></a>
+            </div>
+            <label class="btn btn-sm btn-primary animate-none" x-on:click="$dispatch('add-reward')">
+                <i class="ph-plus-bold pr-2"></i>
+                Add Reward
+            </label>
+        </div>
+        <turbo-frame id="content-rewards-list" class="flex-1">
+            @if (rewards.Any())
             {
-                if (activeCategoryId == c.Id)
-                {
-                    <a class="tab space-x-2 tab-active" href="?categoryId=@c.Id" data-turbo-action="replace">
-                        <i class="ph-@c.Icon text-lg"></i>
-                        <p>@c.Name</p>
-                    </a>
-                    ViewData["activeCategoryName"] = c.Name;
-                }
-                else
-                {
-                    <a class="tab" href="?categoryId=@c.Id" data-turbo-action="replace">
-                        <p>@c.Name</p>
-                    </a>
-                }
+                <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
             }
-        </div>
-        <div class="self-stretch aspect-square">
-            <div class="btn animate-none !h-full w-full bg-primary/10 hover:bg-primary/20 !min-h-0 !p-0 btn-ghost text-primary/50 ph-pencil-simple-bold self-center" x-data x-on:click="$dispatch('manage-categories')"></div>
-        </div>
-        <div class="flex-1"></div>
-        <div class="flex-none input-group w-auto">
-            <span class="bg-base-200 border-base-200 pr-0">
-                <i class="ph-magnifying-glass"></i>
-            </span>
-            <input type="text" placeholder="Search all categories" class="input input-sm bg-base-200 focus:outline-0"/>
-        </div>
-        <label class="btn btn-sm btn-primary animate-none" x-on:click="$dispatch('add-reward')">
-            <i class="ph-plus-bold pr-2"></i>
-            Add Reward
-        </label>
+            else if (search != null)
+            {
+                <div class="h-full flex flex-col items-center justify-center mb-8">
+                    <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
+                        <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
+                    </svg>
+                    <p class="opacity-60 text-xl mb-3">No results found for '@search'</p>
+                    <div class="btn btn-xs btn-ghost text-error" x-on:click="search = ''">Reset search</div>
+                </div>
+            }
+            else if (activeCategoryId == null)
+            {
+                <div class="h-full flex flex-col items-center justify-center mb-8">
+                    <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
+                        <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
+                    </svg>
+                    <p class="opacity-60 text-xl mb-3">No rewards yet, start by adding a category</p>
+                    <div class="btn btn-xs btn-ghost text-error" x-on:click="$dispatch('manage-categories')">Add a category</div>
+                </div>
+            }
+            else
+            {
+                <div class="h-full flex flex-col items-center justify-center mb-8">
+                    <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
+                        <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
+                    </svg>
+                    <p class="opacity-60 text-xl mb-3">No rewards in category</p>
+                    <div class="btn btn-xs btn-ghost text-primary animate-none" x-on:click="$dispatch('add-reward')">Add a reward</div>
+                </div>
+            }
+        </turbo-frame>
     </div>
-    @if (rewards.Any())
-    {
-        <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
-    }
-    else if (activeCategoryId == null)
-    {
-        <div class="flex-1 flex flex-col items-center justify-center mb-8">
-            <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
-                <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
-            </svg>
-            <p class="opacity-60 text-xl mb-3">No rewards yet, start by adding a category</p>
-            <div class="btn btn-xs btn-ghost text-error" x-data x-on:click="$dispatch('manage-categories')">Add a category</div>
-        </div>
-    }
-    else
-    {
-        <div class="flex-1 flex flex-col items-center justify-center mb-8">
-            <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
-                <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
-            </svg>
-            <p class="opacity-60 text-xl mb-3">No rewards in category</p>
-            <div class="btn btn-xs btn-ghost text-primary animate-none" x-data x-on:click="$dispatch('add-reward')">Add a reward</div>
-        </div>
-    }
 </turbo-frame>
 
 <partial name="ManageRewards/_AddRewardModalPartial"/>
