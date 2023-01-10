@@ -16,21 +16,17 @@ public class Recycle : PageModel
     {
         _mockCollectionsDb = mockCollectionsDb;
     }
-    [Required]
+    [BindProperty, Required]
     public string CollectionDate { get; set; }
-    [Required, RegularExpression(@"^[A-Za-z0-9]+(?:\s[A-Za-z0-9'_-]+)+$", ErrorMessage = "Invalid Address.")]
+    [BindProperty, Required]
     public string Address { get; set; }
-    public void OnGet()
-    {
-        
-    }
 
     public IActionResult OnPost()
     {
         if (ModelState.IsValid)
         {
             var nextId = MockCollectionsDb.Collections.Last().Id + 1;
-            _mockCollectionsDb.AddCollection(new Collection(nextId, 1, CollectionDate, ""));
+            _mockCollectionsDb.AddCollection(new Collection(nextId, 1, CollectionDate, "Company T"));
             return Redirect("/User/Dashboard");
         }
         return Page();

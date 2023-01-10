@@ -4,9 +4,9 @@
     {
         public static readonly List<Collection> Collections = new()
         {
-            new Collection(1, 1, "1-5-2023", "Company A"),
-            new Collection(2, 2, "12-12-2022", "Company B"),
-            new Collection(3, 3, "1-1-2023", "Company C")
+            new Collection(1, 1, "2023-5-1", "Company A"),
+            new Collection(2, 2, "2022-12-12", "Company B"),
+            new Collection(3, 3, "2023-1-1", "Company C")
         };
 
         public List<Collection> GetAll()
