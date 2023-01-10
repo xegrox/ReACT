@@ -1,63 +1,73 @@
 @model IEnumerable<Reward>
+@{
+    var pageIndex = ViewData["pageIndex"] as int? ?? 1;
+    var pageCount = ViewData["pageCount"] as int? ?? 1;
+    var rewardsPerPage = ViewData["rewardsPerPage"] as int? ?? 1;
+}
 
-<table class="table rounded-lg border border-base-200 border-spacing-0 border-separate shadow-md w-full">
-    <thead>
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Popularity</th>
-        <th>Most Popular Stock</th>
-        <th>Least Stock</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @{ var i = 1; }
-    @foreach (var reward in Model)
-    {
+<div class="flex flex-col w-full" x-data>
+    <table class="mb-auto table rounded-lg border border-base-200 border-spacing-0 border-separate shadow-md">
+        <thead>
         <tr>
-            <th>@(i++)</th>
-            <td>
-                <div class="flex items-center space-x-3">
-                    <div class="avatar">
-                        <div class="mask mask-squircle w-12 h-12">
-                            <img src="@reward.ImageUrl"/>
+            <th></th>
+            <th>Name</th>
+            <th>Popularity</th>
+            <th>Most Popular Stock</th>
+            <th>Least Stock</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @{ var i = (pageIndex-1) * rewardsPerPage + 1; }
+        @foreach (var reward in Model)
+        {
+            <tr>
+                <th>@(i++)</th>
+                <td>
+                    <div class="flex items-center space-x-3">
+                        <div class="avatar">
+                            <div class="mask mask-squircle w-12 h-12">
+                                <img src="@reward.ImageUrl"/>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="font-bold">@reward.Name</div>
+                            <div class="text-sm opacity-50">@string.Join(",", reward.Variants.Select(v => v.Name))</div>
                         </div>
                     </div>
-                    <div>
-                        <div class="font-bold">@reward.Name</div>
-                        <div class="text-sm opacity-50">@string.Join(",", reward.Variants.Select(v => v.Name))</div>
+                </td>
+                <td>
+                    <progress class="progress progress-primary w-56" value="70" max="100"></progress>
+                    <p class="text-sm opacity-50">50 claimed this month</p>
+                </td>
+                <td>
+                    <div class="flex space-x-2 items-center">
+                        <div class="badge badge-outline badge-sm badge-primary">$50</div>
+                        <p class="font-semibold opacity-60">102</p>
                     </div>
-                </div>
-            </td>
-            <td>
-                <progress class="progress progress-primary w-56" value="70" max="100"></progress>
-                <p class="text-sm opacity-50">50 claimed this month</p>
-            </td>
-            <td>
-                <div class="flex space-x-2 items-center">
-                    <div class="badge badge-outline badge-sm badge-primary">$50</div>
-                    <p class="font-semibold opacity-60">102</p>
-                </div>
-            </td>
-            <td>
-                <div class="flex space-x-2 items-center">
-                    <div class="badge badge-outline badge-sm badge-primary">$10</div>
-                    <p class="font-semibold opacity-60">208</p>
-                </div>
-            </td>
-            <td x-data>
-                <div class="tooltip" data-tip="Edit Reward Details" x-on:click="$dispatch('edit-reward', {rewardId: @reward.Id})">
-                    <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
-                </div>
-                <div class="tooltip" data-tip="Manage Reward Codes">
-                    <i class="btn btn-sm btn-ghost btn-circle ph-package-bold"></i>
-                </div>
-                <div class="tooltip" data-tip="Delete Reward" x-on:click="$dispatch('delete-reward', {rewardId: @reward.Id, rewardName: '@reward.Name'})">
-                    <i class="btn btn-sm btn-ghost btn-circle ph-trash-bold"></i>
-                </div>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+                </td>
+                <td>
+                    <div class="flex space-x-2 items-center">
+                        <div class="badge badge-outline badge-sm badge-primary">$10</div>
+                        <p class="font-semibold opacity-60">208</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip" data-tip="Edit Reward Details" x-on:click="$dispatch('edit-reward', {rewardId: @reward.Id})">
+                        <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                    </div>
+                    <div class="tooltip" data-tip="Manage Reward Codes">
+                        <i class="btn btn-sm btn-ghost btn-circle ph-package-bold"></i>
+                    </div>
+                    <div class="tooltip" data-tip="Delete Reward" x-on:click="$dispatch('delete-reward', {rewardId: @reward.Id, rewardName: '@reward.Name'})">
+                        <i class="btn btn-sm btn-ghost btn-circle ph-trash-bold"></i>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="self-center mt-10">
+        <partial name="_PageIndicatorPartial" model="Tuple.Create(pageIndex, pageCount)"/>
+    </div>
+</div>

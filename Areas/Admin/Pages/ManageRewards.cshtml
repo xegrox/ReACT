@@ -8,7 +8,7 @@
 }
 
 <turbo-frame id="content-root">
-    <div x-data="{search: '@search'}" x-on:success.document="$el.parentElement.src = window.location.href" class="flex flex-col p-16 h-full">
+    <div x-data="{search: '@search'}" x-on:success.document="$el.parentElement.src = window.location.href" class="flex flex-col p-16 min-h-full">
         <h3 class="text-2xl font-semibold mb-10">Manage Rewards</h3>
         <div class="mb-5 flex items-center space-x-3">
             <div class="flex-none tabs tabs-boxed self-start !p-1.5">
@@ -37,9 +37,7 @@
                     }
                 }
             </div>
-            <div class="self-stretch aspect-square">
-                <div class="btn animate-none !h-full w-full bg-primary/10 hover:bg-primary/20 !min-h-0 !p-0 btn-ghost text-primary/50 ph-pencil-simple-bold self-center" x-on:click="$dispatch('manage-categories')"></div>
-            </div>
+            <div class="btn animate-none bg-primary/10 hover:bg-primary/20 !min-h-0 h-11 w-11 !p-0 btn-ghost text-primary/50 ph-pencil-simple-bold" x-on:click="$dispatch('manage-categories')"></div>
             <div class="flex-1"></div>
             <div class="flex-none input-group w-auto">
                 <span class="bg-base-200 border-base-200 pr-0">
@@ -53,14 +51,14 @@
                 Add Reward
             </label>
         </div>
-        <turbo-frame id="content-rewards-list" class="flex-1">
+        <turbo-frame id="content-rewards-list" class="flex-1 flex items-stretch justify-center">
             @if (rewards.Any())
             {
                 <partial name="ManageRewards/_RewardListPartial" model="rewards"/>
             }
             else if (search != null)
             {
-                <div class="h-full flex flex-col items-center justify-center mb-8">
+                <div class="flex flex-col items-center justify-center mb-8">
                     <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
                         <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
                     </svg>
@@ -70,7 +68,7 @@
             }
             else if (activeCategoryId == null)
             {
-                <div class="h-full flex flex-col items-center justify-center mb-8">
+                <div class="flex flex-col items-center justify-center mb-8">
                     <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
                         <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
                     </svg>
@@ -80,7 +78,7 @@
             }
             else
             {
-                <div class="h-full flex flex-col items-center justify-center mb-8">
+                <div class="flex flex-col items-center justify-center mb-8">
                     <svg class="opacity-50" xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="#000000" viewBox="0 0 256 256">
                         <rect width="256" height="256" fill="none"></rect><path d="M76.7,160a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216V48a8,8,0,0,0-8-8H48a8,8,0,0,0-8,8V160Z" opacity="0.2"></path><rect x="40" y="40" width="176" height="176" rx="8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></rect><path d="M40,160H76.7a7.9,7.9,0,0,1,5.6,2.3l19.4,19.4a7.9,7.9,0,0,0,5.6,2.3h41.4a7.9,7.9,0,0,0,5.6-2.3l19.4-19.4a7.9,7.9,0,0,1,5.6-2.3H216" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="16"></path>
                     </svg>
