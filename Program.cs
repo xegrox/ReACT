@@ -15,6 +15,7 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddScoped<MockCollectionsDb>();
 builder.Services.AddScoped<MockUsersDb>();
+builder.Services.AddScoped<MockThreadsDb>();
 
 var app = builder.Build();
 
