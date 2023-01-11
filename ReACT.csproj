@@ -17,4 +17,9 @@
       <Folder Include="wwwroot\css" />
     </ItemGroup>
     
+    <ItemGroup>
+      <Content Update="Areas\User\Pages\Forum.cshtml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>
