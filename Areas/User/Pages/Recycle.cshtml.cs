@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Build.Framework;
 using Newtonsoft.Json.Serialization;
 using ReACT.Models;
+using ReACT.Services;
 using System.ComponentModel.DataAnnotations;
 using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
 
@@ -10,14 +11,15 @@ namespace ReACT.Areas.User.Pages;
 
 public class Recycle : PageModel
 {
-    private readonly MockCollectionsDb _mockCollectionsDb;
+    private readonly CollectionService _collectionService;
 
-    public Recycle(MockCollectionsDb mockCollectionsDb)
+    public Recycle(CollectionService collectionService)
     {
-        _mockCollectionsDb = mockCollectionsDb;
+        _collectionService = collectionService;
     }
+
     [BindProperty, Required]
-    public string CollectionDate { get; set; }
+    public DateTime CollectionDate { get; set; }
     [BindProperty, Required]
     public string Address { get; set; }
 
@@ -25,8 +27,12 @@ public class Recycle : PageModel
     {
         if (ModelState.IsValid)
         {
-            var nextId = MockCollectionsDb.Collections.Last().Id + 1;
-            _mockCollectionsDb.AddCollection(new Collection(nextId, 1, CollectionDate, "Company T"));
+            var collection = new Collection()
+            {
+                CollectionDate = CollectionDate,
+                Address = Address
+            };
+            _collectionService.AddCollection(collection);
             return Redirect("/User/Dashboard");
         }
         return Page();

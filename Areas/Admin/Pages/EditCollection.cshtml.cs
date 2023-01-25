@@ -1,37 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using ReACT.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace ReACT.Areas.Admin.Pages
 {
     public class EditCollectionModel : PageModel
     {
-        private readonly MockCollectionsDb _mockCollectionsDb;
+        private readonly CollectionService _collectionService;
+        private readonly CompanyService _companyService;
 
-        public EditCollectionModel(MockCollectionsDb mockCollectionsDb)
+        public EditCollectionModel(CollectionService collectionService, CompanyService companyService)
         {
-            _mockCollectionsDb = mockCollectionsDb;
+            _collectionService = collectionService;
+            _companyService = companyService;
         }
 
         [BindProperty, Required]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         [BindProperty, Required]
-        public string Company { get; set; }
+        public int CompanyId { get; set; }
         public Collection collection { get; set; }
+        public List<Companies> companies { get; set; } = new();
         public IActionResult OnGet(int collectionId)
         {
-            collection = _mockCollectionsDb.GetCollection(collectionId);
+            collection = _collectionService.GetCollection(collectionId);
+            companies = _companyService.GetCompanies();
             return Page();
         }
 
-        public IActionResult OnPost(int collectionId)
+        public IActionResult OnPost()
         {
             if (ModelState.IsValid)
             {
-                var Collection = MockCollectionsDb.Collections.FirstOrDefault(x => x.Id.Equals(collectionId));
-                Collection.CollectionDate = Date;
-                Collection.AssignedCompany = Company;
+                collection.CollectionDate = Date;
+                collection.CompanyId = CompanyId;
+
+                _collectionService.UpdateCollection(collection);
                 return Redirect("/Admin/ViewCollections");
             }
             return Page();

@@ -10,9 +10,9 @@
                 <p>Collection Date: @Model.collection.CollectionDate</p>
                 <p>User: @Model.user.Name</p>
                 <p>Address: @Model.user.Address</p>
-                @if (Model.collection.AssignedCompany != null)
+                @if (Model.collection.CompanyId != null)
                 {
-                    <p>Assigned Company: @Model.collection.AssignedCompany</p>
+                    <p>Assigned Company: @Model.collection.Company.Name</p>
                 } else
                 {
                     <p>Assigned Company: None</p>

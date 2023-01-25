@@ -1,22 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using ReACT.Services;
 
 namespace ReACT.Areas.Admin.Pages
 {
     public class DeleteCollectionModel : PageModel
     {
-        private readonly MockCollectionsDb _mockCollectionsDb;
-
-        public DeleteCollectionModel(MockCollectionsDb mockCollectionsDb)
+        private readonly CollectionService _collectionService;
+        public DeleteCollectionModel(CollectionService collectionService)
         {
-            _mockCollectionsDb = mockCollectionsDb;
+            _collectionService = collectionService;
         }
         public Collection collection { get; set; }
         public IActionResult OnGet(int CollectionId)
         {
-            collection = _mockCollectionsDb.GetCollection(CollectionId);
-            MockCollectionsDb.Collections.Remove(collection);
+            _collectionService.DeleteCollection(CollectionId);
             return Redirect("/Admin/ViewCollections");
         }
     }

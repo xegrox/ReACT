@@ -17,8 +17,12 @@
             <label class="label">
                 <span class="label-text">Assigned Company</span>
             </label>
-            <input asp-for="Company" type="text" class="input input-bordered w-full max-w-xs" value="@Model.collection.AssignedCompany" />
-            <span asp-validation-for="Company" class="text-error"></span>
+            <select asp-for="CompanyId" class="select select-bordered w-full max-w-xs"></select>
+            @foreach (var company in Model.companies)
+            {
+                <option value="@company.Id">@company.Name</option>
+            }
+            <span asp-validation-for="CompanyId" class="text-error"></span>
         </div>
         <div class="form-control w-full max-w-xs">
             <button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>

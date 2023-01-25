@@ -1,30 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using ReACT.Services;
 
 namespace ReACT.Areas.Admin.Pages
 {
     public class CollectionDetailsModel : PageModel
     {
-        private readonly MockCollectionsDb _mockCollectionsDb;
-        private readonly MockUsersDb _mockUsersDb;
-
-        public CollectionDetailsModel(MockCollectionsDb mockCollectionsDb, MockUsersDb mockUsersDb)
+        private readonly UserService _userService;
+        private readonly CollectionService _collectionService;
+        public CollectionDetailsModel(UserService userService, CollectionService collectionService)
         {
-            _mockCollectionsDb = mockCollectionsDb;
-            _mockUsersDb = mockUsersDb;
+            _userService = userService;
+            _collectionService = collectionService;
         }
 
-        public UserInfo user { get; set; }
+        public Users user { get; set; }
         public Collection collection { get; set; }
 
         public IActionResult OnGet(int userId, int collectionId)
         {
-            UserInfo? userInfo = _mockUsersDb.GetUser(userId);
+            Users? userInfo = _userService.GetUser(userId);
             if (userInfo != null)
             {
                 user = userInfo;
-                collection = _mockCollectionsDb.GetCollection(collectionId);
+                collection = _collectionService.GetCollection(collectionId);
                 return Page();
             } else
             {
