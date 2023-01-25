@@ -42,12 +42,12 @@
                                 <a asp-page="/CollectionDetails" asp-route-userId="@collection.UserId" asp-route-collectionId="@collection.Id"><i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i></a>
                             </div>
                             <div class="tooltip" data-tip="Edit Collection Details">
-                                <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                                <a asp-page="/EditCollection" asp-route-collectionId="@collection.Id"><i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i></a>
                             </div>
                         </td>
                         <td>
                             <div class="tooltip" data-tip="Mark as done">
-                                <i class="btn btn-sm btn-ghost btn-circle ph-check-bold"></i>
+                                <a asp-page="/DeleteCollection" asp-route-collectionId="@collection.Id"><i class="btn btn-sm btn-ghost btn-circle ph-check-bold"></i></a>
                             </div>
                         </td>
                     </tr>

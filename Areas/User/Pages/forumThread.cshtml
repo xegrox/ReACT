@@ -1,0 +1,23 @@
+﻿@page
+@model ReACT.Areas.User.Pages.threadModel
+
+<div class="my-12">
+
+</div>
+    <div class="flex justify-start bg-emerald-100 text-primary text-left rounded col-start-3 col-span-8 grid">
+        <div class="col-start-2">
+            <h5 class="p-6 text-2xl">@Model.MyThread.Title</h5>
+        </div>
+
+        <div class="col-start-2">
+            <p class="px-6">@Model.MyThread.Content</p>
+        </div>
+
+        <div class="">
+            @if (Model.MyThread.ImageURL != "")
+            {
+                <img class="" src="@Model.MyThread.ImageURL" loading="lazy" />
+            }
+        </div>
+    </div>
+</div>

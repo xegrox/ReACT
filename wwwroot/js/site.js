@@ -12,6 +12,11 @@
         if (!Number.isInteger(pageNumber)) return;
         controller.registerPage(el, pageNumber)
     })
+    Alpine.magic('addUrlParam', () => (param, value) => {
+        const url = new URL(window.location.href)
+        url.searchParams.set(param, value)
+        return url.toString()
+    })
 })
 
 const pageControllers = new WeakMap()

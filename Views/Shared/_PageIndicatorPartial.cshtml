@@ -1,0 +1,51 @@
+@model Tuple<int, int>
+
+@{
+    var pageIndex = Model.Item1;
+    var pageCount = Model.Item2;
+    const int indicatorCount = 3;
+    var indicatorEndIndex = Math.Min(Math.Max(pageIndex + indicatorCount / 2, indicatorCount), pageCount);
+    var indicatorStartIndex = Math.Max(indicatorEndIndex - indicatorCount + 1, 1);
+}
+
+<div class="flex space-x-1">
+    @if (pageIndex != 1)
+    {
+        <a class="btn btn-square btn-sm btn-ghost" :href="$addUrlParam('pageIndex', @pageIndex-1)" data-turbo-action="replace">
+            <i class="ph-caret-left"></i>
+        </a>
+    }
+
+    @if (indicatorStartIndex > 1)
+    {
+        <a class="btn btn-square btn-sm btn-ghost" :href="$addUrlParam('pageIndex', 1)" data-turbo-action="replace">
+            1
+        </a>
+        <div class="btn btn-square btn-sm btn-ghost pointer-events-none">
+            ...
+        </div>
+    }
+    @if (indicatorEndIndex != 1)
+    {
+        @for (var k = indicatorStartIndex; k <= indicatorEndIndex; k++)
+        {
+            <a class="btn btn-square btn-sm @(pageIndex == k ? "btn-primary" : "btn-ghost") no-animation" :href="$addUrlParam('pageIndex', @k)" data-turbo-action="replace">@k</a>
+        }
+    }
+    @if (indicatorEndIndex < pageCount)
+    {
+        <div class="btn btn-square btn-sm btn-ghost pointer-events-none">
+            ...
+        </div>
+        <a class="btn btn-square btn-sm btn-ghost" :href="$addUrlParam('pageIndex', @pageCount)" data-turbo-action="replace">
+            @pageCount
+        </a>
+    }
+    @if (pageIndex != pageCount)
+    {
+        <a class="btn btn-square btn-sm btn-ghost" :href="$addUrlParam('pageIndex', @pageIndex+1)" data-turbo-action="replace">
+            <i class="ph-caret-right"></i>
+        </a>
+    }
+</div>
+

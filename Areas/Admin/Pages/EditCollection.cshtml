@@ -1,0 +1,27 @@
+﻿@page
+@model ReACT.Areas.Admin.Pages.EditCollectionModel
+@{
+}
+
+<div class="flex flex-col p-16">
+    <h3 class="text-2xl font-semibold mb-10">Edit Collection</h3>
+    <form class="flex-1 flex flex-col space-y-2" method="post">
+        <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Collection Date</span>
+            </label>
+            <input asp-for="Date" type="date" class="input input-bordered w-full max-w-xs" value="@Model.collection.CollectionDate" />
+            <span asp-validation-for="Date" class="text-error"></span>
+        </div>
+        <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Assigned Company</span>
+            </label>
+            <input asp-for="Company" type="text" class="input input-bordered w-full max-w-xs" value="@Model.collection.AssignedCompany" />
+            <span asp-validation-for="Company" class="text-error"></span>
+        </div>
+        <div class="form-control w-full max-w-xs">
+            <button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>
+        </div>
+    </form>
+</div>

@@ -23,6 +23,7 @@ builder.Services.ConfigureApplicationCookie(Config =>
 
 builder.Services.AddScoped<MockCollectionsDb>();
 builder.Services.AddScoped<MockUsersDb>();
+builder.Services.AddScoped<MockThreadsDb>();
 
 var app = builder.Build();
 
