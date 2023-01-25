@@ -1,0 +1,46 @@
+﻿@page
+@model ReACT.Areas.Home.Pages.RegisterModel
+@{
+}
+
+<div class="h-full md:h-screen lg:flex lg:flex-wrap g-0 ">
+    <div class="lg:w-6/12 flex items-center">
+        <div class="text-white  md:p-12 md:mx-6">
+            <img src="~/phone recycling.jpg"
+                 class="w-full"
+                 alt="sample image" />
+        </div>
+    </div>
+    <div class=" text-white lg:w-6/12 px-4 md:px-0" style="background: #f4a363 ;">
+        <div class="md:p-12 md:mx-6">
+            <div class="text-center">
+                <h4 class="text-2xl font-semibold mt-1 mb-12 pb-1">Welcome To React</h4>
+            </div>
+            <div class="mt-2" style="margin-top: 0px;">
+                <form method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <p class="text-xl mb-4 font-semibold">Register New Account</p>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="RModel.Email" placeholder="Email" class="input w-full px-3 py-1.5" />
+                        <span asp-validaton-for="RModel.Email" class="text-danger"></span>
+                    </div>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="RModel.FullName" placeholder="Fullname" class="input w-full px-3 py-1.5" />
+                        <span asp-validaton-for="RModel.FullName" class="text-danger"></span>
+                    </div>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="RModel.Password" placeholder="Password" class="input w-full px-3 py-1.5 " />
+                        <span asp-validaton-for="RModel.Password" class="text-danger"></span>
+                    </div>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="RModel.ConfirmPassword" placeholder="Confirm Password" class="input w-full px-3 py-1.5" />
+                        <span asp-validaton-for="RModel.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="text-center pt-1 mb-4 pb-1">
+                        <button type="submit" class="btn btn-wide btn-accent px-6 p-2.5 text-white font-medium text-xl  w-full" style="background: #0a7b79; border-color: #0a7b79">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

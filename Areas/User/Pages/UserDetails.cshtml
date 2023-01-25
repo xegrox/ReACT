@@ -1,0 +1,65 @@
+﻿@page
+@model ReACT.Areas.User.Pages.UserDetailsModel
+@{
+}
+
+<div class="hero h-1/3 bg-white">
+    <div class="hero-overlay bg-opacity-20"></div>
+    <div class="hero-contenttext-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">Account Details</h1>
+        </div>
+    </div>
+</div>
+
+@*<div>
+    <div class="overflow-x-auto">
+        <table class="table w-10/12">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>BirthDate</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                        <tr>
+                            <td>@Model.user.Email</td>
+                            <td>@Model.user.FullName</td>
+                            <td>@Model.user.BirthDate.ToString()</td>
+                            <td>@Model.user.Address</td>
+                        </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+*@
+
+
+<div class="">
+    <div class="container mx-auto w-8/12 my-8">
+        <div class="flex justify-center rounded-lg" style="background: #F3F3F3">
+            <div class="w-8/12 m-8 p-5">
+                <div class="flow-root m-6">
+                    <p class="float-left font-bold">Email</p>
+                    <p class="float-right">@Model.user.Email</p>
+                </div>
+                <hr class="h-px my-8 bg-gray-700 border-0 rounded">
+                <div class="flow-root m-6">
+                    <p class="float-left font-bold">Name</p>
+                    <p class="float-right">@Model.user.FullName</p>
+                </div>
+                <div class="flow-root m-6">
+                    <p class="float-left font-bold">BirthDate</p>
+                    <p class="float-right">@Model.user.BirthDate</p>
+                </div>
+                <div class="flow-root m-6">
+                    <p class="float-left font-bold">Address</p>
+                    <p class="float-right">@Model.user.Address</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div
