@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Build.Framework;
@@ -9,6 +10,7 @@ using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribut
 
 namespace ReACT.Areas.User.Pages;
 
+[Authorize]
 public class Recycle : PageModel
 {
     private readonly CollectionService _collectionService;

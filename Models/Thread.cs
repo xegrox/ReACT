@@ -6,8 +6,6 @@ namespace ReACT.Models
     {
         public int Id { get; set; }
 
-        public int UserId { get; set; }
-
         [Required, StringLength(50, MinimumLength = 5, ErrorMessage = "The thread title must be between 5 and 50 characters.")]
         public string Title { get; set; } = string.Empty;
 
@@ -24,4 +22,3 @@ namespace ReACT.Models
         public string Status { get; set; } = "shown";
     }
 }
-
