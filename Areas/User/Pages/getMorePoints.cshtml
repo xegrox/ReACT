@@ -1,0 +1,41 @@
+﻿@page
+@model ReACT.Areas.User.Pages.getMorePointsModel
+@{
+}
+
+<div class="hero h-1/3" style="background-image: url('/images/getMorePointsBG.png');">
+    <div class="hero-overlay bg-opacity-20"></div>
+    <div class="hero-contenttext-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">Get More Points</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto">
+    <div class="flex flex-wrap justify-center">
+        <div class="w-full sm:w-1/2 md:w-1/2 xl:w-3/4 text-center justify-center">
+            <h1 class="mb-3 text-2xl font-bold">Where can I get more points?</h1>
+            <p class="mb-3 text-lg">Here are some helping tips from us!</p>
+            <hr style="border: solid black; background-color: black; margin-bottom: 30px;">
+            <div class="grid h-20 card bg-base-200 rounded-lg place-items-center" style="margin: 20px;">
+                <div class="hero-content flex-col lg:flex-row">
+                    <h2 class="m-2 font-bold text-left">Try your luck in the Cycle of Waste</h2>
+                    <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("cycleOfWaste")">Go</a>
+                </div>
+            </div>
+            <div class="grid h-20 card bg-base-200 rounded-lg place-items-center" style="margin: 20px;">
+                <div class="hero-content flex-col lg:flex-row">
+                    <h2 class="m-2 font-bold text-left">Plant a tree in Growing Forest</h2>
+                    <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("Forest")">Go</a>
+                </div>
+            </div>
+            <div class="grid h-20 card bg-base-200 rounded-lg place-items-center" style="margin: 20px;">
+                <div class="hero-content flex-col lg:flex-row">
+                    <h2 class="m-2 font-bold text-left">Schedule a time and place to collect your recyclables</h2>
+                    <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("Recycle")">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

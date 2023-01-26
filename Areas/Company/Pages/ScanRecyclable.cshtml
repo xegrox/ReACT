@@ -1,80 +1,82 @@
 @page
 @model ReACT.Areas.Company.Pages.AllocatePoints
 
-<div class="navbar bg-orange-400">
-    <div class="navbar-start">
-        <div class="dropdown">
-            <ul class="menu menu-horizontal px-1">
-                <li>
-                    <div class="form-control">
-                        <input type="text" placeholder="Search User Name" class="input input-bordered" />
-                    </div>
-                </li>
-                <li tabindex="0">
-                    <a>
-                        Newest allocation added
-                        <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" /></svg>
-                    </a>
-                    <ul class="p-2">
-                        <li><a>Oldest allocation added</a></li>
-                        <li><a>Name</a></li>
-                        <li><a>Recycling type</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="navbar-end">
-        <label for="add-allocation-modal" class="btn">Add Allocation</label>
-        <input type="checkbox" id="add-allocation-modal" class="modal-toggle" />
+<div class="flex flex-col p-16">
+    <h3 class="text-2xl font-semibold mb-10">View Recyclable Collections</h3>
+    <div class="flex-none input-group w-auto mb-5">
+        <span class="bg-base-200 border-base-200 pr-0">
+            <i class="ph-magnifying-glass"></i>
+        </span>
+        <input type="text" placeholder="Search all collections" class="input input-sm bg-base-200 focus:outline-0" />
+        <label class="btn btn-sm btn-primary ml-4" for="add-recyclable-collection-modal">
+            <i class="ph-plus-bold pr-2"></i>
+            Add Recyclable Collection
+        </label>
+        <input type="checkbox" id="add-recyclable-collection-modal" class="modal-toggle" />
         <div class="modal">
             <div class="modal-box">
-                <label for="add-allocation-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
-                <h3 class="font-bold text-lg">Add Points Allocation</h3>
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">Barcode number</span>
-                        <input type="text" placeholder="Enter barcode number" class="input input-bordered" />
-                    </label>
-                    <label class="label">
-                        <span class="label-text">Total weight</span>
-                        <input type="text" placeholder="Enter total weight of recyclables" class="input input-bordered" />
-                    </label>
-                    <div class="input-group">
-                        <span class="label-text">Recycling type</span>
-                        <select class="select select-bordered">
-                            <option disabled selected>--select--</option>
-                            <option>Self-recycled</option>
-                            <option>Collection</option>
-                        </select>
+                <label for="add-recyclable-collection-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+                <h3 class="font-bold text-lg">Add Recyclable Collection</h3>
+                <form method="post">
+                    <div class="form-control">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <label class="label">
+                            <span class="label-text">Barcode String</span>
+                            @*<input asp-for="oneCollection.User.Barcode_Number" type="text" placeholder="Enter barcode number" class="input input-bordered" />*@
+                        </label>
+                        <label class="label">
+                            <span class="label-text">Total Recyclable Weight</span>
+                            <input asp-for="oneCollection.TotalWeight" type="number" placeholder="Enter total recyclable weight" class="input input-bordered" />
+                        </label>
+                        <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be up to 2 decimal places</p>
+                        <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be at least 0.5kg</p>
                     </div>
-                </div>
-                <div class="modal-action">
-                    <label for="add-allocation-modal" class="btn text-white">Cancel</label>
-                    <label for="add-allocation-modal" class="btn bg-green-600 hover:bg-orange-400 text-white">Add</label>
-                </div>
+                    <div class="modal-action">
+                        <button class="btn text-white" asp-page-handler="No_Add_Collection">Cancel</button>
+                        <button class="btn hover:bg-orange-600 text-white" asp-page-handler="Add_Collection">Add</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
-
-<div class="overflow-y-auto">
-    <table class="table w-fit" style="margin: 1.25rem; width: 75%; justify-content: center;">
-        <thead>
-            <tr>
-                <th>User Name</th>
-                <th>Recycling Type</th>
-                <th>Total Weight (kg)</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Cy Ganderton</td>
-                <td>Self Recycled</td>
-                <td>10</td>
-                <td>1000</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="overflow-x-auto mt-5">
+        <table class="table table-zebra w-full">
+            <thead>
+                <tr>
+                    <th>Collection ID</th>
+                    <th>Collection Date</th>
+                    <th>User Details</th>
+                    <th>Total Recyclable Weight</th>
+                    <th>Points allocated</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var collection in Model.RecyclableCollectionList)
+                {
+                    <tr>
+                        <td>@collection.Id</td>
+                        <td>@collection.CollectionDate</td>
+                        <td>
+                            <div class="tooltip" data-tip="View User Details">
+                                <label for="view-collection-@collection.UserId-modal">
+                                    <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                                </label>
+                                <input type="checkbox" id="view-collection-@collection.UserId-modal" class="modal-toggle" />
+                                <div class="modal">
+                                    <div class="modal-box">
+                                        <label for="view-collection-@collection.UserId-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+                                        <h2 class="card-title">User Details</h2>
+                                        <p>User: @collection.UserId</p>
+                                        @*<p>Address: @collection.User.Address</p>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@collection.TotalWeight</td>
+                        <td>@collection.PointsAllocated</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

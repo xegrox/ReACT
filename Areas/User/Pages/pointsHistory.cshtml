@@ -1,0 +1,38 @@
+﻿@page
+@model ReACT.Areas.User.Pages.pointsHistoryModel
+@{
+}
+
+<div class="hero h-1/3" style="background-image: url('/images/pointsHistoryBG.png');">
+    <div class="hero-overlay bg-opacity-20">
+    </div>
+    <div class="hero-content text-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">My Points Collection</h1>
+        </div>
+    </div>
+</div>
+
+<div class="overflow-x-auto mt-5">
+    <table class="table table-zebra w-full">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Date</th>
+                <th>Activity</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var collection in Model.userCollections)
+            {
+                <tr>
+                    <td>@collection.Key</td>
+                    <td>@collection.Value.CollectionDate</td>
+                    <td>Collection of @collection.Value.TotalWeight kg of recyclables by @collection.Value.AssignedCompany</td>
+                    <td>+ @collection.Value.PointsAllocated</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

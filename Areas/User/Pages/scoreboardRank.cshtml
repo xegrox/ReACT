@@ -23,133 +23,30 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>1000</td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>1000</td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>1000</td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-            </tr>
+            @foreach (var oneUser in Model.userRankings)
+            {
+                if (@oneUser.Key <= 50)
+                {
+                    <tr>
+                        <th>@oneUser.Key</th>
+                        <td>@oneUser.Value.FirstName @oneUser.Value.LastName</td>
+                        <td>@oneUser.Value.Total_Points</td>
+                    </tr>
+                }
+            }
         </tbody>
         <tfoot>
-            <tr>
-                <th class="sticky bottom-0">User Rank</th>
-                <th class="sticky bottom-0">User Name</th>
-                <th class="sticky bottom-0">User Points</th>
-            </tr>
+            @foreach (var anotherUser in Model.userRankings)
+            {
+                if (anotherUser.Value.Id == "2")
+                {
+                    <tr>
+                        <th class="sticky bottom-0">@anotherUser.Key</th>
+                        <th class="sticky bottom-0">@anotherUser.Value.FirstName @anotherUser.Value.LastName</th>
+                        <th class="sticky bottom-0">@anotherUser.Value.Total_Points</th>
+                    </tr>
+                }
+            }
         </tfoot>
     </table>
 </div>
