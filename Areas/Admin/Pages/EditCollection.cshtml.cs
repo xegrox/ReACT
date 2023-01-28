@@ -18,11 +18,11 @@ namespace ReACT.Areas.Admin.Pages
         }
 
         [BindProperty, Required]
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         [BindProperty, Required]
         public int CompanyId { get; set; }
         public Collection collection { get; set; }
-        public List<Companies> companies { get; set; } = new();
+        public List<Models.Company> companies { get; set; } = new();
         public IActionResult OnGet(int collectionId)
         {
             collection = _collectionService.GetCollection(collectionId);
@@ -35,7 +35,7 @@ namespace ReACT.Areas.Admin.Pages
             if (ModelState.IsValid)
             {
                 collection.CollectionDate = Date;
-                collection.CompanyId = CompanyId;
+                collection.CompanyID = CompanyId;
 
                 _collectionService.UpdateCollection(collection);
                 return Redirect("/Admin/ViewCollections");

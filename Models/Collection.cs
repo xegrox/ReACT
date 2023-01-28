@@ -1,6 +1,4 @@
-﻿using AspNetCore;
-
-namespace ReACT.Models
+﻿namespace ReACT.Models
 {
     public class Collection
     {

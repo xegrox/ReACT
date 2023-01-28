@@ -8,11 +8,11 @@
             <div class="card-body">
                 <h2 class="card-title">Collection ID: @Model.collection.Id</h2>
                 <p>Collection Date: @Model.collection.CollectionDate</p>
-                <p>User: @Model.user.Name</p>
+                <p>User: @Model.user.FirstName @Model.user.LastName</p>
                 <p>Address: @Model.user.Address</p>
-                @if (Model.collection.CompanyId != null)
+                @if (Model.collection.CompanyID != null)
                 {
-                    <p>Assigned Company: @Model.collection.Company.Name</p>
+                    <p>Assigned Company: @Model.collection.AssignedCompany</p>
                 } else
                 {
                     <p>Assigned Company: None</p>

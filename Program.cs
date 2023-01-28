@@ -21,10 +21,6 @@ builder.Services.ConfigureApplicationCookie(Config =>
     Config.LoginPath = "/Home/Login";
 });
 
-builder.Services.AddScoped<MockCollectionsDb>();
-builder.Services.AddScoped<MockUsersDb>();
-builder.Services.AddScoped<MockThreadsDb>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

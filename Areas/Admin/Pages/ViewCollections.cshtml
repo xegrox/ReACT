@@ -26,9 +26,9 @@
                     <tr>
                         <td>@collection.Id</td>
                         <td>@collection.CollectionDate</td>
-                        @if (collection.CompanyId != null)
+                        @if (collection.CompanyID != null)
                         {
-                        <td>@collection.Company.Name</td>
+                        <td>@collection.AssignedCompany</td>
                         } else
                         {
                             <td>

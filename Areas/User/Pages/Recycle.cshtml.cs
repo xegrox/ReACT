@@ -21,7 +21,7 @@ public class Recycle : PageModel
     }
 
     [BindProperty, Required]
-    public DateTime CollectionDate { get; set; }
+    public string CollectionDate { get; set; }
     [BindProperty, Required]
     public string Address { get; set; }
 
@@ -31,8 +31,7 @@ public class Recycle : PageModel
         {
             var collection = new Collection()
             {
-                CollectionDate = CollectionDate,
-                Address = Address
+                CollectionDate = CollectionDate
             };
             _collectionService.AddCollection(collection);
             return Redirect("/User/Dashboard");

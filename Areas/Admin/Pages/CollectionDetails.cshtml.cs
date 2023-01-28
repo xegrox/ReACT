@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
@@ -7,23 +8,27 @@ namespace ReACT.Areas.Admin.Pages
 {
     public class CollectionDetailsModel : PageModel
     {
-        private readonly UserService _userService;
+        private UserManager<ApplicationUser> _userManager { get; }
+        private AuthDbContext _authDbContext;
         private readonly CollectionService _collectionService;
-        public CollectionDetailsModel(UserService userService, CollectionService collectionService)
+        public CollectionDetailsModel(UserManager<ApplicationUser> userManager, AuthDbContext authDbContext, CollectionService collectionService)
         {
-            _userService = userService;
+            _userManager = userManager;
+            _authDbContext = authDbContext;
             _collectionService = collectionService;
         }
 
-        public Users user { get; set; }
+        public ApplicationUser user { get; set; }
         public Collection collection { get; set; }
 
-        public IActionResult OnGet(int userId, int collectionId)
+        public IActionResult OnGet(int collectionId)
         {
-            Users? userInfo = _userService.GetUser(userId);
-            if (userInfo != null)
+            string userId = _userManager.GetUserId(User);
+            ApplicationUser? currentUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(userId));
+            user = currentUser;
+
+            if (currentUser != null)
             {
-                user = userInfo;
                 collection = _collectionService.GetCollection(collectionId);
                 return Page();
             } else
