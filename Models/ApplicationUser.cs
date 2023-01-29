@@ -9,7 +9,7 @@ namespace ReACT.Models
         public DateTime? BirthDate { get; set; }
         public string? Address { get; set; }
         public string? Profile { get; set; }
-        public bool PublicPrivate { get; set; }
+        public bool? PublicPrivate { get; set; }
         public CycleOfWaste? cowid { get; set; }
         public int Total_Points { get; set; } = 0;
         public int postComments_counter { get; set; } = 0;

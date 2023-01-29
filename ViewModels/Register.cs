@@ -10,9 +10,13 @@ namespace ReACT.ViewModels
 
         [Required]
         [DataType(DataType.Text)]
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
 
-        
+        [Required]
+        [DataType(DataType.Text)]
+        public string LastName { get; set; }
+
+
         [DataType(DataType.Date)]
         public DateTime? BirthDate { get; set; }
 
@@ -22,6 +26,8 @@ namespace ReACT.ViewModels
 
        
         public IFormFile? Profile { get; set; }
+
+        public bool PublicPrivate { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

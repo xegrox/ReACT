@@ -30,7 +30,8 @@ namespace ReACT.Areas.Home.Pages
                 {
                     UserName = RModel.Email,
                     Email = RModel.Email,
-                    FullName = RModel.FullName
+                    FirstName = RModel.FirstName,
+                    LastName = RModel.LastName
                 };
                 var result = await userManager.CreateAsync(user, RModel.Password);
                 if (result.Succeeded)
