@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ReACT.Models;
 
 namespace ReACT.Controllers;
@@ -8,6 +9,14 @@ namespace ReACT.Controllers;
 [ApiController]
 public class RewardController : ControllerBase
 {
+    
+    private readonly AuthDbContext _context;
+    
+    public RewardController(AuthDbContext context)
+    {
+        _context = context;
+    }
+
     [HttpPost]
     public async Task<ActionResult> CreateReward(
         [Required] [FromForm] int categoryId,
@@ -17,27 +26,30 @@ public class RewardController : ControllerBase
         [Required] [FromForm] List<VariantFormModel> variants,
         [FromServices] IWebHostEnvironment env)
     {
+        var category = await _context.RewardCategories.FindAsync(categoryId);
+        if (category == null) return new BadRequestResult();
+        
         var imageUrl = $"/images/uploads/{Guid.NewGuid().ToString()}{Path.GetExtension(image.FileName)}";
         var imagePath = Path.Join(env.WebRootPath, imageUrl);
         Directory.CreateDirectory(Path.GetDirectoryName(imagePath)!);
         var imageStream = new FileStream(imagePath, FileMode.Create);
         await image.CopyToAsync(imageStream);
 
-        var reward = new Reward(
-            id: (MockRewardsDb.Rewards.LastOrDefault()?.Id ?? 0) + 1,
-            name: name,
-            categoryId: categoryId,
-            imageUrl: imageUrl,
-            redeemUrl: redeemUrl
-        );
-
-        MockRewardsDb.Rewards.Add(reward);
-        MockRewardsDb.Variants.AddRange(variants.Select(v => new RewardVariant(
-            id: (MockRewardsDb.Variants.LastOrDefault()?.Id ?? 0) + 1,
-            rewardId: reward.Id,
-            name: v.Name,
-            points: v.Points
-        )));
+        var reward = new Reward
+        {
+            CategoryId = categoryId,
+            Name = name,
+            ImageUrl = imageUrl,
+            RedeemUrl = redeemUrl,
+            Variants = variants.Select(v => new RewardVariant
+            {
+                Name = v.Name,
+                Points = v.Points
+            }).ToHashSet()
+        };
+        
+        category.Rewards.Add(reward);
+        await _context.SaveChangesAsync();
         return new OkResult();
     }
 
@@ -45,9 +57,8 @@ public class RewardController : ControllerBase
     [HttpGet("{id:int}")]
     public ActionResult GetReward(int id)
     {
-        var reward = MockRewardsDb.Rewards.Find(r => r.Id == id);
+        var reward = _context.Rewards.Include(r => r.Variants).SingleOrDefault(r => r.Id == id);
         if (reward == null) return new NotFoundResult();
-        var variants = MockRewardsDb.Variants.Where(v => v.RewardId == id);
         return new JsonResult(new
         {
             id,
@@ -55,7 +66,7 @@ public class RewardController : ControllerBase
             name = reward.Name,
             imageUrl = reward.ImageUrl,
             redeemUrl = reward.RedeemUrl,
-            variants
+            reward.Variants
         });
     }
 
@@ -69,7 +80,7 @@ public class RewardController : ControllerBase
         [Required] [FromForm] List<VariantFormModel> variants,
         [FromServices] IWebHostEnvironment env)
     {
-        var reward = MockRewardsDb.Rewards.Find(r => r.Id == id);
+        var reward = _context.Rewards.Include(r => r.Variants).SingleOrDefault(r => r.Id == id);
         if (reward == null) return new NotFoundResult();
 
         if (image != null)
@@ -96,7 +107,7 @@ public class RewardController : ControllerBase
         {
             if (variantFormModel.Id != null)
             {
-                var variant = MockRewardsDb.Variants.Find(v => v.Id == variantFormModel.Id);
+                var variant = reward.Variants.SingleOrDefault(v => v.Id == variantFormModel.Id);
                 if (variant != null)
                 {
                     variant.Name = variantFormModel.Name;
@@ -105,30 +116,30 @@ public class RewardController : ControllerBase
                 }
             }
 
-            MockRewardsDb.Variants.Add(new RewardVariant(
-                id: (MockRewardsDb.Variants.LastOrDefault()?.Id ?? 0) + 1,
-                rewardId: reward.Id,
-                name: variantFormModel.Name,
-                points: variantFormModel.Points
-            ));
+            reward.Variants.Add(new RewardVariant {
+                Name = variantFormModel.Name,
+                Points = variantFormModel.Points
+            });
         }
 
+        await _context.SaveChangesAsync();
         return new OkResult();
     }
 
     [HttpDelete("{id:int}")]
     public ActionResult DeleteReward(int id)
     {
-        var reward = MockRewardsDb.Rewards.Find(r => r.Id == id);
+        var reward = _context.Rewards.Find(id);
         if (reward == null) return new NotFoundResult();
-        MockRewardsDb.Rewards.Remove(reward);
+        _context.Rewards.Remove(reward);
+        _context.SaveChanges();
         return new OkResult();
     }
 
     [HttpGet("Category")]
     public ActionResult GetCategories()
     {
-        return new JsonResult(MockRewardsDb.Categories.Select(category => new
+        return new JsonResult(_context.RewardCategories.Select(category => new
         {
             id = category.Id,
             name = category.Name,
@@ -141,11 +152,12 @@ public class RewardController : ControllerBase
         [Required] [FromForm] string name,
         [Required] [FromForm] string icon)
     {
-        var category = new RewardCategory(
-            id: (MockRewardsDb.Categories.LastOrDefault()?.Id ?? 0) + 1,
-            name, icon
-        );
-        MockRewardsDb.Categories.Add(category);
+        var category = new RewardCategory {
+            Name = name,
+            Icon = icon
+        };
+        _context.RewardCategories.Add(category);
+        _context.SaveChanges();
         return new JsonResult(category);
     }
     
@@ -156,19 +168,21 @@ public class RewardController : ControllerBase
         [Required] [FromForm] string name,
         [Required] [FromForm] string icon)
     {
-        var category = MockRewardsDb.Categories.Find(c => c.Id == id);
+        var category = _context.RewardCategories.Find(id);
         if (category == null) return NotFound();
         category.Name = name;
         category.Icon = icon;
+        _context.SaveChanges();
         return new OkResult();
     }
 
     [HttpDelete("Category/{id:int}")]
     public ActionResult DeleteCategory(int id)
     {
-        var category = MockRewardsDb.Categories.Find(c => c.Id == id);
+        var category = _context.RewardCategories.Find(id);
         if (category == null) return new NotFoundResult();
-        MockRewardsDb.Categories.Remove(category);
+        _context.RewardCategories.Remove(category);
+        _context.SaveChanges();
         return new OkResult();
     }
 }
