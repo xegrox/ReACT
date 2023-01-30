@@ -26,7 +26,7 @@ public class RewardController : ControllerBase
         [Required] [FromForm] List<VariantFormModel> variants,
         [FromServices] IWebHostEnvironment env)
     {
-        var category = await _context.RewardCategories.FindAsync(categoryId);
+        var category = _context.RewardCategories.Include(c => c.Rewards).SingleOrDefault(c => c.Id == categoryId);
         if (category == null) return new BadRequestResult();
         
         var imageUrl = $"/images/uploads/{Guid.NewGuid().ToString()}{Path.GetExtension(image.FileName)}";
@@ -66,7 +66,12 @@ public class RewardController : ControllerBase
             name = reward.Name,
             imageUrl = reward.ImageUrl,
             redeemUrl = reward.RedeemUrl,
-            reward.Variants
+            variants = reward.Variants.Select(v => new
+            {
+                id = v.Id,
+                name = v.Name,
+                points = v.Points
+            })
         });
     }
 

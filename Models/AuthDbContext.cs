@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace ReACT.Models
 {
     public class AuthDbContext : IdentityDbContext<ApplicationUser>
     {
         private readonly IConfiguration _configuration;
-        //public AuthDbContext(DbContextOptions<AuthDbContext> options):base(options){ }
+        
         public AuthDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -18,6 +19,16 @@ namespace ReACT.Models
             var connectionString = _configuration.GetConnectionString("AuthConnectionString")!;
             optionsBuilder.UseSqlServer(connectionString);
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.HasDbFunction(typeof(AuthDbContext).GetMethod(nameof(Difference))!)
+                .HasTranslation(args => new SqlFunctionExpression("DIFFERENCE", args, true, new []{false, false}, typeof(int), null));
+        }
+
+        [DbFunction("DIFFERENCE")]
+        public static int Difference(string s1, string s2) => throw new Exception();
 
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Company> Company { get; set; }
