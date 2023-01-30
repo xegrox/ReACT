@@ -1,17 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
-using ReACT.Areas.User.Views.Shared.Components.RedeemModalRewardDetails;
+using Microsoft.EntityFrameworkCore;
 using ReACT.Models;
 
 namespace ReACT.Areas.User.ViewComponents.RedeemModal;
 
 public class RedeemModalRewardDetailsViewComponent : ViewComponent
 {
+    private readonly AuthDbContext _context;
+
+    public RedeemModalRewardDetailsViewComponent(AuthDbContext context)
+    {
+        _context = context;
+    }
+
     public Task<IViewComponentResult?> InvokeAsync(int rewardId)
     {
-        var reward = MockRewardsDb.Rewards.Find(reward => reward.Id == rewardId);
-        if (reward == null) return Task.FromResult<IViewComponentResult?>(null);
-        reward.Variants = MockRewardsDb.Variants.Where(variant => variant.RewardId == rewardId).ToList();
-        var categoryName = MockRewardsDb.Categories.Find(category => category.Id == reward.CategoryId)!.Name;
-        return Task.FromResult<IViewComponentResult?>(View(new RedeemModalRewardDetailsModel(categoryName, reward)));
+        var reward = _context.Rewards
+            .Include(r => r.Variants)
+            .Include(r => r.Category)
+            .SingleOrDefault(reward => reward.Id == rewardId);
+        return reward == null ? Task.FromResult<IViewComponentResult?>(null) : Task.FromResult<IViewComponentResult?>(View(reward));
     }
 }

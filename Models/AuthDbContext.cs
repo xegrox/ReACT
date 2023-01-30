@@ -11,9 +11,10 @@ namespace ReACT.Models
         {
             _configuration = configuration;
         }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = _configuration.GetConnectionString("AuthConnectionString");
+            var connectionString = _configuration.GetConnectionString("AuthConnectionString")!;
             optionsBuilder.UseSqlServer(connectionString);
         }
 
@@ -21,9 +22,10 @@ namespace ReACT.Models
         public DbSet<Company> Company { get; set; }
         public DbSet<CycleOfWaste> CycleOfWaste { get; set; }
         public DbSet<RecyclingType> RecyclingType{ get; set; }
-        public DbSet<Reward> Reward { get; set; }
-        public DbSet<RewardCategory> RewardCategory { get; set; }
-        public DbSet<RewardCode> RewardCode { get; set; }
-        public DbSet<RewardVariant> RewardVariant{ get; set; }
+        
+        public DbSet<Reward> Rewards { get; set; }
+        public DbSet<RewardCategory> RewardCategories { get; set; }
+        public DbSet<RewardCode> RewardCodes { get; set; }
+        public DbSet<RewardVariant> RewardVariants { get; set; }
     }
 }

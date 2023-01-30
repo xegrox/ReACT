@@ -13,11 +13,12 @@ namespace ReACT.Areas.User.Pages;
 [Authorize]
 public class Recycle : PageModel
 {
-    private readonly CollectionService _collectionService;
 
-    public Recycle(CollectionService collectionService)
+    private readonly AuthDbContext _context;
+    
+    public Recycle(AuthDbContext context)
     {
-        _collectionService = collectionService;
+        _context = context;
     }
 
     [BindProperty, Required]
@@ -33,7 +34,7 @@ public class Recycle : PageModel
             {
                 CollectionDate = CollectionDate
             };
-            _collectionService.AddCollection(collection);
+            _context.Collections.Add(collection);
             return Redirect("/User/Dashboard");
         }
         return Page();
