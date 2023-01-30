@@ -4,6 +4,7 @@
 .idea/**/*
 wwwroot/images/uploads/*
 wwwroot/css/output.css
+./Migrations/*
 
 ### DotnetCore ###
 # .NET Core build folders

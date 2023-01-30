@@ -26,11 +26,12 @@ namespace ReACT.Areas.Home.Pages
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser()
+                var user = new ApplicationUser
                 {
                     UserName = RModel.Email,
                     Email = RModel.Email,
-                    FullName = RModel.FullName
+                    FirstName = RModel.FirstName,
+                    LastName = RModel.LastName
                 };
                 var result = await userManager.CreateAsync(user, RModel.Password);
                 if (result.Succeeded)

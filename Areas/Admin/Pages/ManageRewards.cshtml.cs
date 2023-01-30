@@ -37,12 +37,10 @@ public class ManageRewards : PageModel
         }
 
         var totalRewardsCount = rewardsIds.Count;
-        if (rewardsPerPage * (pageIndex - 1) + 1 > totalRewardsCount) return RedirectToPage(new {categoryId, all, search});
+        if (totalRewardsCount > 0 && rewardsPerPage * (pageIndex - 1) + 1 > totalRewardsCount) return RedirectToPage(new {categoryId, all, search});
         rewardsIds = rewardsIds.Skip(rewardsPerPage * (pageIndex-1)).Take(rewardsPerPage).ToList();
 
-        var rewards = _context.Rewards.Include(r => r.Variants)
-            .Join(rewardsIds, r => r.Id, id => id, (r, id) => r)
-            .ToList();
+        var rewards = _context.Rewards.Include(r => r.Variants).Where(r => rewardsIds.Contains(r.Id)).ToList();
 
         ViewData["rewardsPerPage"] = rewardsPerPage;
         ViewData["pageIndex"] = pageIndex;
