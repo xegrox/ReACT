@@ -15,16 +15,6 @@ namespace ReACT.Areas.User.Pages
             _forumService = forumService;
         }
 
-        [BindProperty]
-        public Models.Thread MyThread { get; set; } = new();
-
-        private readonly MockThreadsDb? _mockThreadsDb;
-
-        public ForumModel(MockThreadsDb mockThreadsDb)
-        {
-            _mockThreadsDb = mockThreadsDb;
-        }
-
         [BindProperty, Required, StringLength(50, MinimumLength = 5, ErrorMessage = "The thread title must be between 5 and 50 characters.")]
         public string Title { get; set; }
         [BindProperty, Required, MaxLength(300, ErrorMessage = "The thread description must be less than 300 characters.")]
@@ -32,18 +22,17 @@ namespace ReACT.Areas.User.Pages
 
         public List<Models.Thread>? threadList { get; set; } = new();
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
             threadList = _forumService.GetAll();
+            return Page();
         }
 
         public IActionResult OnPost()
         {
-            //note: remember to add a check for duplicate title
-            //if (ModelState.IsValid)
-            if (true)
+            if (ModelState.IsValid)
             {
-                Models.Thread thread = new Models.Thread { Id = 4, Title = MyThread.Title, Content = MyThread.Content, ImageURL = "" };
+                Models.Thread thread = new Models.Thread { Id = 4, Title = Title, Content = Content, ImageURL = "" };
                 _forumService.AddThread(thread);
 
                 return Redirect("/User/Forum");

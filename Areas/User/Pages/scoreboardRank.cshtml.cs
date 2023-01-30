@@ -26,7 +26,7 @@ namespace ReACT.Areas.User.Pages
             UsersList = _authDbContext.Users.OrderByDescending(x => x.Total_Points).ToList();
             for (int i = 0; i < UsersList.Count; i++)
             {
-                if (UsersList[i].PublicPrivate)
+                if ((bool)UsersList[i].PublicPrivate)
                 {
                     var privateFNStr = UsersList[i].FirstName.Substring(2, UsersList[i].FirstName.Length);
                     var toBeAddedFNStr = "";

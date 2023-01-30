@@ -5,6 +5,7 @@ namespace ReACT.Services
     public class ForumService
     {
         private readonly AuthDbContext _context;
+
         public ForumService(AuthDbContext context)
         {
             _context = context;
@@ -23,7 +24,7 @@ namespace ReACT.Services
 
         public void AddThread(Models.Thread thread)
         {
-            _context.Collections.Add(thread);
+            _context.Threads.Add(thread);
             _context.SaveChanges();
         }
 

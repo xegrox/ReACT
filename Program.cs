@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using ReACT;
 using ReACT.Models;
+using ReACT.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.ConfigureApplicationCookie(Config =>
 {
     Config.LoginPath = "/Home/Login";
 });
+
+builder.Services.AddScoped<ForumService>();
 
 var app = builder.Build();
 

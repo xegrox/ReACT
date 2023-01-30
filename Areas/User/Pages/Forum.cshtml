@@ -35,7 +35,7 @@
                     <label class="label">
                         <span class="label-text">Thread Title</span>
                     </label>
-                    <input asp-for="MyThread.Title" type="text" class="input input-bordered w-full max-w-xs" />
+                    <input asp-for="Title" type="text" class="input input-bordered w-full max-w-xs" />
                     <span asp-validation-for="Title" class="text-error"></span>
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -43,7 +43,7 @@
                         <span class="label-text">Thread Description</span>
                     </label>
                     @*<textarea asp-for="MyThread.Content" placeholder="Enter your thread description" class="input input-bordered w-full max-w-xs"></textarea>*@
-                    @Html.TextAreaFor(model => model.MyThread.Content, new { @class = "input input-bordered w-full max-w-lg" })
+                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg" })
                     <span asp-validation-for="Content" class="text-error"></span>
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -94,9 +94,3 @@
         </div>
     }
 }
-
-@*@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}*@
