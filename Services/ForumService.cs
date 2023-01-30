@@ -31,6 +31,7 @@ namespace ReACT.Services
         //public void CalcTime(DateTime dateTime)
         //{
         //    var dateDiff = (DateTime.Now - dateTime).Ticks;
+        //    
         //}
     }
 }
