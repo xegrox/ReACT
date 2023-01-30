@@ -17,7 +17,7 @@ namespace ReACT.Models
 
 
         public List<Collection>? Collections { get; set; }
-
+        public List<Thread>? Threads { get; set; }
     }
 }
 
