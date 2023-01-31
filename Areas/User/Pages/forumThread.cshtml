@@ -1,16 +1,14 @@
 ﻿@page
 @model ReACT.Areas.User.Pages.threadModel
 
-<div class="my-12">
-
-</div>
-    <div class="flex justify-start bg-emerald-100 text-primary text-left rounded col-start-3 col-span-8 grid">
-        <div class="col-start-2">
-            <h5 class="p-6 text-2xl">@Model.MyThread.Title</h5>
+<div class="grid grid-cols-12 gap-4 my-12">
+    <div class="bg-emerald-100 text-primary rounded-lg col-start-2 col-span-10 grid grid-cols-12 my-12">
+        <div class="col-span-10 ml-4 mt-5 mb-8">
+            <h5 class="text-2xl">@Model.MyThread.Title</h5>
         </div>
 
-        <div class="col-start-2">
-            <p class="px-6">@Model.MyThread.Content</p>
+        <div class="col-span-10 ml-4 mb-12">
+            <p class="text-lg">@Model.MyThread.Content</p>
         </div>
 
         <div class="">
@@ -19,5 +17,13 @@
                 <img class="" src="@Model.MyThread.ImageURL" loading="lazy" />
             }
         </div>
+    </div>
+
+    <div class="col-start-2 col-span-2">
+        <p class="text-xl">Messages</p>
+    </div>
+
+    <div class="col-start-2 col-span-10 bg-emerald-100 text-primary rounded-lg">
+        <p>lorem ipsum</p>
     </div>
 </div>

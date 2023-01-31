@@ -10,42 +10,54 @@
     </div>
 </div>
 
-<div class="justify-end">
-    <label class="btn btn-md btn-primary rounded-full gap-1.5" for="newThread-modal-toggle">
-        <i class="ph-chats-bold"></i>
-        New Thread
-    </label>
+<div class="grid grid-cols-5">
+    <div class="col-end-6">
+        <label class="btn btn-md btn-primary rounded-full gap-1.5 text-base" for="newThread-modal-toggle">
+            <i class="ph-chats-bold"></i>
+            New Thread
+        </label>
+    </div>
 </div>
 
 <div x-data>
     <input type="checkbox" id="newThread-modal-toggle" class="modal-toggle" x-on:change.once="$dispatch('showNewThreadModal')" />
     <label for="newThread-modal-toggle" class="modal cursor-pointer" x-ref="modalNewThread">
         <label class="modal-box relative w-[50vw] max-w-none h-[85vh]" for="">
-            <label for="newThread-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+
+            @*<label for="newThread-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
                 <i class="ph-x"></i>
-            </label>
-            <div hx-get="@Url.ActionLink("ModalRootFrame", "New Thread")" hx-trigger="showNewThreadModal from:#newThread-modal-toggle" hx-swap="outerHTML"></div>
+            </label>*@
 
             <!--Modal content goes here-->
-            <h1 class="text-4xl">Create New Thread</h1>
-            <form class="mt-3" method="post">
-                <div asp-validation-summary="All" class="text-danger"></div>
-
-                <div class="">
-                    <label class="" asp-for="MyThread.Id"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="MyThread.Id"
-                               oninput="this.value = this.value.toUpperCase()" />
-                        <span asp-validation-for="MyThread.Id" class="text-danger"></span>
-                    </div>
+            <h1 class="text-3xl">Create New Thread</h1>
+            <form class="flex-1 flex flex-col space-y-2" method="post">
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Thread Title</span>
+                    </label>
+                    <input asp-for="Title" type="text" class="input input-bordered w-full max-w-xs" />
+                    <span asp-validation-for="Title" class="text-error"></span>
                 </div>
-                <!-- more code to be added -->
-                <div>
-                    <input type="submit" value="Add" class="btn btn-primary" />
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Thread Description</span>
+                    </label>
+                    @*<textarea asp-for="MyThread.Content" placeholder="Enter your thread description" class="input input-bordered w-full max-w-xs"></textarea>*@
+                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg" })
+                    <span asp-validation-for="Content" class="text-error"></span>
+                </div>
+                <div class="form-control w-full max-w-xs">
+                    @*<button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>*@
+                    <input class="btn btn-active btn-accent mt-3 text-white" type="submit" value="Submit" />
                 </div>
             </form>
 
-            <a class="btn btn-secondary ms-2" href="">Cancel</a>
+            <label for="newThread-modal-toggle" class="btn btn-secondary mt-5">
+                <p>Cancel</p>
+            </label>
+            <div hx-get="@Url.ActionLink("ModalRootFrame", "New Thread")" hx-trigger="showNewThreadModal from:#newThread-modal-toggle" hx-swap="outerHTML"></div>
+
+
         </label>
     </label>
 </div>
@@ -57,13 +69,13 @@
         @*Forum posts*@
         <div class="grid grid-cols-5 gap-4">
             <div class="bg-emerald-100 text-primary rounded-lg mb-12 col-start-2 col-span-3 grid grid-cols-12">
-                <div class="col-start-2 col-span-10">
+                <div class="col-span-10 ml-4 mt-3 mb-5">
                     <a class="text-2xl" asp-page="/forumThread" asp-route-id="@thread.Id">
                         @thread.Title
                     </a>
                 </div>
 
-                <div class="col-start-2 col-span-10">
+                <div class="col-span-10 ml-4 mb-6">
                     <a class="text-lg" asp-page="/forumThread" asp-route-id="@thread.Id">
                         @thread.Content
                     </a>
@@ -82,9 +94,3 @@
         </div>
     }
 }
-
-@*@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}*@

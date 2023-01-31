@@ -17,6 +17,9 @@
         url.searchParams.set(param, value)
         return url.toString()
     })
+    Alpine.magic('transEnd', (el) => (cb) => {
+        el.addEventListener('transitionend', cb, {once: true})
+    })
 })
 
 const pageControllers = new WeakMap()

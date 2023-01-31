@@ -7,7 +7,7 @@ namespace ReACT.Areas.User.Pages
 {
     public class UserDetailsModel : PageModel
     {
-        private UserManager<ApplicationUser> UserManager { get;}
+        private UserManager<ApplicationUser> UserManager { get; }
         private AuthDbContext authDbContext;
 
         [BindProperty]

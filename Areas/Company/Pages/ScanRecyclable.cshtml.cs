@@ -68,7 +68,7 @@ public class AllocatePoints : PageModel
             }
         }
 
-        oneCollection.CollectionDate = DateTime.Now.ToLongDateString();
+        oneCollection.CollectionDate = DateTime.Now;
         oneCollection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
         foundUser.Total_Points += oneCollection.PointsAllocated;
         oneCollection.AssignedCompany = "Company1";

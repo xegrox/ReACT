@@ -15,6 +15,16 @@ namespace ReACT.Services
             return _context.Collections.OrderBy(x => x.Id).ToList();
         }
 
+        public List<Collection> GetPendingCollections()
+        {
+            return _context.Collections.Where(x => x.Status == "Not Completed").ToList();
+        }
+
+        public List<Collection> GetCompletedCollections()
+        {
+            return _context.Collections.Where(x => x.Status == "Completed").ToList();
+        }
+
         public Collection? GetCollection(int id)
         {
             Collection? collection = _context.Collections.FirstOrDefault(x => x.Id == id);

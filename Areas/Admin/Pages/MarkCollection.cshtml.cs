@@ -15,7 +15,9 @@ namespace ReACT.Areas.Admin.Pages
         public Collection collection { get; set; }
         public IActionResult OnGet(int CollectionId)
         {
-            _collectionService.DeleteCollection(CollectionId);
+            collection = _collectionService.GetCollection(CollectionId);
+            collection.Status = "Completed";
+            _collectionService.UpdateCollection(collection);
             return Redirect("/Admin/ViewCollections");
         }
     }

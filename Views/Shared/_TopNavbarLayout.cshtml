@@ -36,6 +36,7 @@
 </div>
 <turbo-frame id="content">
     @RenderBody()
+    @await Html.PartialAsync("_FlashMessage")
 </turbo-frame>
 </body>
 </html>

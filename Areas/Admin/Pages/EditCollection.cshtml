@@ -10,19 +10,21 @@
             <label class="label">
                 <span class="label-text">Collection Date</span>
             </label>
-            <input asp-for="Date" type="date" class="input input-bordered w-full max-w-xs" value="@Model.collection.CollectionDate" />
+            <input asp-for="Date" type="date" class="input input-bordered w-full max-w-xs"/>
             <span asp-validation-for="Date" class="text-error"></span>
         </div>
         <div class="form-control w-full max-w-xs">
             <label class="label">
                 <span class="label-text">Assigned Company</span>
             </label>
-            <select asp-for="CompanyId" class="select select-bordered w-full max-w-xs"></select>
-            @foreach (var company in Model.companies)
+            @Html.DropDownList("Company",
+            Model.companies.Select(m => new SelectListItem
             {
-                <option value="@company.Id">@company.Name</option>
-            }
-            <span asp-validation-for="CompanyId" class="text-error"></span>
+            Value = m.Name,
+            Text = m.Name
+            }),
+            new { @class = "select select-bordered w-full max-w-none" })
+            <span asp-validation-for="Company" class="text-error"></span>
         </div>
         <div class="form-control w-full max-w-xs">
             <button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>

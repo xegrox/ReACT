@@ -26,7 +26,7 @@ namespace ReACT.Areas.Home.Pages
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser
+                var user = new ApplicationUser()
                 {
                     UserName = RModel.Email,
                     Email = RModel.Email,

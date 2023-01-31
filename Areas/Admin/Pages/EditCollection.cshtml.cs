@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace ReACT.Areas.Admin.Pages
 {
@@ -19,8 +21,10 @@ namespace ReACT.Areas.Admin.Pages
 
         [BindProperty, Required]
         public string Date { get; set; }
+        public DateTime ParsedDate { get; set; }
+
         [BindProperty, Required]
-        public int CompanyId { get; set; }
+        public string Company { get; set; }
         public Collection collection { get; set; }
         public List<Models.Company> companies { get; set; } = new();
         public IActionResult OnGet(int collectionId)
@@ -30,12 +34,15 @@ namespace ReACT.Areas.Admin.Pages
             return Page();
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(int collectionId)
         {
             if (ModelState.IsValid)
             {
-                collection.CollectionDate = Date;
-                collection.CompanyID = CompanyId;
+                ParsedDate = DateTime.ParseExact(Date, "yyyy-MM-dd", CultureInfo.CurrentCulture);
+
+                collection = _collectionService.GetCollection(collectionId);
+                collection.CollectionDate = ParsedDate.Date;
+                collection.AssignedCompany = Company;
 
                 _collectionService.UpdateCollection(collection);
                 return Redirect("/Admin/ViewCollections");

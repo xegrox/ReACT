@@ -13,10 +13,10 @@
 <div class="flex flex-col pt-16 pr-16 pl-16">
     <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
         <input type="checkbox" />
-        <div class="collapse-title text-xl font-medium">
+        <div class="collapse-title text-2xl font-medium">
             What is a collection?
         </div>
-        <div class="collapse-content">
+        <div class="collapse-content text-lg">
             <p>A collection is a value added service that aims to help collect recycables from the doorstep of households. <br />
                 Interested in scheduling a collection? Fill up the form below!
             </p>
@@ -30,8 +30,8 @@
             <label class="label">
                 <span class="label-text">Collection Date</span>
             </label>
-            <input asp-for="CollectionDate" type="date" placeholder="Choose a collection date" class="input input-bordered w-full max-w-xs"/>
-            <span asp-validation-for="CollectionDate" class="text-error"></span>
+            <input asp-for="Date" type="date" placeholder="Choose a collection date" class="input input-bordered w-full max-w-xs"/>
+            <span asp-validation-for="Date" class="text-error"></span>
         </div>
         <div class="form-control w-full max-w-xs">
             <label class="label">
@@ -39,12 +39,6 @@
             </label>
             <input asp-for="Address" type="text" placeholder="Enter your address" class="input input-bordered w-full max-w-xs"/>
             <span asp-validation-for="Address" class="text-error"></span>
-        </div>
-        <div class="form-control w-full max-w-xs">
-            <label class="cursor-pointer label mt-3">
-                <span class="label-text">Remember my address</span>
-                <input type="checkbox" class="toggle toggle-accent" checked />
-            </label>
         </div>
         <div class="form-control w-full max-w-xs">
             <button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>
