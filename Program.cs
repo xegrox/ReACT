@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 using ReACT;
 using ReACT.Models;
 using ReACT.Services;
@@ -17,9 +18,9 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
-builder.Services.ConfigureApplicationCookie(Config =>
+builder.Services.ConfigureApplicationCookie(config =>
 {
-    Config.LoginPath = "/Home/Login";
+    config.LoginPath = "/Home/Login";
 });
 
 builder.Services.AddScoped<ForumService>();
@@ -41,12 +42,21 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = new FileExtensionContentTypeProvider
+    {
+        Mappings =
+        {
+            [".riv"] = "application/octet-stream"
+        }
+    }
+});
 
 app.UseRouting();
 
 app.UseAuthentication();
-
 
 app.UseAuthorization();
 
