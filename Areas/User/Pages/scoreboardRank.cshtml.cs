@@ -14,6 +14,7 @@ namespace ReACT.Areas.User.Pages
         private readonly UserManager<ApplicationUser> _userManager;
         public List<ApplicationUser> UsersList { get; set; } = new();
         public IDictionary<int, ApplicationUser> userRankings = new Dictionary<int, ApplicationUser>();
+        public IDictionary<int, ApplicationUser> currentUser = new Dictionary<int, ApplicationUser>();
 
         public scoreboardRankModel(AuthDbContext authDbContext, UserManager<ApplicationUser> userManager)
         {
@@ -26,7 +27,7 @@ namespace ReACT.Areas.User.Pages
             UsersList = _authDbContext.Users.OrderByDescending(x => x.Total_Points).ToList();
             for (int i = 0; i < UsersList.Count; i++)
             {
-                if ((bool)UsersList[i].PublicPrivate)
+                if (UsersList[i].PublicPrivate == true)
                 {
                     var privateFNStr = UsersList[i].FirstName.Substring(2, UsersList[i].FirstName.Length);
                     var toBeAddedFNStr = "";
@@ -35,14 +36,18 @@ namespace ReACT.Areas.User.Pages
                     {
                         toBeAddedFNStr += "*";
                     }
-                    for (int j = 0; j < UsersList[i].LastName.Length -2; j++)
+                    for (int j = 0; j < UsersList[i].LastName.Length - 2; j++)
                     {
                         toBeAddedLNStr += "*";
                     }
                     UsersList[i].FirstName = UsersList[i].FirstName.Substring(0, 2) + toBeAddedFNStr;
-                    UsersList[i].LastName = toBeAddedLNStr;
+                    UsersList[i].LastName = toBeAddedLNStr + UsersList[i].LastName.Substring(-2, 0);
                 }
                 userRankings.Add(i + 1, UsersList[i]);
+                if (UsersList[i].Id == _userManager.GetUserId(User))
+                {
+                    currentUser.Add(i + 1, UsersList[i]);
+                }
             }
         }
     }

@@ -15,5 +15,11 @@ namespace ReACT.Services
         {
             return _context.CycleOfWaste.OrderBy(d => d.ActivityDate).ToList();
         }
+
+        public void AddPrize(CycleOfWaste oneTry)
+        {
+            _context.CycleOfWaste.Add(oneTry);
+            _context.SaveChanges();
+        }
     }
 }

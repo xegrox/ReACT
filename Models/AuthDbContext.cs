@@ -33,6 +33,7 @@ namespace ReACT.Models
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Company> Company { get; set; }
         public DbSet<CycleOfWaste> CycleOfWaste { get; set; }
+        public DbSet<CycleOfWaste_prizes> CycleOfWaste_prizes { get; set; }
         public DbSet<RecyclingType> RecyclingType { get; set; }
 
         public DbSet<Reward> Rewards { get; set; }

@@ -18,15 +18,17 @@
                 <label for="add-recyclable-collection-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
                 <h3 class="font-bold text-lg">Add Recyclable Collection</h3>
                 <form method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-control">
-                        <div asp-validation-summary="All" class="text-danger"></div>
                         <label class="label">
                             <span class="label-text">Barcode String</span>
-                            @*<input asp-for="oneCollection.User.Barcode_Number" type="text" placeholder="Enter barcode number" class="input input-bordered" />*@
+                            <input asp-for="oneCollection.UserId" type="text" placeholder="Enter barcode number" class="input input-bordered" />
+                            <span asp-validation-for="oneCollection.UserId" class="text-danger"></span>
                         </label>
                         <label class="label">
                             <span class="label-text">Total Recyclable Weight</span>
                             <input asp-for="oneCollection.TotalWeight" type="number" placeholder="Enter total recyclable weight" class="input input-bordered" />
+                            <span asp-validation-for="oneCollection.TotalWeight" class="text-danger"></span>
                         </label>
                         <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be up to 2 decimal places</p>
                         <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be at least 0.5kg</p>
@@ -66,8 +68,8 @@
                                     <div class="modal-box">
                                         <label for="view-collection-@collection.UserId-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
                                         <h2 class="card-title">User Details</h2>
-                                        <p>User: @collection.UserId</p>
-                                        @*<p>Address: @collection.User.Address</p>*@
+                                        <p>User: @Model.UsersList.FirstName @Model.UsersList.LastName</p>
+                                        <p>Address: @Model.UsersList.Address</p>
                                     </div>
                                 </div>
                             </div>

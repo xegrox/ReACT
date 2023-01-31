@@ -36,17 +36,15 @@
             }
         </tbody>
         <tfoot>
-            @foreach (var anotherUser in Model.userRankings)
+            @foreach (var user in Model.currentUser) 
             {
-                if (anotherUser.Value.Id == "2")
-                {
-                    <tr>
-                        <th class="sticky bottom-0">@anotherUser.Key</th>
-                        <th class="sticky bottom-0">@anotherUser.Value.FirstName @anotherUser.Value.LastName</th>
-                        <th class="sticky bottom-0">@anotherUser.Value.Total_Points</th>
-                    </tr>
-                }
+                <tr>
+                    <th class="sticky bottom-0">@user.Key</th>
+                    <th class="sticky bottom-0">@user.Value.FirstName @user.Value.LastName</th>
+                    <th class="sticky bottom-0">@user.Value.Total_Points</th>
+                </tr>
             }
+            
         </tfoot>
     </table>
 </div>

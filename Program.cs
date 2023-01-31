@@ -23,12 +23,14 @@ builder.Services.ConfigureApplicationCookie(config =>
     config.LoginPath = "/Home/Login";
 });
 
-builder.Services.AddScoped<ForumService>();
 
 builder.Services.AddScoped<CollectionService>();
 builder.Services.AddScoped<CompanyService>();
-builder.Services.AddScoped<RecyclingTypeService>();
 builder.Services.AddScoped<CycleOfWasteService>();
+builder.Services.AddScoped<EditCycleOfWasteService>();
+builder.Services.AddScoped<ForumService>();
+builder.Services.AddScoped<RecyclingTypeService>();
+
 
 var app = builder.Build();
 

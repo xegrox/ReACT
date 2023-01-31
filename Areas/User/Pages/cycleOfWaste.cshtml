@@ -1,10 +1,27 @@
 ﻿@page
 @model ReACT.Areas.User.Pages.cycleOfWasteModel
 @{
+    int free_chances = 0;
+    if (Model.currentUser.chance_CommentTask == 1)
+    {
+        free_chances += 1;
+    }
+    if (Model.currentUser.chance_TreeTask == 1)
+    {
+        free_chances += 1;
+    }
+    if (Model.currentUser.used_CommentTask)
+    {
+        free_chances -= 1;
+    }
+    if (Model.currentUser.used_TreeTask)
+    {
+        free_chances -= 1;
+    }
+    ViewData["chances_counter"] = free_chances + Model.currentUser.chances_Default;
+    ViewData["free_chances"] = free_chances;
+    ViewData["chosen_prize"] = Model.chosenPrize;
 }
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
 <div class="hero h-1/3" style="background-image: url('/images/cycleOfWasteBG.png');">
     <div class="hero-overlay bg-opacity-20">
@@ -21,20 +38,34 @@
     <div class="flex flex-wrap justify-center">
         <div class="w-full sm:w-1/2 md:w-1/2 xl:w-3/4 text-center justify-center">
             <h1 class="mb-3 text-2xl font-bold">Free Daily Chances</h1>
-            <p class="mb-3 text-lg">Remaining chances today: 3/5</p>
+            <p class="mb-3 text-lg">Remaining chances today: @ViewData["chances_counter"]/5</p>
             <hr style="border: solid black; background-color: black; margin-bottom: 30px;">
             <div class="grid h-20 card bg-base-200 rounded-lg place-items-center" style="margin: 20px;">
                 <div class="hero-content flex-col lg:flex-row">
                     <i class="ph-chats text-3xl inline-flex items-center ml-4"></i>
-                    <h2 class="m-2 font-bold text-left">Post 5 comments in any forum thread(s) (0/5)</h2>
-                    <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("Forum")">Go</a>
+                    <h2 class="m-2 font-bold text-left">Post 5 comments in any forum thread(s) (@Model.currentUser.postComments_counter/5)</h2>
+                    @if (Model.currentUser.chance_CommentTask == 1)
+                    {
+                        <label class="btn btn-sm bg-orange-600 hover:bg-orange-600 border-orange-600 text-white rounded-full gap-1.5">Claimed</label>
+                    }
+                    else
+                    {
+                        <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("Forum")">Go</a>
+                    }
                 </div>
             </div>
             <div class="grid h-20 card bg-base-200 rounded-lg place-items-center" style="margin: 20px;">
                 <div class="hero-content flex-col lg:flex-row">
                     <i class="ph-tree-evergreen text-3xl inline-flex items-center ml-4"></i>
-                    <h2 class="m-2 font-bold text-left">Plant a tree in Growing Forest (0/1)</h2>
-                    <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("Forest")">Go</a>
+                    <h2 class="m-2 font-bold text-left">Plant a tree in Growing Forest (@Model.currentUser.chance_TreeTask/1)</h2>
+                    @if (Model.currentUser.chance_TreeTask == 1)
+                    {
+                        <label class="btn btn-sm bg-orange-600 hover:bg-orange-600 border-orange-600 text-white rounded-full gap-1.5">Claimed</label>
+                    }
+                    else
+                    {
+                        <a class="btn btn-sm btn-primary rounded-full gap-1.5" href="@Url.Page("Forest")">Go</a>
+                    }
                 </div>
             </div>
         </div>
@@ -58,19 +89,68 @@
                     </div>
                 </div>
                 <div class="col-xs-6" align="center">
-                    <button type="button" id="spinBtn" class="btn btn-success" onclick="spin()">Spin Now!</button>
+                    @if (Convert.ToInt32(ViewData["chances_counter"]) == 0)
+                    {
+                        <button class="btn btn-success" disabled>
+                            <i class="ph-plus-circle text-sm"></i> 50   Spin Now!
+                        </button>
+                    }
+                    else
+                    {
+                        <input type="hidden" id="myPrize" asp-for="prizeName" />
+                        <form method="post">
+                            <a id="spinBtn" class="btn btn-success" asp-page-handler="AddPrize" asp-page="cycleOfWaste">
+                                @if (Convert.ToInt32(ViewData["free_chances"]) == 0)
+                                {
+                                    <p><i class="ph-plus-circle text-sm"></i> 50   Spin Now!</p>
+                                }
+                                else
+                                {
+                                    <p><i class="ph-plus-circle text-sm"></i> 0   Spin Now!</p>
+                                }
+                            </a>
+                        </form>
+                    }
                 </div>
-                <p>Remaining chances: <span id="chancesLeft">3</span>/5</p>
+                <p>Remaining chances: @ViewData["chances_counter"]/5</p>
             </div>
         </div>
     </div>
 </div>
 
+<input type="checkbox" id="prize_modal" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box">
+        <label for="prize_modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+        <h1 class="font-bold text-xl text-center">Congratulations!! You won</h1>
+        <h3 id="prizeName" class="text-center p-5"></h3>
+        <div class="modal-action">
+            <label for="prize_modal" class="btn">Close</label>
+            <a class="btn bg-orange-600 hover:bg-orange-600 text-white" href="@Url.Page("pointsHistory")">View prize</a>
+        </div>
+    </div>
+</div>
+
+
+<input type="checkbox" id="noPrize_modal" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box">
+        <label for="noPrize_modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+        <h1 class="font-bold text-xl text-center">Oh no...</h1>
+        <h3 class="text-center p-5">Seems like you didn't win anything. Don't give up and try again!</h3>
+        <div class="modal-action">
+            <label for="prize_modal" class="btn">Close</label>
+        </div>
+    </div>
+</div>
+
 <script>
+    var label_data = @Html.Raw(Json.Serialize(Model.ListOfPrizes.Select(p => p.Name)));
+    var chosen_prize = @Html.Raw(Json.Serialize(Model.chosenPrize));
 
     function create_spinner() {
         color_data = ['#fedf30', '#fdb441', '#fd6930', '#eb5454', '#bf9dd3', '#29b8cd', "#00f2a6", "#f67"];
-        label_data = ['$10 Grab voucher', '$10 Google Pay', '100 points', '$20 NTUC voucher', '10 points', '30 points', "300 points", 'X'];
+        //label_data = ['$10 Grab voucher', '$10 Google Pay', '100 points', '$20 NTUC voucher', '10 points', '30 points', "300 points", 'X'];
         var color = color_data;
         var label = label_data;
         var slices = color.length;
@@ -114,7 +194,7 @@
     function spin() {
         document.getElementById("spinBtn").disabled = true;
         color_data = ['#fedf30', '#fdb441', '#fd6930', '#eb5454', '#bf9dd3', '#29b8cd', "#00f2a6", "#f67"];
-        label_data = ['$10 Grab voucher', '$10 Google Pay', '100 points', '$20 NTUC voucher', '10 points', '30 points', "300 points", 'X'];
+        //label_data = ['$10 Grab voucher', '$10 Google Pay', '100 points', '$20 NTUC voucher', '10 points', '30 points', "300 points", 'X'];
         var color = color_data;
         var label = label_data;
         var slices = color.length;
@@ -138,17 +218,13 @@
             var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg); // deg 2 Array Index
             ai = (slices + ai) % slices; // Fix negative index
             document.getElementById("spinBtn").disabled = false;
+            document.getElementById("myPrize").value = label[ai];
             if (label[ai] != "X") {
-                return swal({
-                    title: "Congratulations, you won",
-                    text: label[ai]
-                });
+                document.getElementById("prize_modal").checked = true;
+                document.getElementById("prizeName").innerHTML = label[ai];
             }
             else {
-                return swal({
-                    title: "Oh no...",
-                    text: "Seems like you didn't win anything. Don't give up and try again!"
-                });
+                document.getElementById("noPrize_modal").checked = true;
             }
 
         }
@@ -186,4 +262,6 @@
     function rand(min, max) {
         return Math.random() * (max - min) + min;
     }
+
+    document.getElementById("spinBtn").addEventListener("click", spin);
 </script>
