@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ReACT.Models;
 
 namespace ReACT.Controllers;
@@ -189,6 +190,19 @@ public class RewardController : ControllerBase
         _context.RewardCategories.Remove(category);
         _context.SaveChanges();
         return new OkResult();
+    }
+
+    [HttpGet("{id:int}/Stock")]
+    public ActionResult GetStock(int id)
+    {
+        var variants = _context.RewardVariants.Where(v => v.RewardId == id).Include(v => v.Codes)
+            .Select(v => new
+            {
+                name = v.Name,
+                stock = v.Codes.Count
+            }).ToList();
+        if (variants.IsNullOrEmpty()) return new NotFoundResult();
+        return new JsonResult(variants);
     }
 }
 

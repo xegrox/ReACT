@@ -1,0 +1,80 @@
+<div x-data="StockRewardModal">
+    <input type="checkbox" id="stock-reward-modal-toggle" class="modal-toggle" x-ref="toggle"/>
+    <label for="stock-reward-modal-toggle" class="modal cursor-pointer">
+        <label class="modal-box !p-10 max-w-none w-[60rem]" for="">
+            <label for="stock-reward-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+                <i class="ph-x"></i>
+            </label>
+            <h3 class="text-2xl font-semibold mb-6">Stock Reward</h3>
+            <div class="flex space-x-8">
+                <div class="flex-1 py-5">
+                    <table class="table table-compact border-2 border-base-200 border-spacing-0 border-separate rounded-lg w-full">
+                        <thead>
+                        <tr>
+                            <td>Variant Name</td>
+                            <td>Stock Count</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <template x-for="v in variants">
+                            <tr>
+                                <td x-text="v.name"></td>
+                                <td x-text="v.stock"></td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="w-px bg-base-300"></div>
+                <div class="flex-1 py-5">
+                    <div class="rounded-2xl border-2 border-dashed border-base-300 min-h-[20rem] h-full flex flex-col items-center justify-center space-y-2 relative">
+                        <div class="absolute top-0 right-0 m-2">
+                            <div class="tooltip tooltip-left before:whitespace-pre before:content-[attr(data-tip)]" data-tip="Upload your csv file in this format: &#xa; $10, CSVEIASF &#xa; $10, AFIEGKDO &#xa; $20, QWNGOSXO">
+                                <button class="btn btn-ghost btn-circle btn-xs ph-info text-xl text-base-400"></button>
+                            </div>
+                        </div>
+                        <i class="ph-upload text-6xl text-base-300"></i>
+                        <p class="text-base-content/50 text-sm">Stock reward codes via csv file</p>
+                        <a href="#" onclick="" class="text-primary text-sm">Browse files</a>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </label>
+</div>
+
+<script>
+document.addEventListener("alpine:init", () => {
+    Alpine.data("StockRewardModal", () => ({
+            init() {
+                Object.assign(this, this.data())
+                document.addEventListener("stock-reward", (e) => this.open(e.detail.rewardId))
+            },
+            async open(id) {
+                this.variants = await this.$fetchjson(`/api/Reward/${id}/Stock`)
+                this.$refs.toggle.checked = true
+            },
+            data() {
+                return { 
+                    rewardId: null,
+                    variants: []
+                }
+            },
+            submitForm() {
+                const body = new FormData();
+                this.variants.forEach((v, i) => {
+                })
+                fetch(`/api/Reward/${this.rewardId}/Stock`, {
+                    method: 'POST',
+                    body
+                }).then((response) => {
+                    if (response.ok) {
+                        this.done = true
+                        this.$refs.toggle.checked = false
+                        this.$dispatch("success")
+                    }
+                })
+            }
+        }))
+})
+</script>

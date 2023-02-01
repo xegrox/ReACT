@@ -56,7 +56,7 @@
                     <div class="tooltip" data-tip="Edit Reward Details" x-on:click="$dispatch('edit-reward', {rewardId: @reward.Id})">
                         <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
                     </div>
-                    <div class="tooltip" data-tip="Manage Reward Codes">
+                    <div class="tooltip" data-tip="Stock Reward Codes" x-on:click="$dispatch('stock-reward', {rewardId: @reward.Id})">
                         <i class="btn btn-sm btn-ghost btn-circle ph-package-bold"></i>
                     </div>
                     <div class="tooltip" data-tip="Delete Reward" x-on:click="$dispatch('delete-reward', {rewardId: @reward.Id, rewardName: '@reward.Name'})">
