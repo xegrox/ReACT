@@ -25,8 +25,8 @@
         <label class="modal-box relative w-[50vw] max-w-none h-[85vh]" for="">
 
             @*<label for="newThread-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
-                <i class="ph-x"></i>
-            </label>*@
+                    <i class="ph-x"></i>
+                </label>*@
 
             <!--Modal content goes here-->
             <h1 class="text-3xl">Create New Thread</h1>
@@ -62,35 +62,42 @@
     </label>
 </div>
 
-@foreach (var thread in Model.threadList)
+@if (Model.threadList != null)
 {
-    @if (thread.Status != "hidden")
+    @foreach (var thread in Model.threadList)
     {
-        @*Forum posts*@
-        <div class="grid grid-cols-5 gap-4">
-            <div class="bg-emerald-100 text-primary rounded-lg mb-12 col-start-2 col-span-3 grid grid-cols-12">
-                <div class="col-span-10 ml-4 mt-3 mb-5">
-                    <a class="text-2xl" asp-page="/forumThread" asp-route-id="@thread.Id">
-                        @thread.Title
-                    </a>
-                </div>
-
-                <div class="col-span-10 ml-4 mb-6">
-                    <a class="text-lg" asp-page="/forumThread" asp-route-id="@thread.Id">
-                        @thread.Content
-                    </a>
-                </div>
-
-                @if (thread.ImageURL != "")
-                {
-                    <div>
-                        @if (thread.ImageURL != "")
-                        {
-                            <img class="" src="@thread.ImageURL" loading="lazy" />
-                        }
+        @if (thread.Status != "hidden")
+        {
+            @*Forum posts*@
+            <div class="grid grid-cols-5 gap-4">
+                <div class="bg-emerald-100 text-primary rounded-lg mb-12 col-start-2 col-span-3 grid grid-cols-12">
+                    <div class="col-span-10 ml-4 mt-3 mb-5">
+                        <a class="text-2xl" asp-page="/forumThread" asp-route-id="@thread.Id">
+                            @thread.Title
+                        </a>
                     </div>
-                }
+
+                    <div class="col-span-10 ml-4 mb-6">
+                        <a class="text-lg" asp-page="/forumThread" asp-route-id="@thread.Id">
+                            @thread.Content
+                        </a>
+                    </div>
+
+                    @if (thread.ImageURL != "")
+                    {
+                        <div>
+                            @if (thread.ImageURL != "")
+                            {
+                                <img class="" src="@thread.ImageURL" loading="lazy" />
+                            }
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
+        }
     }
 }
+else
+{
+    <p class="text-4xl text-center">No forum threads</p>
+} 
