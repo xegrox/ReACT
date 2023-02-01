@@ -20,7 +20,7 @@
         <canvas id="canvas" class="absolute"></canvas>
         <div id="capture-events" class="absolute w-full h-full"></div>
     </div>
-    <div class="h-[40rem] absolute flex right-0 top-1/2 -translate-y-1/2" x-data="{open: false, tree: null}" x-on:show-tree.document="open = true; tree = $event.detail" x-on:hide-sidebar.document="open = false">
+    <div class="h-4/5 absolute flex right-0 top-1/2 -translate-y-1/2" x-data="{open: false, tree: null}" x-on:show-tree.document="open = true; tree = $event.detail" x-on:hide-sidebar.document="open = false">
         <div class="w-8 bg-base-300 rounded-l-3xl cursor-pointer flex transition-opacity" x-on:click="open = !open" :class="open || 'opacity-60'">
             <i class="ph-caret-left-bold m-auto transition-transform" :class="open && 'rotate-180'"></i>
         </div>
