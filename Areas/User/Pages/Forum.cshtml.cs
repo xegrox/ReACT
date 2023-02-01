@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReACT.Areas.User.Pages
 {
+    [Authorize]
     public class ForumModel : PageModel
     {
         private readonly ForumService _forumService;

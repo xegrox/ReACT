@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -5,6 +6,7 @@ using ReACT.Models;
 
 namespace ReACT.Areas.User.Pages
 {
+    [Authorize]
     public class UserDetailsModel : PageModel
     {
         private UserManager<ApplicationUser> UserManager { get; }
