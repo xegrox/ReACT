@@ -19,9 +19,10 @@
         this.alert = null
         let variantId = this.currentVariant().id
         let queries = new URLSearchParams()
+        queries.append("variantId", variantId)
         if (this.hasRecipient) queries.append("recipient", this.recipient)
         let success = await this.$fetchok(
-            `/api/Reward/Claim/${variantId}?` + queries.toString(),
+            "@Url.Action("ClaimReward", "Redeem")?" + queries.toString(),
             "POST"
         )
         this.loading = false

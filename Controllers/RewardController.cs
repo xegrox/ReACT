@@ -229,34 +229,6 @@ public class RewardController : ControllerBase
         _context.SaveChanges();
         return Ok();
     }
-
-    [Authorize]
-    [HttpPost("Claim/{variantId:int}")]
-    public async Task<ActionResult> ClaimReward(
-        [FromServices] EmailSender email,
-        [FromServices] UserManager<ApplicationUser> userManager,
-        int variantId,
-        [EmailAddress] string? recipient = null)
-    {
-        var variant = _context.RewardVariants.Include(v => v.Reward).FirstOrDefault(v => v.Id == variantId);
-        if (variant == null) return new NotFoundResult();
-        var code = _context.RewardCodes.FirstOrDefault(c => c.VariantId == variantId);
-        if (code == null) return new NotFoundResult();
-        var user = await userManager.GetUserAsync(User);
-        if (user.Total_Points < variant.Points) return new BadRequestResult();
-
-        await email.SendEmailAsync(
-            recipient ?? user.Email, 
-            $"Redeem {variant.Reward.Name} {variant.Name} code", 
-            $"<p>Here is your reward code: <b>{code.Code}</b></p>" +
-            $"<p>Please redeem it at <a href='{variant.Reward.RedeemUrl}'>{variant.Reward.RedeemUrl}</a></p>" +
-            "<p>Thank you for using ReACT, happy recycling!</p>");
-        _context.RewardCodes.Remove(code);
-        await _context.SaveChangesAsync();
-        user.Total_Points -= variant.Points;
-        await userManager.UpdateAsync(user);
-        return new OkResult();
-    }
 }
 
 public class VariantFormModel

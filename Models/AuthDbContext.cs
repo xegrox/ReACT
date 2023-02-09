@@ -40,6 +40,8 @@ namespace ReACT.Models
         public DbSet<RewardCategory> RewardCategories { get; set; }
         public DbSet<RewardCode> RewardCodes { get; set; }
         public DbSet<RewardVariant> RewardVariants { get; set; }
+        
+        public DbSet<RewardHistory> RewardHistories { get; set; }
 
         public DbSet<Thread> Threads { get; set; }
     }
