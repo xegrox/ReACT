@@ -8,6 +8,16 @@
     Alpine.magic('fetchok', () => (url, method, body, bodyIsJson) => fetchRes(url, method, body, bodyIsJson).then((response) => response.ok))
     Alpine.magic('elemById', () => (id) => document.getElementById(id))
     Alpine.magic('page', (el) => getPageController(el, Alpine))
+    Alpine.magic('numRush', (el) => (property, target, time) => {
+        let num = Alpine.evaluate(el, property)
+        const interval = Math.max(time / Math.abs(target - num), 5)
+        const step = (target - num) /  (time / interval)
+        const handle = setInterval(() => {
+            if(num !== target) num += step
+            else clearInterval(handle)
+            Alpine.evaluate(el, `${property} = ${num}`)
+        }, interval)
+    })
     Alpine.directive('loading', (el, {expression}) => {
         const getLoading = Alpine.evaluateLater(el, expression)
         const spinner = document.createElement("div")

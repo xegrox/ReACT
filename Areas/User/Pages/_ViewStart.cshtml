@@ -21,7 +21,13 @@
     <a href="@Url.Page("getMorePoints")">
         <div class="flex h-8 px-3 rounded-full border-2 items-center gap-1.5 min-w-[8rem] bg-base-100">
             <i class="ph-moon"></i>
-            <p class="flex-1">@points</p>
+            <p class="flex-1" x-data="{
+                points: @points,
+                async updatePoints() {
+                    let newPoints = await $fetchjson('@Url.Action("Points", "UserDetails")')
+                    this.$numRush('points', newPoints, 1000)
+                }
+            }" x-text="points" x-on:update-points.document="updatePoints()"></p>
             <i class="ph-plus-circle text-sm"></i>
         </div>
     </a>
