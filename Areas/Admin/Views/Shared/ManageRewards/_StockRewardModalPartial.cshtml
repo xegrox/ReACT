@@ -50,7 +50,7 @@
                         <i class="ph-upload text-6xl text-base-300"></i>
                         <p class="text-base-content/50 text-sm">Upload csv file to stock reward codes</p>
                         <a href="#" class="text-primary text-sm" x-on:click.prevent="$refs.upload.click()">Browse files</a>
-                        <input type="file" accept=".csv" x-ref="upload" hidden x-on:change="parseCsv($el.files[0])"/>
+                        <input type="file" accept=".csv" x-ref="upload" hidden x-on:input="parseCsv($el.files[0])"/>
                     </div>
                 </div>
             </div>
@@ -84,6 +84,7 @@ document.addEventListener("alpine:init", () => {
                 return this.filesToAdd.reduce((a, f) => a + (f.codes[variantId]?.length ?? 0), 0)
             },
             parseCsv(file) {
+                if (!file) return
                 Papa.parse(file, {
                     skipEmptyLines: "greedy",
                     transform: (value) => value.trim(),
@@ -116,7 +117,6 @@ document.addEventListener("alpine:init", () => {
                         codes[id].push(...f.codes[id])
                     }
                 }
-                console.log(Object.keys(codes).map(id => ({id, codes: codes[id]})))
                 fetch(`/api/Reward/${this.rewardId}/Stock`, {
                     method: 'POST',
                     headers: {
