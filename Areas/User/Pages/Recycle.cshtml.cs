@@ -71,4 +71,12 @@ public class Recycle : PageModel
         }
         return Page();
     }
+
+    public IActionResult OnGetPaperSlips()
+    {
+        return new ViewResult
+        {
+            ViewName = "RecyclePaperSlips"
+        };
+    } 
 }

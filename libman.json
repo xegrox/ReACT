@@ -34,6 +34,10 @@
       "provider": "jsdelivr",
       "library": "alpine-turbo-drive-adapter@2.0.0",
       "destination": "wwwroot/lib/alpine-turbo-drive-adapter"
+    },
+    {
+      "library": "qrcodejs@1.0.0",
+      "destination": "wwwroot/lib/qrcodejs"
     }
   ]
 }
