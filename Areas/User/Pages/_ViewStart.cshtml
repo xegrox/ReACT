@@ -1,6 +1,8 @@
-﻿@using ReACT.Models
-
+﻿@using Microsoft.AspNetCore.Identity
+@using ReACT.Models
+@inject UserManager<ApplicationUser> UserManager
 @{
+    var points = (await UserManager.GetUserAsync(User)).Total_Points;
     Layout = "_SideNavbarLayout";
     ViewData["navbar_items"] = new List<NavbarLayoutItem>
     {
@@ -19,7 +21,7 @@
     <a href="@Url.Page("getMorePoints")">
         <div class="flex h-8 px-3 rounded-full border-2 items-center gap-1.5 min-w-[8rem] bg-base-100">
             <i class="ph-moon"></i>
-            <p class="flex-1">1000</p>
+            <p class="flex-1">@points</p>
             <i class="ph-plus-circle text-sm"></i>
         </div>
     </a>
