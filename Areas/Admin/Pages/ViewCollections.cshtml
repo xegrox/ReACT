@@ -2,7 +2,6 @@
 @model ReACT.Areas.Admin.Pages.ViewCollectionModel
 @{
     var completed = ViewData["completed"] as int?;
-
 }
 
 <div class="flex flex-col p-16">
@@ -34,7 +33,7 @@
             {
                 <thead>
                     <tr>
-                        <th>Collection ID</th>
+                        <th>Collection Address</th>
                         <th>Collection Date</th>
                         <th>Assigned Company</th>
                         <th>Details</th>
@@ -45,7 +44,7 @@
                     @foreach (var collection in Model.CollectionList)
                     {
                         <tr>
-                            <td>@collection.Id</td>
+                            <td>@collection.Address</td>
                             <td>@collection.CollectionDate.ToShortDateString()</td>
                             @if (collection.AssignedCompany != "N/A")
                             {
@@ -54,7 +53,7 @@
                             else
                             {
                                 <td>
-                                    <label class="btn btn-sm btn-primary animate-none" for="assign-company-modal">
+                                    <label class="btn btn-sm btn-primary animate-none" for="assign-company-modal-@collection.Id">
                                         <i class="ph-plus-bold pr-2"></i>
                                         Add Company
                                     </label>
