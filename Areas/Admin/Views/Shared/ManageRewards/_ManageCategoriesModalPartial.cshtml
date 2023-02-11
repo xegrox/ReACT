@@ -71,7 +71,7 @@ document.addEventListener("alpine:init", () => {
                 await this.$fetch(`/api/Reward/Category/${category.id}`, "DELETE")
                 this.$dispatch("success")
             }
-            this.categories.splice(this.categories.findIndex(c => category.id === c.id), 1)
+            this.categories.splice(this.categories.findIndex(c => category.key === c.key), 1)
         },
         async add(category) {
             const data = new FormData()
