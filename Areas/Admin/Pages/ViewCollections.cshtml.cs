@@ -37,17 +37,19 @@ public class ViewCollectionModel : PageModel
             ViewData["completed"] = 1;
         }
 
-        ApplicationUser? currentUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(userId));
-        user = currentUser;
+        ApplicationUser? collectionUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(userId));
+        user = collectionUser;
 
         collection = _collectionService.GetCollection(collectionId);
-        ViewData["collectionId"] = collectionId;
 
         return Page();
     }
 
     [BindProperty, Required]
     public int CompanyId { get; set; }
+
+    [BindProperty, Required]
+    public int CollectionId { get; set; }
     public Collection collection { get; set; }
     public List<Models.Company> companies { get; set; } = new();
 
@@ -58,7 +60,10 @@ public class ViewCollectionModel : PageModel
         {
             try
             {
+                var collection = _collectionService.GetCollection(CollectionId);
+                var company = _companyService.GetCompany(CompanyId);
                 collection.Company.Id = CompanyId;
+                collection.AssignedCompany = company.Name;
                 _collectionService.UpdateCollection(collection);
 
                 TempData["FlashMessage.Type"] = "success";

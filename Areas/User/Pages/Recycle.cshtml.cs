@@ -53,6 +53,7 @@ public class Recycle : PageModel
             var collection = new Collection()
             {
                 UserId = userId,
+                Address = Address,
                 CollectionDate = ParsedDate.Date,
                 AssignedCompany = "N/A",
                 Status = "Not Completed"

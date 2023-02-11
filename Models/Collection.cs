@@ -8,6 +8,7 @@ namespace ReACT.Models
     {
         public int Id { get; set; }
         public string UserId { get; set; }
+        public string Address { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime CollectionDate { get; set; }
