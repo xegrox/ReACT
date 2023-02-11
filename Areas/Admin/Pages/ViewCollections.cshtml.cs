@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace ReACT.Areas.Admin.Pages;
 
@@ -37,71 +38,50 @@ public class ViewCollectionModel : PageModel
             ViewData["completed"] = 1;
         }
 
-        ApplicationUser? currentUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(userId));
-        user = currentUser;
-
-        collection = _collectionService.GetCollection(collectionId);
-        ViewData["collectionId"] = collectionId;
-
         return Page();
     }
 
-    [BindProperty, Required]
     public int CompanyId { get; set; }
+    public int CollectionId { get; set; }
     public Collection collection { get; set; }
     public List<Models.Company> companies { get; set; } = new();
 
     // Assign company OnPost
-    public IActionResult OnPostAssignCompany()
+    public IActionResult OnPostAssignCompany(int CollectionId, int CompanyId)
     {
         if (ModelState.IsValid)
         {
-            try
-            {
-                collection.Company.Id = CompanyId;
-                _collectionService.UpdateCollection(collection);
+            var collection = _collectionService.GetCollection(CollectionId);
+            var company = _companyService.GetCompany(CompanyId);
+            //collection.Company.Id = CompanyId;
+            collection.AssignedCompany = company.Name;
+            _collectionService.UpdateCollection(collection);
 
-                TempData["FlashMessage.Type"] = "success";
-                TempData["FlashMessage.Text"] = string.Format("Assigned company.");
-
-                return RedirectToPage("/ViewCollections");
-            }
-            catch
-            {
-                ModelState.AddModelError("AssignCompanyError", "Company could not be assigned");
-                return Page();
-            }
+            return RedirectToPage("/ViewCollections");
         }
-        else { return Page(); }
+        else { return RedirectToPage("/ViewCollections"); }
     }
 
 
-    [BindProperty, Required]
     public string EditDate { get; set; }
+    public DateTime ParsedDate { get; set; }
 
     // Edit Collection OnPost
-    public IActionResult OnPostEditCollection()
+    public IActionResult OnPostEditCollection(string EditDate, int CollectionId, int CompanyId)
     {
         if (ModelState.IsValid)
         {
-            try
-            {
-                collection.CollectionDate = DateTime.ParseExact(EditDate, "dd-MM-yyy", null);
-                collection.Company.Id = CompanyId;
-                _collectionService.UpdateCollection(collection);
+            var collection = _collectionService.GetCollection(CollectionId);
 
-                TempData["FlashMessage.Type"] = "success";
-                TempData["FlashMessage.Text"] = string.Format("Edited collection.");
+            ParsedDate = DateTime.ParseExact(EditDate, "yyyy-MM-dd", CultureInfo.CurrentCulture);
+            collection.CollectionDate = ParsedDate.Date;
+            //collection.Company.Id = CompanyId;
+            _collectionService.UpdateCollection(collection);
 
-                return RedirectToPage("/ViewCollections");
-            }
-            catch
-            {
-                ModelState.AddModelError("EditCollectionError", "Collection could not be edited");
-                return Page();
-            }
+
+            return RedirectToPage("/ViewCollections");
         }
-        else { return Page(); }
+        else { return RedirectToPage("/ViewCollections"); }
     }
 
     public ApplicationUser user { get; set; }
