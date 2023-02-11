@@ -1,0 +1,52 @@
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var userId = (await UserManager.GetUserAsync(User)).Id;
+}
+
+<html lang="en">
+<head>
+    <title>Recycling Paper Slip</title>
+    <script src="~/lib/qrcodejs/qrcode.min.js"></script>
+    <style>
+        @@page { margin: 0; size: A4 }
+        section { height: 296mm; width: 210mm; margin: auto }
+        @@media screen {
+          html, body { background: #e0e0e0 }
+          section {
+            background: white;
+            box-shadow: 0 .5mm 2mm rgba(0,0,0,.3);
+            margin: 2rem auto;
+          }
+        }
+        #slips { display: flex; height: 100% }
+        #slips > * { flex: 1 1 0; padding: 15px }
+        #slips > * > img { max-width: 100% }
+        #slips > * + * { border-left: 1px dashed #AAAAAA }
+    </style>
+</head>
+<body>
+<section>
+    <div id="qrcode-gen" style="display: none"></div>
+    <div id="slips">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</section>
+</body>
+<script>
+let qrcode = new QRCode(document.getElementById("qrcode-gen"), "@userId");
+document.addEventListener('DOMContentLoaded', () => {
+    for (let child of document.getElementById("slips").children) {
+        let clone = qrcode._oDrawing._elImage.cloneNode();
+        child.appendChild(clone);
+    }
+})
+</script>
+</html>

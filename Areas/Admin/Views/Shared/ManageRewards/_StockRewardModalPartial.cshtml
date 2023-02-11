@@ -7,12 +7,17 @@
             </label>
             <h3 class="text-2xl font-semibold mb-6">Stock Reward</h3>
             <div class="flex space-x-8">
-                <div class="flex-1 py-5">
+                <div class="flex-1 py-5 flex flex-col">
+                    <div class="btn btn-primary btn-sm mb-3 btn-ghost text-primary gap-2 bg-primary/10 hover:bg-primary/20" :disabled="filesToAdd.length == 0" x-on:click.prevent="updateStock()">
+                        <i class="ph-arrow-up-bold"></i>
+                        <p>Update stock</p>
+                    </div>
                     <table class="table table-compact border-2 border-base-200 border-spacing-0 border-separate rounded-lg w-full">
                         <thead>
                         <tr>
                             <td>Variant Name</td>
                             <td>Stock Count</td>
+                            <td>To Add</td>
                         </tr>
                         </thead>
                         <tbody>
@@ -20,6 +25,7 @@
                             <tr>
                                 <td x-text="v.name"></td>
                                 <td x-text="v.stock"></td>
+                                <td x-text="getToAddCount(v.id) || '-'" class="font-bold">-</td>
                             </tr>
                         </template>
                         </tbody>
@@ -27,15 +33,24 @@
                 </div>
                 <div class="w-px bg-base-300"></div>
                 <div class="flex-1 py-5">
-                    <div class="rounded-2xl border-2 border-dashed border-base-300 min-h-[20rem] h-full flex flex-col items-center justify-center space-y-2 relative">
+                    <div class="flex gap-2 mb-3">
+                        <template x-for="f in filesToAdd">
+                            <div class="btn btn-xs btn-outline btn-primary gap-2 no-animation cursor-default">
+                                <p class="pl-1" x-text="f.name"></p>
+                                <i class="ph-x-bold cursor-pointer" x-on:click.prevent="filesToAdd.splice(filesToAdd.indexOf(f), 1)"></i>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="h-72 rounded-2xl border-2 border-dashed border-base-300 h-full flex flex-col items-center justify-center space-y-2 relative">
                         <div class="absolute top-0 right-0 m-2">
-                            <div class="tooltip tooltip-left before:whitespace-pre before:content-[attr(data-tip)]" data-tip="Upload your csv file in this format: &#xa; $10, CSVEIASF &#xa; $10, AFIEGKDO &#xa; $20, QWNGOSXO">
+                            <div class="tooltip tooltip-left before:whitespace-pre before:content-[attr(data-tip)] before:text-start" data-tip="Upload your csv file in this format: &#xa; $10, CSVEIASF &#xa; $10, AFIEGKDO &#xa; $20, QWNGOSXO">
                                 <button class="btn btn-ghost btn-circle btn-xs ph-info text-xl text-base-400"></button>
                             </div>
                         </div>
                         <i class="ph-upload text-6xl text-base-300"></i>
-                        <p class="text-base-content/50 text-sm">Stock reward codes via csv file</p>
-                        <a href="#" onclick="" class="text-primary text-sm">Browse files</a>
+                        <p class="text-base-content/50 text-sm">Upload csv file to stock reward codes</p>
+                        <a href="#" class="text-primary text-sm" x-on:click.prevent="$refs.upload.click()">Browse files</a>
+                        <input type="file" accept=".csv" x-ref="upload" hidden x-on:input="parseCsv($el.files[0])"/>
                     </div>
                 </div>
             </div>
@@ -51,27 +66,69 @@ document.addEventListener("alpine:init", () => {
                 document.addEventListener("stock-reward", (e) => this.open(e.detail.rewardId))
             },
             async open(id) {
+                this.rewardId = id
                 this.variants = await this.$fetchjson(`/api/Reward/${id}/Stock`)
                 this.$refs.toggle.checked = true
             },
             data() {
                 return { 
                     rewardId: null,
-                    variants: []
+                    variants: [], // {id, name, stock}
+                    filesToAdd: [] // { name, codes: {[id]: []}}
                 }
             },
-            submitForm() {
-                const body = new FormData();
-                this.variants.forEach((v, i) => {
+            getVariantIdMapping() {
+                return this.variants.reduce((a, v) => ({...a, [v.name]: v.id}), {})
+            },
+            getToAddCount(variantId) {
+                return this.filesToAdd.reduce((a, f) => a + (f.codes[variantId]?.length ?? 0), 0)
+            },
+            parseCsv(file) {
+                if (!file) return
+                Papa.parse(file, {
+                    skipEmptyLines: "greedy",
+                    transform: (value) => value.trim(),
+                    error: () => {
+                        console.log("error")
+                    },
+                    complete: (results) => {
+                        let mapping = this.getVariantIdMapping()
+                        let codes = {}
+                        for (let row of results.data) {
+                            if (row.length !== 2) continue
+                            let variantId = mapping[row[0]]
+                            if (variantId === undefined) continue
+                            let code = row[1]
+                            codes[variantId] ??= []
+                            codes[variantId].push(code)
+                        }
+                        this.filesToAdd.push({
+                            name: file.name,
+                            codes
+                        })
+                    }
                 })
+            },
+            updateStock() {
+                let codes = {}
+                for (let f of this.filesToAdd) {
+                    for (let id in f.codes) {
+                        codes[id] ??= []
+                        codes[id].push(...f.codes[id])
+                    }
+                }
                 fetch(`/api/Reward/${this.rewardId}/Stock`, {
                     method: 'POST',
-                    body
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.keys(codes).map(id => ({id, codes: codes[id]})))
                 }).then((response) => {
                     if (response.ok) {
-                        this.done = true
-                        this.$refs.toggle.checked = false
                         this.$dispatch("success")
+                        let rewardId = this.rewardId
+                        Object.assign(this, this.data())
+                        this.open(rewardId)
                     }
                 })
             }

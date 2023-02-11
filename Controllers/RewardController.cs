@@ -1,8 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ReACT.Models;
+using ReACT.Services;
 
 namespace ReACT.Controllers;
 
@@ -218,11 +221,33 @@ public class RewardController : ControllerBase
         var variants = _context.RewardVariants.Where(v => v.RewardId == id).Include(v => v.Codes)
             .Select(v => new
             {
+                id = v.Id,
                 name = v.Name,
                 stock = v.Codes.Count
             }).ToList();
         if (variants.IsNullOrEmpty()) return new NotFoundResult();
         return new JsonResult(variants);
+    }
+
+    [HttpPost("{id:int}/Stock")]
+    public ActionResult AddStock(int id, List<VariantStock> stock)
+    {
+        var variants = _context.Rewards.Include(r => r.Variants).ToList().FirstOrDefault(r => r.Id == id)?.Variants.ToList();
+        if (variants == null) return new NotFoundResult();
+        var codes = new List<RewardCode>();
+        foreach (var entry in stock)
+        {
+            var variant = variants.Find(v => v.Id == entry.Id);
+            if (variant == null) continue;
+            codes.AddRange(entry.Codes.Select(c => new RewardCode
+            {
+                Variant = variant,
+                Code = c
+            }));
+        }
+        _context.RewardCodes.AddRange(codes);
+        _context.SaveChanges();
+        return Ok();
     }
 }
 
@@ -233,4 +258,13 @@ public class VariantFormModel
     [Required] public string Name { get; set; }
 
     [Required] [Range(1, int.MaxValue)] public int Points { get; set; }
+}
+
+public class VariantStock
+{
+    [Required]
+    public int Id { get; set; }
+    
+    [Required]
+    public List<string> Codes { get; set; }
 }

@@ -1,45 +1,86 @@
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Reward
+@inject UserManager<ApplicationUser> UserManager
 
 <!DOCTYPE html>
-<div class="flex space-x-8 items-center mb-7 h-12">
-    <a class="btn btn-ghost btn-circle btn-sm text-xl text-base-content/80" hx-get="@Url.ActionLink("RewardListFrame", "Redeem", new {categoryId = Model.CategoryId})" hx-target="#redeem-modal-content">
-        <i class="ph-arrow-left-bold"></i>
-    </a>
-    <h3 class="text-2xl font-semibold pl-1">@Model.Category.Name</h3>
-</div>
+<div class="flex flex-col h-full" x-data='
+{
+    userPoints: @((await UserManager.GetUserAsync(User)).Total_Points),
+    hasRecipient: false,
+    recipient: "",
+    selectedIndex: 0,
+    variants: @Html.Raw(Json.Serialize(Model.Variants.Select(v => new { id = v.Id, name = v.Name, points = v.Points }))),
+    loading: false,
+    alert: null,
+    currentVariant() { return this.variants[this.selectedIndex] },
+    async submitForm() {
+        this.loading = true
+        this.alert = null
+        let variantId = this.currentVariant().id
+        let queries = new URLSearchParams()
+        queries.append("variantId", variantId)
+        if (this.hasRecipient) queries.append("recipient", this.recipient)
+        let success = await this.$fetchok(
+            "@Url.Action("ClaimReward", "Redeem")?" + queries.toString(),
+            "POST"
+        )
+        this.loading = false
+        this.alert = "success"
+        document.dispatchEvent(new Event("update-points"))
+    }
+}'>
+    <div class="flex space-x-8 items-center mb-7 h-12">
+        <a class="btn btn-ghost btn-circle btn-sm text-xl text-base-content/80" hx-get="@Url.ActionLink("RewardListFrame", "Redeem", new { categoryId = Model.CategoryId })" hx-target="#redeem-modal-content">
+            <i class="ph-arrow-left-bold"></i>
+        </a>
+        <h3 class="text-2xl font-semibold pl-1">@Model.Category.Name</h3>
+    </div>
 
-<div class="flex space-x-16 max-w-3xl items-start">
-    <img class="flex-1 card shadow-xl" src="@Model.ImageUrl">
-    <div class="flex-1 space-y-8" x-data="{points: '@Model.Variants.First().Points'}">
-        <h3 class="text-2xl font-semibold">@Model.Name</h3>
-        <div>
-            <label class="label"><span class="label-text">Amount</span></label>
-            <div class="flex space-x-2 pb-2" x-data="{selected: '@Model.Variants.First().Id'}">
-                @foreach (var item in Model.Variants)
-                {
-                    <label class="btn btn-primary rounded-full" :class="selected == '@item.Id' ? 'btn-active' : 'btn-outline'">
-                        <input type="radio" name="variant" value="@item.Id" class="hidden" x-model="selected"
-                               x-on:change="if ($el.checked) points = @item.Points"/>
-                        @item.Name
-                    </label>    
-                }
+    <div class="flex space-x-16 max-w-3xl items-start">
+        <img class="flex-1 card shadow-xl w-0" src="@Model.ImageUrl">
+        <form class="flex-1 space-y-8" x-on:submit.prevent="submitForm()">
+            <h3 class="text-2xl font-semibold">@Model.Name</h3>
+            <div>
+                <label class="label">
+                    <span class="label-text">Amount</span>
+                </label>
+                <div class="flex space-x-2 pb-2" :class="loading && 'opacity-60'">
+                    <template x-for="(v, i) in variants">
+                        <label class="btn btn-primary rounded-full" :class="selectedIndex == i ? 'btn-active' : 'btn-outline'">
+                            <input type="radio" name="variant" :value="i" class="hidden" x-model="selectedIndex" :disabled="loading"/>
+                            <p x-text="v.name"></p>
+                        </label>
+                    </template>
+                </div>
             </div>
-        </div>
-        <div x-data="{checked: false}" class="space-y-1">
-            <label class="label cursor-pointer">
-                <span class="label-text">Gift to someone else</span> 
-                <input type="checkbox" checked="checked" class="checkbox checkbox-primary" x-model="checked"/>
-            </label>
-            <div class="pb-2">
-                <label class="label"><span class="label-text">Recipient Email</span></label>
-                <input type="text" placeholder="john_doe@mymail.com" class="input input-bordered w-full" :disabled="!checked"/>
+            <div class="space-y-1">
+                <label class="label cursor-pointer">
+                    <span class="label-text">Gift to someone else</span>
+                    <input type="checkbox" class="checkbox checkbox-primary" x-model="hasRecipient" :disabled="loading"/>
+                </label>
+                <div class="pb-2">
+                    <label class="label">
+                        <span class="label-text">Recipient Email</span>
+                    </label>
+                    <input type="email" placeholder="john_doe@mymail.com" class="input input-bordered w-full" :disabled="!hasRecipient || loading" x-model="recipient"/>
+                </div>
             </div>
-        </div>
-        <div>
-            <div class="btn btn-primary w-full my-4">
-                Claim for<i class="ph-moon-bold pl-1 pr-0.5"></i><p x-text="points"></p>
+            <div>
+                <button type="submit" class="btn btn-primary w-full my-4" :disabled="userPoints < currentVariant().points" x-loading="loading">
+                    Claim for<i class="ph-moon-bold pl-1 pr-0.5"></i>
+                    <p x-text="currentVariant().points"></p>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="mt-auto alert alert-success shadow-lg" x-show="alert == 'success'">
+        <div class="flex w-full">
+            <i class="ph-check-circle-bold text-lg"></i>
+            <p>Reward has been delivered to <span class="font-bold" x-text="hasRecipient ? recipient : 'your email inbox'"></span></p>
+            <div class="ml-auto btn btn-ghost btn-circle btn-sm" x-on:click="alert = null">
+                <i class="ph-x-bold"></i>
             </div>
         </div>
     </div>
 </div>
-
