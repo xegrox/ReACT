@@ -29,7 +29,7 @@ public class RewardController : ControllerBase
     {
         var category = _context.RewardCategories.Include(c => c.Rewards).SingleOrDefault(c => c.Id == categoryId);
         if (category == null) return new BadRequestResult();
-        
+
         var imageUrl = $"/images/uploads/{Guid.NewGuid().ToString()}{Path.GetExtension(image.FileName)}";
         var imagePath = Path.Join(env.WebRootPath, imageUrl);
         Directory.CreateDirectory(Path.GetDirectoryName(imagePath)!);
@@ -48,7 +48,27 @@ public class RewardController : ControllerBase
                 Points = v.Points
             }).ToHashSet()
         };
-        
+
+        foreach (var oneVariant in reward.Variants)
+        {
+            var cw_prize = new CycleOfWaste_prizes
+            {
+                Name = name,
+                Points = 0,
+                RewardVariantId = oneVariant.Id,
+                RewardVariant = oneVariant
+            };
+            if (_context.CycleOfWaste_prizes.Count() < 8)
+            {
+                cw_prize.VisibleToUser = true;
+            }
+            else
+            {
+                cw_prize.VisibleToUser = false;
+            }
+            _context.CycleOfWaste_prizes.Add(cw_prize);
+        }
+
         category.Rewards.Add(reward);
         await _context.SaveChangesAsync();
         return new OkResult();

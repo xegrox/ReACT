@@ -42,5 +42,7 @@ namespace ReACT.Models
         public DbSet<RewardVariant> RewardVariants { get; set; }
 
         public DbSet<Thread> Threads { get; set; }
+
+        public DbSet<PointsHistory> PointsHistory { get; set; }
     }
 }

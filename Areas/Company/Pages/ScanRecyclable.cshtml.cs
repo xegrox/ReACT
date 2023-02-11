@@ -29,29 +29,31 @@ public class AllocatePoints : PageModel
 
     public List<Collection> RecyclableCollectionList { get; set; } = new();
 
-    public ApplicationUser UsersList { get; set; } = new();
+    public List<ApplicationUser> UsersList { get; set; } = new();
 
     public List<RecyclingType> RecyclingTypeList { get; set; } = new();
 
     public void OnGet()
     {
-        RecyclableCollectionList = _collectionService.GetCollections();
+        RecyclableCollectionList = _collectionService.GetCollectionsByCompany("Company Test");
         foreach (var collection in RecyclableCollectionList)
         {
             var oneUser = _authDbContext.Users.FirstOrDefault(x => x.Id == collection.UserId);
             if (oneUser != null)
             {
-                UsersList = oneUser;
+                UsersList.Add(oneUser);
             }
         }
     }
 
-    public IActionResult OnPostAdd_Collection()
+    public async Task<ActionResult> OnPostAdd_Collection()
     {
         ApplicationUser? selectedUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(oneCollection.UserId));
         if (selectedUser != null)
         {
             var pointsPerKG = 0;
+
+            // get PointsPerKG conversion rate
             RecyclingTypeList = _recyclingTypeService.GetAllTypes();
             foreach (var recyclingType in RecyclingTypeList)
             {
@@ -62,20 +64,44 @@ public class AllocatePoints : PageModel
                 }
             }
 
+            // get company
             var companyList = _companyService.GetCompany(1);
             if (companyList != null)
             {
+                // check if user has scheduled a recyclable collection
+                var check_collection = _authDbContext.Collections.FirstOrDefault(x => x.UserId.Equals(selectedUser.Id) && x.Status.Equals("Not Completed"));
+                if (check_collection == null) {
+                    ModelState.AddModelError("", "This user has not scheduled a collection.");
+                    return Page();
+                }
+
+                // update collection status
+                oneCollection.UserId = selectedUser.Id;
                 oneCollection.CollectionDate = DateTime.Now;
-                oneCollection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
-                selectedUser.Total_Points += oneCollection.PointsAllocated;
                 oneCollection.AssignedCompany = companyList.Name;
-                oneCollection.Status = "Collected";
-                //oneCollection.CompanyID = companyList.Id;
-                _collectionService.AddCollection(oneCollection);
+                oneCollection.Status = "Completed";
+                oneCollection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
+                oneCollection.Company = companyList;
+                selectedUser.Total_Points += oneCollection.PointsAllocated;
+                _collectionService.UpdateCollection(oneCollection);
+
+                // add points history
+                PointsHistory addRow = new PointsHistory
+                {
+                    userId = selectedUser.Id,
+                    points_spent = 0,
+                    activity_description = oneCollection.TotalWeight + "kg of recyclables collected by " + companyList.Name,
+                    points_gained = oneCollection.PointsAllocated
+                };
+                _authDbContext.PointsHistory.Add(addRow);
+                await _authDbContext.SaveChangesAsync();
+
+                // return
                 return RedirectToPage("/ScanRecyclable");
             }
             else
             {
+                // cannot find company
                 ModelState.AddModelError("", "Company does not exist.");
                 return Page();
             }
@@ -83,6 +109,7 @@ public class AllocatePoints : PageModel
         }
         else
         {
+            // cannot find user with userId
             ModelState.AddModelError("", "Barcode string does not exist.");
             return Page();
         }

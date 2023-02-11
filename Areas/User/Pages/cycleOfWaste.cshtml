@@ -21,6 +21,7 @@
     ViewData["chances_counter"] = free_chances + Model.currentUser.chances_Default;
     ViewData["free_chances"] = free_chances;
     ViewData["chosen_prize"] = Model.chosenPrize;
+    ViewData["total_points"] = Model.currentUser.Total_Points;
 }
 
 <div class="hero h-1/3" style="background-image: url('/images/cycleOfWasteBG.png');">
@@ -89,7 +90,7 @@
                     </div>
                 </div>
                 <div class="col-xs-6" align="center">
-                    @if (Convert.ToInt32(ViewData["chances_counter"]) == 0)
+                    @if (Convert.ToInt32(ViewData["chances_counter"]) == 0 || Convert.ToInt32(ViewData["total_points"]) < 50)
                     {
                         <button class="btn btn-success" disabled>
                             <i class="ph-plus-circle text-sm"></i> 50   Spin Now!
@@ -97,19 +98,16 @@
                     }
                     else
                     {
-                        <input type="hidden" id="myPrize" asp-for="prizeName" />
-                        <form method="post">
-                            <a id="spinBtn" class="btn btn-success" asp-page-handler="AddPrize" asp-page="cycleOfWaste">
-                                @if (Convert.ToInt32(ViewData["free_chances"]) == 0)
-                                {
-                                    <p><i class="ph-plus-circle text-sm"></i> 50   Spin Now!</p>
-                                }
-                                else
-                                {
-                                    <p><i class="ph-plus-circle text-sm"></i> 0   Spin Now!</p>
-                                }
-                            </a>
-                        </form>
+                        <div id="spinBtn" class="btn btn-success">
+                            @if (Convert.ToInt32(ViewData["free_chances"]) == 0)
+                            {
+                                <p><i class="ph-plus-circle text-sm"></i> 50   Spin Now!</p>
+                            }
+                            else
+                            {
+                                <p><i class="ph-plus-circle text-sm"></i> 0   Spin Now!</p>
+                            }
+                        </div>
                     }
                 </div>
                 <p>Remaining chances: @ViewData["chances_counter"]/5</p>
@@ -118,7 +116,7 @@
     </div>
 </div>
 
-<input type="checkbox" id="prize_modal" class="modal-toggle" />
+<input type="checkbox" id="prize_modal" class="modal-toggle"/>
 <div class="modal">
     <div class="modal-box">
         <label for="prize_modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
@@ -131,26 +129,29 @@
     </div>
 </div>
 
-
-<input type="checkbox" id="noPrize_modal" class="modal-toggle" />
-<div class="modal">
-    <div class="modal-box">
-        <label for="noPrize_modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
-        <h1 class="font-bold text-xl text-center">Oh no...</h1>
-        <h3 class="text-center p-5">Seems like you didn't win anything. Don't give up and try again!</h3>
+@*<label for="prize_modal" class="modal cursor-pointer">
+    <label class="modal-box !p-10" for="">
+        <label for="prize_modal" class="btn btn-sm btn-circle absolute right-2 top-2">
+            <i class="ph-x"></i>
+        </label>
+        <label for="prize_modal" class="btn btn-sm btn-circle absolute right-2 top-2" onclick="close_modal()"><i class="ph-x"></i></label>
+        <h1 class="font-bold text-xl text-center">Congratulations!! You won</h1>
+        <h3 id="prizeName" class="text-center p-5"></h3>
         <div class="modal-action">
             <label for="prize_modal" class="btn">Close</label>
+            <a class="btn bg-orange-600 hover:bg-orange-600 text-white" href="@Url.Page("pointsHistory")">View prize</a>
         </div>
-    </div>
-</div>
+    </label>
+</label>*@
 
+@*var label_data = @Html.Raw(Json.Serialize(Model.ListOfPrizes.Select(p => p.Name)));
+*@
 <script>
-    var label_data = @Html.Raw(Json.Serialize(Model.ListOfPrizes.Select(p => p.Name)));
-    var chosen_prize = @Html.Raw(Json.Serialize(Model.chosenPrize));
+    var label_data = @Html.Raw(Json.Serialize(Model.ListOfPrizes_name));
+    var theReward = "";
 
     function create_spinner() {
         color_data = ['#fedf30', '#fdb441', '#fd6930', '#eb5454', '#bf9dd3', '#29b8cd', "#00f2a6", "#f67"];
-        //label_data = ['$10 Grab voucher', '$10 Google Pay', '100 points', '$20 NTUC voucher', '10 points', '30 points', "300 points", 'X'];
         var color = color_data;
         var label = label_data;
         var slices = color.length;
@@ -159,8 +160,8 @@
         var speed = 10;
         var slowDownRand = 0;
         var ctx = canvas.getContext('2d');
-        var width = canvas.width; // size
-        var center = width / 2; // center
+        var width = canvas.width;
+        var center = width / 2;
         ctx.clearRect(0, 0, width, width);
         for (var i = 0; i < slices; i++) {
             ctx.beginPath();
@@ -181,52 +182,53 @@
             deg += sliceDeg;
         }
     }
+
     create_spinner();
     var deg = rand(0, 360);
-    var speed = 10;
+    var speed = 13;
     var ctx = canvas.getContext('2d');
-    var width = canvas.width; // size
-    var center = width / 2; // center
+    var width = canvas.width;
+    var center = width / 2;
     var isStopped = false;
     var lock = false;
     var slowDownRand = 0;
 
-    function spin() {
-        document.getElementById("spinBtn").disabled = true;
-        color_data = ['#fedf30', '#fdb441', '#fd6930', '#eb5454', '#bf9dd3', '#29b8cd', "#00f2a6", "#f67"];
-        //label_data = ['$10 Grab voucher', '$10 Google Pay', '100 points', '$20 NTUC voucher', '10 points', '30 points', "300 points", 'X'];
-        var color = color_data;
+
+    function drawSpinner() {
+        var color = ['#fedf30', '#fdb441', '#fd6930', '#eb5454', '#bf9dd3', '#29b8cd', "#00f2a6", "#f67"];
         var label = label_data;
         var slices = color.length;
         var sliceDeg = 360 / slices;
+        var prizeIndex = label_data.indexOf(theReward);
         deg += speed;
+        console.log(speed)
         deg %= 360;
-        // Increment speed
-        if (!isStopped && speed < 3) {
-            speed = speed + 1 * 0.1;
-        }
         // Decrement Speed
         if (isStopped) {
             if (!lock) {
                 lock = true;
                 slowDownRand = rand(0.994, 0.998);
             }
-            speed = speed > 0.2 ? speed *= slowDownRand : 0;
+            speed = speed > 0.7 ? speed *= slowDownRand : 0;
         }
         // Stopped!
         if (lock && !speed) {
-            var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg); // deg 2 Array Index
-            ai = (slices + ai) % slices; // Fix negative index
-            document.getElementById("spinBtn").disabled = false;
-            document.getElementById("myPrize").value = label[ai];
-            if (label[ai] != "X") {
+
+            // deg 2 Array Index
+             var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg); 
+            // Fix negative index
+            ai = (slices + ai) % slices;
+            
+            if (ai == prizeIndex) {
                 document.getElementById("prize_modal").checked = true;
-                document.getElementById("prizeName").innerHTML = label[ai];
+                document.getElementById("prizeName").innerHTML = theReward;
+                document.getElementById("spinBtn").setAttribute('disabled', false);
             }
             else {
-                document.getElementById("noPrize_modal").checked = true;
+                speed = 0.7;
+                slowDownRand = 0;
             }
-
+            
         }
         ctx.clearRect(0, 0, width, width);
         for (var i = 0; i < slices; i++) {
@@ -247,8 +249,17 @@
             ctx.restore();
             deg += sliceDeg;
         }
-        window.requestAnimationFrame(spin);
+        window.requestAnimationFrame(drawSpinner);
         stops();
+    }
+
+    async function startSpin() {
+        var reward = await fetch('@Url.Action("RandomReward", "CycleOfWaste")', { method: 'POST' }).then((response) => response.json())
+        console.log(reward)
+        theReward = reward.variantName + " " + reward.name;
+
+        document.getElementById("spinBtn").setAttribute('disabled', true);
+        drawSpinner()
     }
 
     function stops() {
@@ -263,5 +274,9 @@
         return Math.random() * (max - min) + min;
     }
 
-    document.getElementById("spinBtn").addEventListener("click", spin);
+    function close_modal() {
+        document.getElementById("prize_modal").checked = false;
+    }
+
+    document.getElementById("spinBtn").addEventListener("click", startSpin);
 </script>

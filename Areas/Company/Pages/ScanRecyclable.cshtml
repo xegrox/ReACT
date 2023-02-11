@@ -7,7 +7,7 @@
         <span class="bg-base-200 border-base-200 pr-0">
             <i class="ph-magnifying-glass"></i>
         </span>
-        <input type="text" placeholder="Search all collections" class="input input-sm bg-base-200 focus:outline-0" />
+        <input type="text" placeholder="Search collection date" class="input input-sm bg-base-200 focus:outline-0" id="myInput"/>
         <label class="btn btn-sm btn-primary ml-4" for="add-recyclable-collection-modal">
             <i class="ph-plus-bold pr-2"></i>
             Add Recyclable Collection
@@ -17,21 +17,21 @@
             <div class="modal-box">
                 <label for="add-recyclable-collection-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
                 <h3 class="font-bold text-lg">Add Recyclable Collection</h3>
+                <br />
                 <form method="post">
                     <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">Barcode String</span>
-                            <input asp-for="oneCollection.UserId" type="text" placeholder="Enter barcode number" class="input input-bordered" />
-                            <span asp-validation-for="oneCollection.UserId" class="text-danger"></span>
-                        </label>
-                        <label class="label">
-                            <span class="label-text">Total Recyclable Weight</span>
-                            <input asp-for="oneCollection.TotalWeight" type="number" placeholder="Enter total recyclable weight" class="input input-bordered" />
-                            <span asp-validation-for="oneCollection.TotalWeight" class="text-danger"></span>
-                        </label>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">Barcode String</label>
+                        <input asp-for="oneCollection.UserId" type="text" placeholder="Enter barcode number" class="input input-bordered" />
+                        <span asp-validation-for="oneCollection.UserId" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">Total Recyclable Weight</label>
+                        <input asp-for="oneCollection.TotalWeight" type="number" placeholder="Enter total recyclable weight" class="input input-bordered" />
                         <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be up to 2 decimal places</p>
                         <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be at least 0.5kg</p>
+                        <span asp-validation-for="oneCollection.TotalWeight" class="text-danger"></span>
                     </div>
                     <div class="modal-action">
                         <button class="btn text-white" asp-page-handler="No_Add_Collection">Cancel</button>
@@ -42,13 +42,13 @@
         </div>
     </div>
     <div class="overflow-x-auto mt-5">
-        <table class="table table-zebra w-full">
+        <table class="table table-zebra w-full" id="myTable">
             <thead>
                 <tr>
                     <th>Collection ID</th>
                     <th>Collection Date</th>
                     <th>User Details</th>
-                    <th>Total Recyclable Weight</th>
+                    <th>Total Recyclable Weight (/KG)</th>
                     <th>Points allocated</th>
                 </tr>
             </thead>
@@ -61,15 +61,21 @@
                         <td>
                             <div class="tooltip" data-tip="View User Details">
                                 <label for="view-collection-@collection.UserId-modal">
-                                    <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                                    <i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i>
                                 </label>
                                 <input type="checkbox" id="view-collection-@collection.UserId-modal" class="modal-toggle" />
                                 <div class="modal">
                                     <div class="modal-box">
                                         <label for="view-collection-@collection.UserId-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
                                         <h2 class="card-title">User Details</h2>
-                                        <p>User: @Model.UsersList.FirstName @Model.UsersList.LastName</p>
-                                        <p>Address: @Model.UsersList.Address</p>
+                                        <br/>
+                                        @foreach (var user in Model.UsersList) {
+                                            if (collection.UserId == user.Id) {
+                                                <p>User: @user.FirstName @user.LastName</p>
+                                                <p>Address: @user.Address</p>
+                                            }
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -82,3 +88,24 @@
         </table>
     </div>
 </div>
+
+<script>
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
