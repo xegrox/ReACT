@@ -6,20 +6,19 @@ using ReACT.ViewModels;
 
 namespace ReACT.Areas.Home.Pages
 {
-    public class LoginModel : PageModel
+    public class AdminLoginModel : PageModel
     {
         [BindProperty]
-        public Login LModel { get; set; }
+        public AdminLogin AModel { get; set; }
 
         private readonly SignInManager<ApplicationUser> signInManager;
+        private ApplicationUser user;
         private UserManager<ApplicationUser> userManager { get; }
-        public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AdminLoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
         }
-
-
         public void OnGet()
         {
         }
@@ -28,19 +27,10 @@ namespace ReACT.Areas.Home.Pages
         {
             if (ModelState.IsValid)
             {
-                var identityResult = await signInManager.PasswordSignInAsync(LModel.Email, LModel.Password,LModel.RememberMe, false);
+                var identityResult = await signInManager.PasswordSignInAsync(AModel.Email, AModel.Password, AModel.RememberMe, false);
                 if (identityResult.Succeeded)
                 {
-                    var user = await userManager.FindByNameAsync(LModel.Email);
-                    var roles = await userManager.GetRolesAsync(user);
-                    if (roles.Contains("User"))
-                    {
-                        return RedirectToPage("/Dashboard", new { area = "User" });
-                    }
-                    else if (roles.Contains("Company"))
-                    {
-                        return RedirectToPage("/CompanyDetails", new { area = "Company" });
-                    }
+                        return RedirectToPage("/ManageUsers", new { area = "Admin" });
                 }
                 ModelState.AddModelError("", "Username or Password incorrect");
             }

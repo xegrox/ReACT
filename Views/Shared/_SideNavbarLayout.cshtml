@@ -39,12 +39,36 @@
                 }
                 
             </ul>
+
             @{
                 if (SignInManager.IsSignedIn(User))
                 {
-                    <div class="absolute bottom-0 p-8">
-                        <a class="link link-hover" asp-page="/Logout">Logout</a>
-                    </div>
+                    if (User.IsInRole("Admin")){
+                        <div class="absolute bottom-0 p-8">
+                            <a class="link link-hover" asp-area="Admin" asp-page="/AdminDetails">Account Details</a>
+                            <a asp-area="Admin" asp-page="/AdminLogout">
+                                <i class="ph-sign-out"></i>
+                            </a>
+                        </div>
+                    }
+                    else if (User.IsInRole("User")){
+                        <div class="absolute bottom-0 p-8">
+                            <a class="link link-hover" asp-area="User" asp-page="/UserDetails">Account Details</a>
+                            <a asp-area="User" asp-page="/Logout">
+                                <i class="ph-sign-out"></i>
+                            </a>
+                        </div>
+                    }
+                    else if (User.IsInRole("Company"))
+                    {
+                        <div class="absolute bottom-0 p-8">
+                            <a class="link link-hover" asp-area="Company" asp-page="/CompanyDetails">Account Details</a>
+                            <a asp-area="Company" asp-page="/CompanyLogout">
+                                <i class="ph-sign-out"></i>
+                            </a>
+                        </div>
+                    }
+
                 }
             }
         </aside>

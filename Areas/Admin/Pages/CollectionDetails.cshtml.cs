@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
+using Microsoft.AspNetCore.Authorization;
+using NuGet.Configuration;
 
 namespace ReACT.Areas.Admin.Pages
 {
+    [Authorize(Roles ="Admin")]
     public class CollectionDetailsModel : PageModel
     {
         private UserManager<ApplicationUser> _userManager { get; }

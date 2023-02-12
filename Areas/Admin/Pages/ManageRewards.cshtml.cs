@@ -1,11 +1,15 @@
 using FuzzySharp;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ReACT.Helpers;
 using ReACT.Models;
+using System.Data;
 
 namespace ReACT.Areas.Admin.Pages;
+
+[Authorize(Roles = "Admin")]
 
 public class ManageRewards : PageModel
 {

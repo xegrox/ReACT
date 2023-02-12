@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReACT.Areas.User.Pages
 {
+    [Authorize(Roles = "Admin, User")]
+
     public class pointsHistoryModel : PageModel
     {
         private readonly CollectionService _collectionService;

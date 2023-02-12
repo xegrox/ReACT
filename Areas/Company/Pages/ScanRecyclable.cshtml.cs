@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
+using System.Data;
 using System.Runtime.Intrinsics.X86;
 
 namespace ReACT.Areas.Company.Pages;
 
+[Authorize(Roles = "Company")]
 public class AllocatePoints : PageModel
 {
     private readonly CollectionService _collectionService;
@@ -34,13 +37,13 @@ public class AllocatePoints : PageModel
     public void OnGet()
     {
         RecyclableCollectionList = _collectionService.GetCollections();
-        UsersList = _authDbContext.Users.OrderBy(x => x.FirstName).ToList();
+        //UsersList = _authDbContext.Users.OrderBy(x => x.FirstName).ToList();
     }
 
     public IActionResult OnPostAdd_Collection()
     {
         ApplicationUser? foundUser = null;
-        UsersList = _authDbContext.Users.OrderBy(x => x.FirstName).ToList();
+        //UsersList = _authDbContext.Users.OrderBy(x => x.FirstName).ToList();
         //foreach (var oneUser in UsersList)
         //{
         //    if (Convert.ToInt32(oneCollection.UserId.Barcode_Number) == oneUser.Barcode_Number)

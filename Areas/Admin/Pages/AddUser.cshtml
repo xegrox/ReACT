@@ -1,0 +1,60 @@
+﻿@page
+@model ReACT.Areas.Admin.Pages.AddUserModel
+@{
+}
+<div class="hero h-1/3 bg-white">
+    <div class="hero-overlay bg-opacity-20"></div>
+    <div class="hero-contenttext-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">Add User</h1>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mx-auto w-8/12 my-8">
+    <div class="flex justify-center rounded-lg" style="background: #F3F3F3">
+        <div class="w-8/12 m-8 p-5">
+            <form method="post" data-turbo=false>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="AUModel.Email" placeholder="Email" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="AUModel.Email" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="AUModel.FirstName" placeholder="Company Name" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="AUModel.FirstName" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="AUModel.LastName" placeholder="Company Name" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="AUModel.LastName" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="AUModel.Address" placeholder="Company Location" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="AUModel.Address" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="AUModel.Password" placeholder="Password" class="input w-full px-3 py-1.5 " />
+                    <span asp-validation-for="AUModel.Password" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="AUModel.ConfirmPassword" placeholder="Confirm Password" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="AUModel.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <label class="cursor-pointer label">
+                    <span class="label-text text-black text-base">Make Account Private</span>
+                    <input type="checkbox" asp-for="AUModel.PublicPrivate" checked="checked" class="checkbox checkbox-accent">
+                </label>
+                <div class="flow-root mx-6">
+                    <button type="submit" class="btn btn-primary mt-4 float-left" asp-page-handler="No_Add_User">
+                        Back
+                    </button>
+                    <button type="submit" class="btn btn-primary mt-4 float-right" asp-page-handler="Add_User">
+                        Confirm Add
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

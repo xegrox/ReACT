@@ -10,7 +10,7 @@ using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribut
 
 namespace ReACT.Areas.User.Pages;
 
-[Authorize]
+[Authorize(Roles = "Admin, User")]
 public class Recycle : PageModel
 {
 

@@ -2,7 +2,7 @@
 
 namespace ReACT.ViewModels
 {
-    public class Register
+    public class AddCompany
     {
         [Required]
         [DataType(DataType.EmailAddress)]
@@ -12,18 +12,12 @@ namespace ReACT.ViewModels
         [DataType(DataType.Text)]
         public string FirstName { get; set; }
 
-        [Required]
-        [DataType(DataType.Text)]
-        public string? LastName { get; set; }
 
-        
         [DataType(DataType.Text)]
         public string Address { get; set; }
 
-       
-        public IFormFile? Profile { get; set; }
-
-        public bool PublicPrivate { get; set; }
+        [DataType(DataType.PhoneNumber)]
+        public int ContactNo { get; set; }
 
         [Required]
         [MinLength(12, ErrorMessage = "Enter at least a 12 characters password")]

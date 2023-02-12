@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using System.Data;
 
-namespace ReACT.Areas.User.Pages
+namespace ReACT.Areas.Company.Pages
 {
-    [Authorize(Roles = "Admin, User")]
-    public class LogoutModel : PageModel
+    [Authorize(Roles = "Company")]
+    public class CompanyLogoutModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> signInManager;
-        public LogoutModel(SignInManager<ApplicationUser> signInManager)
+        public CompanyLogoutModel(SignInManager<ApplicationUser> signInManager)
         {
             this.signInManager = signInManager;
         }
@@ -25,7 +26,8 @@ namespace ReACT.Areas.User.Pages
         }
         public async Task<IActionResult> OnPostDontLogoutAsync()
         {
-                return RedirectToPage("/Dashboard", new { area = "User" });        }
+            return RedirectToPage("/CompanyDetails", new { area = "Company" });
+        }
 
     }
 }

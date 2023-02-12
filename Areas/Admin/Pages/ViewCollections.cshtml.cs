@@ -1,8 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using System.Data;
 
 namespace ReACT.Areas.Admin.Pages;
 
+[Authorize(Roles = "Admin")]
 public class ViewCollectionModel : PageModel
 {
     private readonly AuthDbContext _context;

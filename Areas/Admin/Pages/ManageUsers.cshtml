@@ -1,6 +1,50 @@
 @page
 @model ReACT.Areas.Admin.Pages.ManageUsers
 
-<div>
-    
+<div class="hero h-1/3 bg-white">
+    <div class="hero-overlay bg-opacity-20"></div>
+    <div class="hero-contenttext-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">Manage Users</h1>
+        </div>
+    </div>
 </div>
+
+<div class="container mx-auto w-11/12 my-4">
+    <div class="flex justify-center rounded-lg" style="background: white; border-color: #F3F3F3">
+        <div class="overflow-x-auto" style="margin: 20px">
+            <table class="table w-full">
+                <!-- head -->
+                <thead>
+                    <tr>
+                        <th>Username/Email</th>
+                        <th>FullName</th>
+                        <th>Address</th>
+                        <th>Account Type</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.Email</td>
+                            <td>@user.FirstName @user.LastName</td>
+                            <td>@user.Address</td>
+                            <td>@Model.accType</td>
+                            <td><a asp-page=""><i class="ph-pencil" style="color:blue"></i></a></td>
+                            <td><a asp-page=""><i class="ph-trash" style="color:red"></i></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="flow-root mx-6">
+        <a class="btn btn-primary mt-4 float-right" asp-page="/AddUser">
+            Add User
+        </a>
+    </div>
+</div>
+

@@ -2,7 +2,7 @@
 
 namespace ReACT.ViewModels
 {
-    public class Register
+    public class AddUser
     {
         [Required]
         [DataType(DataType.EmailAddress)]
@@ -16,11 +16,11 @@ namespace ReACT.ViewModels
         [DataType(DataType.Text)]
         public string? LastName { get; set; }
 
-        
+
         [DataType(DataType.Text)]
         public string Address { get; set; }
 
-       
+
         public IFormFile? Profile { get; set; }
 
         public bool PublicPrivate { get; set; }
@@ -36,6 +36,5 @@ namespace ReACT.ViewModels
         [DataType(DataType.Password)]
         [Compare(nameof(Password), ErrorMessage = "Password and confirmation password does not match")]
         public string ConfirmPassword { get; set; }
-
     }
 }

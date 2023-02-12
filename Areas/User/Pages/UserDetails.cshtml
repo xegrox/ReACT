@@ -12,54 +12,120 @@
     </div>
 </div>
 
-@*<div>
-    <div class="overflow-x-auto">
-        <table class="table w-10/12">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Email</th>
-                    <th>Name</th>
-                    <th>BirthDate</th>
-                    <th>Address</th>
-                </tr>
-            </thead>
-            <tbody>
-                        <tr>
-                            <td>@Model.user.Email</td>
-                            <td>@Model.user.FullName</td>
-                            <td>@Model.user.BirthDate.ToString()</td>
-                            <td>@Model.user.Address</td>
-                        </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-*@
-
-
-<div class="">
+<div >
     <div class="container mx-auto w-8/12 my-8">
         <div class="flex justify-center rounded-lg" style="background: #F3F3F3">
             <div class="w-8/12 m-8 p-5">
                 <div class="flow-root m-6">
                     <p class="float-left font-bold">Email</p>
-@*                    <p class="float-right">@Model.user.Email</p>*@
+                    <p class="float-right">@Model.user.Email</p>
                 </div>
                 <hr class="h-px my-8 bg-gray-700 border-0 rounded">
+                <div style="float:right; margin-bottom: 50px">
+                    <label for="edit-user-modal">
+                        <i class="ph-pencil"></i>
+                    </label>
+                </div>
+                <br />
                 <div class="flow-root m-6">
                     <p class="float-left font-bold">Name</p>
-@*                    <p class="float-right">@Model.user.FirstName @Model.user.LastName</p>*@
-                </div>
-                <div class="flow-root m-6">
-                    <p class="float-left font-bold">BirthDate</p>
-@*                    <p class="float-right">@Model.user.BirthDate</p>*@
+                    <p class="float-right">@Model.user.FirstName @Model.user.LastName</p>
                 </div>
                 <div class="flow-root m-6">
                     <p class="float-left font-bold">Address</p>
-@*                    <p class="float-right">@Model.user.Address</p>*@
+                    <p class="float-right">@Model.user.Address</p>
+                </div>
+                <div class="flow-root m-6">
+                    <p class="float-left font-bold">Account Type</p>
+                    <p class="float-right">@Model.accType</p>
                 </div>
             </div>
         </div>
+        <div class="flow-root mx-6">
+            <label class="btn btn-primary mt-4 float-left" for="change-password-modal">
+                Change Password
+            </label>
+            <label class="btn btn-error mt-4 float-right" for="delete-user-modal">
+                Delete Account
+            </label>
+        </div>    
     </div>
-</div>
+
+    <div class="input-group">
+        <input type="checkbox" id="change-password-modal" class="modal-toggle" />
+        <div class="modal">
+            <div class="modal-box">
+                <label for="change-password-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+                <h3 class="font-bold text-lg" style="padding-top:5px">Change Password</h3>
+                <form method="post">
+                    <div style="margin: 20px">
+                        <div class=" text-black mb-4">
+                            <input type="text" asp-for="CModel.CurrentPassword" placeholder="Current Password" class="input input-bordered w-full px-3 py-1.5" />
+                            <span asp-validation-for="CModel.CurrentPassword" class="text-danger"></span>
+                        </div>
+                        <div class=" text-black mb-4">
+                            <input type="text" asp-for="CModel.NewPassword" placeholder="New Password" class="input input-bordered w-full px-3 py-1.5 " />
+                            <span asp-validation-for="CModel.NewPassword" class="text-danger"></span>
+                        </div>
+                        <div class=" text-black mb-4">
+                            <input type="text" asp-for="CModel.ConfirmNewPassword" placeholder="Confirm Password" class="input input-bordered w-full px-3 py-1.5" />
+                            <span asp-validation-for="CModel.ConfirmNewPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-action">
+                        <button type="submit" class="btn text-white" asp-page-handler="No_Change_Password">Cancel</button>
+                        <button type="submit" class="btn hover:bg-orange-600 text-white" asp-page-handler="Change_Password">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@*
+    <input type="checkbox" id="delete-user-modal" class="modal-toggle" />
+    <div class="modal">
+        <div class="modal-box">
+            <label for="delete-user-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+            <h3 class="font-bold text-lg">Delete Account @Model.user.Email</h3>
+            <form method="post">
+                <div class="modal-action">
+                    <button class="btn text-white" asp-page-handler="No_Delete_User">Cancel</button>
+                    <button class="btn hover:bg-orange-600 text-white" asp-page-handler="Delete_User">Confirm Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>*@
+
+@*    <input type="checkbox" id="edit-user-modal" class="modal-toggle" />
+    <div class="modal">
+        <div class="modal-box">
+            <label for="edit-user-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+            <h3 class="font-bold text-lg">Edit Account Details</h3>
+            <form method="post">
+                <div class="form-control" style="margin: 20px">
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="EModel.FirstName" value="@Model.user.FirstName.ToString()" class="input input-bordered w-full px-3 py-1.5" />
+                        <span asp-validation-for="EModel.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="EModel.LastName" value="@Model.user.LastName.ToString()" class="input input-bordered w-full px-3 py-1.5 " />
+                        <span asp-validation-for="EModel.LastName" class="text-danger"></span>
+                    </div>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="EModel.Address" placeholder="Address" value="@Model.user.Address.ToString()" class="input input-bordered w-full px-3 py-1.5" />
+                        <span asp-validation-for="EModel.Address" class="text-danger"></span>
+                    </div>
+                    <label class="cursor-pointer label">
+                        <span class="label-text text-black text-base">Make Account Public</span>
+                        <input type="checkbox" asp-for="EModel.PublicPrivate" class="checkbox checkbox-accent">
+                    </label>
+                </div>
+                <div class="modal-action">
+                    <button class="btn text-white" asp-page-handler="No_Edit_User">Cancel</button>
+                    <button class="btn hover:bg-orange-600 text-white" asp-page-handler="Edit_User">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>*@
+
+

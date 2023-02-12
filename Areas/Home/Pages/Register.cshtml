@@ -25,12 +25,16 @@
                         <span asp-validation-for="RModel.Email" class="text-danger"></span>
                     </div>
                     <div class=" text-black mb-4">
-                        <input type="text" asp-for="RModel.FirstName" placeholder="Fullname" class="input w-full px-3 py-1.5" />
+                        <input type="text" asp-for="RModel.FirstName" placeholder="First Name" class="input w-full px-3 py-1.5" />
                         <span asp-validation-for="RModel.FirstName" class="text-danger"></span>
                     </div>
                     <div class=" text-black mb-4">
-                        <input type="text" asp-for="RModel.LastName" placeholder="Fullname" class="input w-full px-3 py-1.5" />
+                        <input type="text" asp-for="RModel.LastName" placeholder="Last Name" class="input w-full px-3 py-1.5" />
                         <span asp-validation-for="RModel.LastName" class="text-danger"></span>
+                    </div>
+                    <div class=" text-black mb-4">
+                        <input type="text" asp-for="RModel.Address" placeholder="Address" class="input w-full px-3 py-1.5" />
+                        <span asp-validation-for="RModel.Address" class="text-danger"></span>
                     </div>
                     <div class=" text-black mb-4">
                         <input type="text" asp-for="RModel.Password" placeholder="Password" class="input w-full px-3 py-1.5 " />
@@ -40,6 +44,10 @@
                         <input type="text" asp-for="RModel.ConfirmPassword" placeholder="Confirm Password" class="input w-full px-3 py-1.5" />
                         <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
                     </div>
+                    <label class="cursor-pointer label">
+                    <span class="label-text text-white text-base">Make Account Private</span>
+                        <input type="checkbox" asp-for="RModel.PublicPrivate" checked="checked" class="checkbox checkbox-accent">
+                    </label>
                     <div class="text-center pt-1 mb-4 pb-1">
                         <button type="submit" class="btn btn-wide btn-accent px-6 p-2.5 text-white font-medium text-xl  w-full" style="background: #0a7b79; border-color: #0a7b79">Sign Up</button>
                     </div>
