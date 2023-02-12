@@ -91,7 +91,8 @@ namespace ReACT.Controllers
             _authDbContext.PointsHistory.Add(addRow);
             await _authDbContext.SaveChangesAsync();
 
-            await _userManager.UpdateAsync(currentUser);
+            _authDbContext.Users.Update(currentUser);
+            await _authDbContext.SaveChangesAsync();
 
             return new JsonResult(new
             {

@@ -121,6 +121,9 @@
     <div class="modal-box">
         <label for="prize_modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
         <h1 class="font-bold text-xl text-center">Congratulations!! You won</h1>
+        <div class="card w-80 bg-base-100 image-full items-center flex justify-center">
+            <figure><img src="" id="image_display"/></figure>
+        </div>
         <h3 id="prizeName" class="text-center p-5"></h3>
         <div class="modal-action">
             <label for="prize_modal" class="btn">Close</label>
@@ -149,6 +152,7 @@
 <script>
     var label_data = @Html.Raw(Json.Serialize(Model.ListOfPrizes_name));
     var theReward = "";
+    var image_url = "";
 
     function create_spinner() {
         color_data = ['#fedf30', '#fdb441', '#fd6930', '#eb5454', '#bf9dd3', '#29b8cd', "#00f2a6", "#f67"];
@@ -222,6 +226,7 @@
             if (ai == prizeIndex) {
                 document.getElementById("prize_modal").checked = true;
                 document.getElementById("prizeName").innerHTML = theReward;
+                document.getElementById("image_display").src = image_url;
                 document.getElementById("spinBtn").setAttribute('disabled', false);
             }
             else {
@@ -257,6 +262,7 @@
         var reward = await fetch('@Url.Action("RandomReward", "CycleOfWaste")', { method: 'POST' }).then((response) => response.json())
         console.log(reward)
         theReward = reward.variantName + " " + reward.name;
+        image_url = reward.imageUrl;
 
         document.getElementById("spinBtn").setAttribute('disabled', true);
         drawSpinner()

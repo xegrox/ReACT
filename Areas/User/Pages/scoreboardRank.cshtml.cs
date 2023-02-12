@@ -22,26 +22,50 @@ namespace ReACT.Areas.User.Pages
             _userManager = userManager;
         }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            UsersList = _authDbContext.Users.OrderByDescending(x => x.Total_Points).ToList();
+            var manyUsers = await _userManager.GetUsersInRoleAsync("User");
+            UsersList = manyUsers.OrderByDescending(x => x.Total_Points).ToList();
             for (int i = 0; i < UsersList.Count; i++)
             {
                 if (UsersList[i].PublicPrivate == true)
                 {
-                    var privateFNStr = UsersList[i].FirstName.Substring(2, UsersList[i].FirstName.Length);
                     var toBeAddedFNStr = "";
                     var toBeAddedLNStr = "";
-                    foreach (var a in privateFNStr)
+
+                    if (UsersList[i].FirstName.Length > 2)
                     {
-                        toBeAddedFNStr += "*";
+                        var privateFNStr = UsersList[i].FirstName.Substring(2);
+                        foreach (var a in privateFNStr)
+                        {
+                            toBeAddedFNStr += "*";
+                        }
+                        UsersList[i].FirstName = UsersList[i].FirstName.Substring(0, 2) + toBeAddedFNStr;
                     }
-                    for (int j = 0; j < UsersList[i].LastName.Length - 2; j++)
+                    else
                     {
-                        toBeAddedLNStr += "*";
+                        foreach (var b in UsersList[i].FirstName)
+                        {
+                            toBeAddedFNStr += "*";
+                        }
+                        UsersList[i].FirstName = toBeAddedFNStr;
                     }
-                    UsersList[i].FirstName = UsersList[i].FirstName.Substring(0, 2) + toBeAddedFNStr;
-                    UsersList[i].LastName = toBeAddedLNStr + UsersList[i].LastName.Substring(-2, 0);
+                    if (UsersList[i].LastName.Length > 2)
+                    {
+                        for (int j = 0; j < UsersList[i].LastName.Length - 2; j++)
+                        {
+                            toBeAddedLNStr += "*";
+                        }
+                        UsersList[i].LastName = toBeAddedLNStr + UsersList[i].LastName.Substring(UsersList[i].LastName.Length - 2);
+                    }
+                    else
+                    {
+                        foreach (var c in UsersList[i].LastName)
+                        {
+                            toBeAddedLNStr += "*";
+                        }
+                        UsersList[i].LastName = toBeAddedLNStr;
+                    }
                 }
                 userRankings.Add(i + 1, UsersList[i]);
                 if (UsersList[i].Id == _userManager.GetUserId(User))

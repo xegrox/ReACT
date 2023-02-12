@@ -65,6 +65,18 @@ namespace ReACT.Areas.User.Pages
                 Message message = new Message { Content = Content, UserId = currentUserId, UserName = currentUserName, threadId = threadId };
                 _messageService.AddMessage(message);
 
+                var currentUser = _authDbContext.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
+                if (currentUser.postComments_counter < 5)
+                {
+                    currentUser.postComments_counter += 1;
+                }
+                if (currentUser.postComments_counter == 5 && currentUser.chance_CommentTask == 0)
+                {
+                    currentUser.chance_CommentTask = 1;
+                    currentUser.chances_Free += 1;
+                }
+                _authDbContext.SaveChanges();
+
                 return Redirect(Request.GetEncodedUrl());
             }
 
