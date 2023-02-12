@@ -10,6 +10,7 @@
     </div>
 </div>
 
+<!-- Add Thread Button -->
 <div class="grid grid-cols-5">
     <div class="col-end-6">
         <label class="btn btn-md btn-primary rounded-full gap-1.5 text-base" for="newThread-modal-toggle">
@@ -35,7 +36,7 @@
                     <label class="label">
                         <span class="label-text">Thread Title</span>
                     </label>
-                    <input asp-for="Title" type="text" class="input input-bordered w-full max-w-xs" />
+                    <input asp-for="Title" type="text" placeholder="The title of your thread" class="input input-bordered w-full max-w-xs" />
                     <span asp-validation-for="Title" class="text-error"></span>
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -43,7 +44,7 @@
                         <span class="label-text">Thread Description</span>
                     </label>
                     @*<textarea asp-for="MyThread.Content" placeholder="Enter your thread description" class="input input-bordered w-full max-w-xs"></textarea>*@
-                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg" })
+                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg", @placeholder = "What your thread is about" })
                     <span asp-validation-for="Content" class="text-error"></span>
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -62,23 +63,32 @@
     </label>
 </div>
 
-@if (Model.threadList != null)
+@if (!Model.threadList.Any())
+{
+    <!-- No threads message -->
+    <p class="text-xl text-center font-semibold color-[#767676] w-full absolute top-1/2 left-40">No threads have been created</p>
+}
+else 
 {
     @foreach (var thread in Model.threadList)
     {
         @if (thread.Status != "hidden")
         {
-            @*Forum posts*@
+            <!-- Forum Posts -->
             <div class="grid grid-cols-5 gap-4">
                 <div class="bg-emerald-100 text-primary rounded-lg mb-12 col-start-2 col-span-3 grid grid-cols-12">
-                    <div class="col-span-10 ml-4 mt-3 mb-5">
-                        <a class="text-2xl" asp-page="/forumThread" asp-route-id="@thread.Id">
+                    <div class="col-span-10 ml-4 mt-3">
+                        <a class="text-xl font-normal" asp-page="/forumThread" asp-route-id="@thread.Id">
                             @thread.Title
                         </a>
                     </div>
 
+                    <div class="col-span-10 ml-4 mb-5">
+                        <p class="text-xs">Posted by @thread.UserName</p>
+                    </div>
+
                     <div class="col-span-10 ml-4 mb-6">
-                        <a class="text-lg" asp-page="/forumThread" asp-route-id="@thread.Id">
+                        <a class="text-base" asp-page="/forumThread" asp-route-id="@thread.Id">
                             @thread.Content
                         </a>
                     </div>
@@ -92,12 +102,12 @@
                             }
                         </div>
                     }
+
+                    <div class="text-primary ml-4 mb-2 col-span-10">
+                        <p class="text-xs">@Model.GetPostTime(thread.Date)</p>
+                    </div>
                 </div>
             </div>
         }
     }
 }
-else
-{
-    <p class="text-4xl text-center">No forum threads</p>
-} 
