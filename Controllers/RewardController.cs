@@ -1,11 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ReACT.Models;
-using ReACT.Services;
 
 namespace ReACT.Controllers;
 
@@ -163,8 +161,15 @@ public class RewardController : ControllerBase
     {
         var reward = _context.Rewards.Find(id);
         if (reward == null) return new NotFoundResult();
-        _context.Rewards.Remove(reward);
-        _context.SaveChanges();
+        try
+        {
+            _context.Rewards.Remove(reward);
+            _context.SaveChanges();
+        }
+        catch (DbUpdateException e) when (e.InnerException is SqlException {Number: 547} ex)
+        {
+            return new ConflictResult();
+        }
         return new OkResult();
     }
 
