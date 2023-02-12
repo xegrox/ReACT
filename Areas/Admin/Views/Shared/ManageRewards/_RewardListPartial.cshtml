@@ -3,6 +3,8 @@
     var pageIndex = ViewData["pageIndex"] as int? ?? 1;
     var pageCount = ViewData["pageCount"] as int? ?? 1;
     var rewardsPerPage = ViewData["rewardsPerPage"] as int? ?? 1;
+    var maxPopularity = ViewData["maxPopularity"] as int? ?? 0;
+    var variantStockCounts = ViewData["variantStockCounts"] as Dictionary<int, int>;
 }
 
 <div class="flex flex-col w-full" x-data>
@@ -12,8 +14,8 @@
             <th></th>
             <th>Name</th>
             <th>Popularity</th>
-            <th>Most Popular Stock</th>
-            <th>Least Stock</th>
+            <th>Most Popular Variant</th>
+            <th>Variant With Least Stock</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -32,31 +34,53 @@
                         </div>
                         <div>
                             <div class="font-bold">@reward.Name</div>
-                            <div class="text-sm opacity-50">@string.Join(",", reward.Variants.Select(v => v.Name))</div>
+                            <div class="text-sm opacity-50">@string.Join(", ", reward.Variants.Select(v => v.Name))</div>
                         </div>
                     </div>
                 </td>
                 <td>
-                    <progress class="progress progress-primary w-56" value="70" max="100"></progress>
-                    <p class="text-sm opacity-50">50 claimed this month</p>
+                    <progress class="progress progress-primary w-56" value="@reward.Popularity" max="@maxPopularity"></progress>
+                    <p class="text-sm opacity-50">Total @reward.Popularity claimed</p>
                 </td>
                 <td>
-                    <div class="flex space-x-2 items-center">
-                        <div class="badge badge-outline badge-sm badge-primary">$50</div>
-                        <p class="font-semibold opacity-60">102</p>
+                    <div class="flex space-x-3 items-center">
+                        @{ var mostPopularVariant = reward.Variants.MaxBy(v => v.Popularity); }
+                        <div class="badge badge-outline badge-sm badge-primary">@mostPopularVariant?.Name</div>
+                        <p class="font-semibold opacity-60 flex items-center gap-1">
+                            <i class="ph-package-bold"></i>
+                            @if (mostPopularVariant != null)
+                            {
+                                @variantStockCounts?[mostPopularVariant.Id]
+                            }
+                            else
+                            {
+                                @: -
+                            }
+                        </p>
                     </div>
                 </td>
                 <td>
-                    <div class="flex space-x-2 items-center">
-                        <div class="badge badge-outline badge-sm badge-primary">$10</div>
-                        <p class="font-semibold opacity-60">208</p>
+                    <div class="flex space-x-3 items-center">
+                        @{ var leastStockVariant = variantStockCounts?.MinBy(c => c.Value); }
+                        <div class="badge badge-outline badge-sm badge-primary">@reward.Variants.FirstOrDefault(v => v.Id == leastStockVariant?.Key)?.Name</div>
+                        <p class="font-semibold opacity-60 flex items-center gap-1">
+                            <i class="ph-package-bold"></i>
+                            @if (leastStockVariant != null)
+                            {
+                                @leastStockVariant?.Value
+                            }
+                            else
+                            {
+                                @: -
+                            }
+                        </p>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip" data-tip="Edit Reward Details" x-on:click="$dispatch('edit-reward', {rewardId: @reward.Id})">
                         <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
                     </div>
-                    <div class="tooltip" data-tip="Manage Reward Codes">
+                    <div class="tooltip" data-tip="Stock Reward Codes" x-on:click="$dispatch('stock-reward', {rewardId: @reward.Id})">
                         <i class="btn btn-sm btn-ghost btn-circle ph-package-bold"></i>
                     </div>
                     <div class="tooltip" data-tip="Delete Reward" x-on:click="$dispatch('delete-reward', {rewardId: @reward.Id, rewardName: '@reward.Name'})">

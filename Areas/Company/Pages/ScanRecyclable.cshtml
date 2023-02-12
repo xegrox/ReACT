@@ -7,8 +7,8 @@
         <span class="bg-base-200 border-base-200 pr-0">
             <i class="ph-magnifying-glass"></i>
         </span>
-        <input type="text" placeholder="Search all collections" class="input input-sm bg-base-200 focus:outline-0" />
-        <label class="btn btn-sm btn-primary ml-4" for="add-recyclable-collection-modal">
+        <input type="text" placeholder="Search collection date" class="input input-sm bg-base-200 focus:outline-0" id="myInput"/>
+        <label class="btn btn-sm btn-primary ml-4" for="add-recyclable-collection-modal" id="start_camera">
             <i class="ph-plus-bold pr-2"></i>
             Add Recyclable Collection
         </label>
@@ -16,37 +16,89 @@
         <div class="modal">
             <div class="modal-box">
                 <label for="add-recyclable-collection-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
-                <h3 class="font-bold text-lg">Add Recyclable Collection</h3>
+                <div class="flex p-5 h-full space-x-10">
+                    <div class="w-96 overflow-auto">
+                        <h3 class="pl-2 text-2xl font-semibold">Add Recyclable Collection</h3>
+                        <div class="h-[30rem] relative">
+                            <div class="h-full w-full flex flex-col pl-1" x-page="1">
+                                <turbo-frame id="hello">
+                                    <form class="flex-1 flex flex-col space-y-2" method="post">
+                                        <div asp-validation-summary="All" class="text-danger"></div>
+                                        <div class="form-control w-full max-w-xs">
+                                            <label class="label">
+                                                QR Code
+                                            </label>
+                                            <div id="reader"></div>
+                                            <input placeholder="No user found yet..." id="result" 
+                                            class="input input-bordered w-full max-w-xs" asp-for="oneCollection.UserId" readonly />
+                                            <span asp-validation-for="oneCollection.UserId" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-control w-full max-w-xs">
+                                            <label class="label-text">
+                                                Recycling Method
+                                            </label>
+                                            <select class="select select-bordered" asp-for="recyclingMethod">
+                                                @foreach (var method in Model.RecyclingTypeList)
+                                                {
+                                                    <option>@method.Name (@method.PointsPerKg points/kg)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-control w-full max-w-xs">
+                                            <label class="label-text">
+                                                Total Recyclable Weight
+                                            </label>
+                                            <input type="number" placeholder="Enter total recyclable weight" class="input input-bordered w-full max-w-xs" 
+                                            asp-for="oneCollection.TotalWeight" required />
+                                            <span asp-validation-for="oneCollection.TotalWeight" class="text-danger"></span>
+                                        </div>
+                                        <div class="flex-1"></div>
+                                        <div class="modal-action">
+                                            <button type="submit" class="btn gap-2 flex items-center" asp-page-handler="Add_Collection">
+                                                Submit
+                                                <i class="text-lg ph-check-bold"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </turbo-frame>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<h3 class="font-bold text-lg">Add Recyclable Collection</h3>
+                <br />
                 <form method="post">
-                    <div class="form-control">
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <label class="label">
-                            <span class="label-text">Barcode String</span>
-                            @*<input asp-for="oneCollection.User.Barcode_Number" type="text" placeholder="Enter barcode number" class="input input-bordered" />*@
-                        </label>
-                        <label class="label">
-                            <span class="label-text">Total Recyclable Weight</span>
-                            <input asp-for="oneCollection.TotalWeight" type="number" placeholder="Enter total recyclable weight" class="input input-bordered" />
-                        </label>
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">Barcode String</label>
+                        <input asp-for="oneCollection.UserId" type="text" placeholder="Enter barcode number" class="input input-bordered" />
+                        <span asp-validation-for="oneCollection.UserId" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">Total Recyclable Weight</label>
+                        <input asp-for="oneCollection.TotalWeight" type="number" placeholder="Enter total recyclable weight" class="input input-bordered" />
                         <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be up to 2 decimal places</p>
                         <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Weight must be at least 0.5kg</p>
+                        <span asp-validation-for="oneCollection.TotalWeight" class="text-danger"></span>
                     </div>
                     <div class="modal-action">
                         <button class="btn text-white" asp-page-handler="No_Add_Collection">Cancel</button>
                         <button class="btn hover:bg-orange-600 text-white" asp-page-handler="Add_Collection">Add</button>
                     </div>
-                </form>
+                </form>*@
             </div>
         </div>
+        
     </div>
     <div class="overflow-x-auto mt-5">
-        <table class="table table-zebra w-full">
+        <table class="table table-zebra w-full" id="myTable">
             <thead>
                 <tr>
                     <th>Collection ID</th>
                     <th>Collection Date</th>
                     <th>User Details</th>
-                    <th>Total Recyclable Weight</th>
+                    <th>Total Recyclable Weight (/KG)</th>
                     <th>Points allocated</th>
                 </tr>
             </thead>
@@ -59,15 +111,24 @@
                         <td>
                             <div class="tooltip" data-tip="View User Details">
                                 <label for="view-collection-@collection.UserId-modal">
-                                    <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                                    <i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i>
                                 </label>
                                 <input type="checkbox" id="view-collection-@collection.UserId-modal" class="modal-toggle" />
                                 <div class="modal">
                                     <div class="modal-box">
                                         <label for="view-collection-@collection.UserId-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
                                         <h2 class="card-title">User Details</h2>
-                                        <p>User: @collection.UserId</p>
-                                        @*<p>Address: @collection.User.Address</p>*@
+                                        <br/>
+                                        @foreach (var user in Model.UsersList) {
+                                            if (collection.UserId == user.Id) {
+                                                <p>User: @user.FirstName @user.LastName</p>
+                                                if (user.Address is null) {
+                                                    <p>Address: -</p>
+                                                }
+                                                <p>Address: @user.Address</p>
+                                            }
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -80,3 +141,85 @@
         </table>
     </div>
 </div>
+
+@*<script src="/lib/qrscanner/qr-scanner.umd.min.js"></script>*@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" 
+integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" 
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+    const scanner = new Html5QrcodeScanner('reader', {
+        qrbox: {
+            width: 250,
+            height: 250,
+        },
+        fps: 20,
+    });
+    scanner.render(success, error);
+    function success(result) {
+        document.getElementById('result').value = `${result}`;
+    }
+    function error(err) {
+        console.error(err);
+    }
+
+    // search on keyup
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    //// qr code scanner
+    //const video = document.getElementById('qr-video');
+    //const camQrResult = document.getElementById('cam-qr-result');
+
+    //function setResult(label, result) {
+    //    console.log(result.data);
+    //    label.textContent = result.data;
+    //    label.style.color = 'teal';
+    //    clearTimeout(label.highlightTimeout);
+    //    label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+    //}
+
+    //// ####### Web Cam Scanning #######
+
+    //const scanner = new QrScanner(video, result => setResult(camQrResult, result), {
+    //    onDecodeError: error => {
+    //        camQrResult.value = `${error}`;
+    //        camQrResult.style.color = 'inherit';
+    //    },
+    //    highlightScanRegion: true,
+    //    highlightCodeOutline: true,
+    //});
+
+    //scanner.start().then(() => {
+    //    QrScanner.listCameras(true).then(cameras => cameras.forEach(camera => {
+    //        const option = document.createElement('option');
+    //        option.value = camera.id;
+    //        option.text = camera.label;
+    //    }));
+    //});
+
+    //// for debugging
+    //window.scanner = scanner;
+
+    //document.getElementById('start_camera').addEventListener('click', () => {
+    //    scanner.start();
+    //});
+
+</script>

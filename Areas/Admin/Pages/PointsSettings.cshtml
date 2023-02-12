@@ -8,7 +8,7 @@
             <i class="ph-magnifying-glass"></i>
         </span>
         <input type="text" placeholder="Search recycling type" class="input input-sm bg-base-200 focus:outline-0" />
-        <label class="btn btn-sm btn-primary ml-4" for="add-recycling-type-modal">
+        @*<label class="btn btn-sm btn-primary ml-4" for="add-recycling-type-modal">
             <i class="ph-plus-bold pr-2"></i>
             Add Point Allocation
         </label>
@@ -36,7 +36,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div>*@
     </div>
     <div class="overflow-x-auto mt-5">
         <table class="table table-zebra w-full">
@@ -46,13 +46,50 @@
                     <th>Recycling Type</th>
                     <th>Points Per KG</th>
                     <th>Edit</th>
-                    <th>Remove</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var allocation in Model.RecyclingTypeList)
                 {
-                    if (allocation.Name == "Self recycled" || allocation.Name == "Collection")
+                    <tr>
+                        <td>@allocation.Id</td>
+                        <td>@allocation.Name</td>
+                        <td>@allocation.PointsPerKg</td>
+                        <td>
+                            <div class="tooltip" data-tip="Edit @allocation.Name">
+                                <label for="edit-recycling-type-@allocation.Id-modal">
+                                    <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
+                                </label>
+                                <input type="checkbox" id="edit-recycling-type-@allocation.Id-modal" class="modal-toggle" />
+                                <div class="modal">
+                                    <div class="modal-box">
+                                        <label for="edit-recycling-type-@allocation.Id-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+                                        <h3 class="font-bold text-lg">Edit Recycling Method</h3>
+                                        <form method="post">
+                                            <div class="form-control">
+                                                <input asp-for="oneAllocation.Id" type="hidden" value="@allocation.Id" />
+                                                <label class="label">
+                                                    <span class="label-text">Recycling Method</span>
+                                                    <input asp-for="oneAllocation.Name" type="text" class="input input-bordered" value="@allocation.Name" readonly/>
+                                                    <span asp-validation-for="oneAllocation.Name" class="text-error"></span>
+                                                </label>
+                                                <label class="label">
+                                                    <span class="label-text">Points/KG</span>
+                                                    <input asp-for="oneAllocation.PointsPerKg" type="text" class="input input-bordered" value="@allocation.PointsPerKg"/>
+                                                    <span asp-validation-for="oneAllocation.PointsPerKg" class="text-error"></span>
+                                                </label>
+                                            </div>
+                                            <div class="modal-action">
+                                                <button class="btn text-white" asp-page-handler="No_Edit_Type">Cancel</button>
+                                                <button class="btn hover:bg-green-600 text-white" asp-page-handler="Edit_Type">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @*if (allocation.Name == "Self recycled" || allocation.Name == "Collection")
                     {
                         <tr>
                             <td>@allocation.Id</td>
@@ -156,7 +193,7 @@
                                 </div>
                             </td>
                         </tr>
-                    }
+                    }*@
                 }
             </tbody>
         </table>

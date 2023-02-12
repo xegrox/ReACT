@@ -7,18 +7,21 @@
 <div class="flex gap-8">
     @foreach (var reward in Model.Rewards)
     {
-        <a class="card w-64 bg-base-100 shadow-xl cursor-pointer" hx-get="@Url.ActionLink("RewardDetailsFrame", "Redeem", new { rewardId = reward.Id })" hx-target="#redeem-modal-content">
-            <figure class="h-36"><img src="@reward.ImageUrl" alt="@reward.Name"/></figure>
-            <div class="card-body">
-                <h2 class="card-title">@reward.Name</h2>
-            <p class="flex items-center">Claim from <i class="pl-1 pr-0.5 ph-moon-bold"></i> @reward.Variants.First().Points</p>
-                <div class="mt-2 space-x-1">
-                    @foreach (var variant in reward.Variants)
-                    {
-                        <div class="badge badge-outline badge-primary">@variant.Name</div>
-                    }
+        @if (reward.Variants.Any())
+        {
+            <a class="card w-64 bg-base-100 shadow-xl cursor-pointer" hx-get="@Url.ActionLink("RewardDetailsFrame", "Redeem", new { rewardId = reward.Id })" hx-target="#redeem-modal-content">
+                <figure class="h-36"><img src="@reward.ImageUrl" alt="@reward.Name"/></figure>
+                <div class="card-body">
+                    <h2 class="card-title">@reward.Name</h2>
+                    <p class="flex items-center">Claim from <i class="pl-1 pr-0.5 ph-moon-bold"></i> @reward.Variants.First().Points</p>
+                    <div class="mt-2 space-x-1">
+                        @foreach (var variant in reward.Variants)
+                        {
+                            <div class="badge badge-outline badge-primary">@variant.Name</div>
+                        }
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        }
     }
 </div>

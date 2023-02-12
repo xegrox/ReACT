@@ -1,23 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ReACT.Models;
+using ReACT.Services;
 
 namespace ReACT.Areas.User.Pages
 {
+    [Authorize]
     public class threadModel : PageModel
     {
-        private readonly MockThreadsDb? _mockThreadsDb;
+        private readonly ForumService _forumService;
 
-        public threadModel(MockThreadsDb mockThreadsDb)
+        public threadModel(ForumService forumService)
         {
-            _mockThreadsDb = mockThreadsDb;
+            _forumService = forumService;
         }
 
         public Models.Thread MyThread { get; set; } = new();
 
         public IActionResult OnGet(int id)
         {
-            Models.Thread? thread = _mockThreadsDb?.GetThread(id);
+            Models.Thread? thread = _forumService.GetThread(id);
 
             if (thread != null)
             {

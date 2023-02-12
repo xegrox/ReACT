@@ -20,5 +20,11 @@ namespace ReACT.Services
             Company? company = _context.Company.FirstOrDefault(x => x.Id == id);
             return company;
         }
+
+        public void AddCompany(Company company)
+        {
+            _context.Company.Add(company);
+            _context.SaveChanges();
+        }
     }
 }

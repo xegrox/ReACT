@@ -1,4 +1,5 @@
 <div x-data="ManageCategoriesModal" x-on:manage-categories.document="open()">
+    <input id="icon-picker" hidden/>
     <input type="checkbox" id="manage-categories-modal-toggle" class="modal-toggle" x-ref="toggle"/>
     <label for="manage-categories-modal-toggle" class="modal cursor-pointer">
         <label class="modal-box !p-10" for="">
@@ -7,27 +8,33 @@
             </label>
             <h3 class="text-2xl font-semibold">Manage Categories</h3>
             <div class="mt-8 flex flex-col">
-                <div class="space-y-3">
-                    <template x-for="c in categories" :key="c.key">
-                        <form class="w-full px-5 py-3 rounded-lg bg-primary/10 flex items-center text-primary" x-on:submit.prevent="c.id ? update(c) : add(c)">
-                            <div class="btn btn-circle btn-sm btn-ghost" :class="c.editMode ? 'border border-primary bg-primary/10 hover:bg-primary/20' : 'pointer-events-none'">
-                                <i class="text-lg" :class="`ph-${c.icon}`"></i>
-                            </div>
-                            <input class="ml-4 input input-sm bg-transparent focus:outline-0 p-0 rounded-none border-0 !text-base" placeholder="Enter name" x-model="c.name" :class="c.editMode ? 'border-b border-primary' : 'pointer-events-none'" required=""/>
-                            <div class="flex-1"></div>
-                            <div class="space-x-1" >
-                                <div x-show="!c.editMode" class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10" x-on:click="c.editMode = true">
-                                    <i class="ph-note-pencil text-lg"></i>
+                <div>
+                    <div x-show="categories.length === 0">
+                        <p class="opacity-60 text-lg ml-1 italic">No categories yet</p>
+                    </div>
+                    <div class="space-y-3">
+                        <template x-for="c in categories" :key="c.key" hidden>
+                            <form class="w-full px-5 py-3 rounded-lg bg-primary/10 flex items-center text-primary" x-on:submit.prevent="c.id ? update(c) : add(c)">
+                                <div class="btn btn-circle btn-sm btn-ghost" :class="c.editMode ? 'border border-primary bg-primary/10 hover:bg-primary/20' : 'pointer-events-none'"
+                                     x-on:click="selectIcon(c)">
+                                    <i class="text-lg" :class="`ph-${c.icon}`"></i>
                                 </div>
-                                <button type="submit" x-show="c.editMode" class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10">
-                                    <i class="ph-check text-lg"></i>
-                                </button>
-                                <div class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10" x-on:click.prevent.stop="remove(c)">
-                                    <i class="ph-trash text-lg"></i>
+                                <input class="ml-4 input input-sm bg-transparent focus:outline-0 p-0 rounded-none border-0 !text-base" placeholder="Enter name" x-model="c.name" :class="c.editMode ? 'border-b border-primary' : 'pointer-events-none'" required=""/>
+                                <div class="flex-1"></div>
+                                <div class="space-x-1">
+                                    <div x-show="!c.editMode" class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10" x-on:click="c.editMode = true">
+                                        <i class="ph-note-pencil text-lg"></i>
+                                    </div>
+                                    <button type="submit" x-show="c.editMode" class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10">
+                                        <i class="ph-check text-lg"></i>
+                                    </button>
+                                    <div class="btn btn-circle btn-sm btn-ghost hover:bg-primary/10" x-on:click.prevent.stop="remove(c)">
+                                        <i class="ph-trash text-lg"></i>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                    </template>
+                            </form>
+                        </template>
+                    </div>
                 </div>
                 <div class="btn btn-primary gap-2 btn-outline mt-8" x-on:click="addNewCategory()">
                     <i class="ph-plus-bold"></i>
@@ -43,6 +50,8 @@ document.addEventListener("alpine:init", () => {
     Alpine.data("ManageCategoriesModal", () => ({
         vc: 0,
         categories: [],
+        iconPicker: null,
+        iconPickerCb: null,
         async open() {
             this.categories = await this.$fetchjson('/api/Reward/Category')
             this.categories.forEach(c => c.key = this.vc++)
@@ -62,7 +71,7 @@ document.addEventListener("alpine:init", () => {
                 await this.$fetch(`/api/Reward/Category/${category.id}`, "DELETE")
                 this.$dispatch("success")
             }
-            this.categories.splice(this.categories.findIndex(c => category.id === c.id), 1)
+            this.categories.splice(this.categories.findIndex(c => category.key === c.key), 1)
         },
         async add(category) {
             const data = new FormData()
@@ -82,6 +91,24 @@ document.addEventListener("alpine:init", () => {
                 category.editMode = false
                 this.$dispatch("success")
             })
+        },
+        selectIcon(category) {
+            this.iconPicker ??= new IconPicker('#icon-picker', {
+                iconSource: [
+                    {
+                        key: 'ph',
+                        prefix: 'ph-',
+                        url: '/lib/phosphor-icons/src/iconify.json'
+                    }
+                ],
+            })
+            this.iconPicker.element.value = category.icon
+            if (this.iconPickerCb) this.iconPicker.off('select', this.iconPickerCb)
+            this.iconPickerCb = o => {
+                category.icon = o.name
+            }
+            this.iconPicker.on('select', this.iconPickerCb)
+            this.iconPicker.show()
         }
     }))
 })

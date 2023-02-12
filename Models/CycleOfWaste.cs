@@ -10,6 +10,10 @@ namespace ReACT.Models
 
         public int Points_earned { get; set; }
 
-        public DateTime ActivityDate { get; set; }
+        public DateTime ActivityDate { get; set; } = DateTime.Now;
+
+        public string UserId { get; set; } = string.Empty;
+
+        public ApplicationUser? User { get; set; }
     }
 }

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
@@ -6,31 +8,22 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ReACT.Areas.User.Pages
 {
-    [Authorize(Roles = "Admin, User")]
-
+    [Authorize]
     public class pointsHistoryModel : PageModel
     {
-        private readonly CollectionService _collectionService;
+        private readonly AuthDbContext _authDbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public pointsHistoryModel(CollectionService collectionService)
+        public pointsHistoryModel(UserManager<ApplicationUser> userManager, AuthDbContext authDbContext)
         {
-            _collectionService = collectionService;
+            _userManager = userManager;
+            _authDbContext = authDbContext;
         }
-
-        public List<Collection> RecyclableCollectionList { get; set; } = new();
-
-        public IDictionary<int, Collection> userCollections = new Dictionary<int, Collection>();
+        public List<PointsHistory> PointsHistoryList { get; set; } = new();
 
         public void OnGet()
         {
-            RecyclableCollectionList = _collectionService.GetCollections();
-            for (int i = 0; i < RecyclableCollectionList.Count; i++)
-            {
-                if (RecyclableCollectionList[i].UserId == 2)
-                {
-                    userCollections.Add(i + 1, RecyclableCollectionList[i]);
-                }
-            }
+            PointsHistoryList = _authDbContext.PointsHistory.Where(x => x.userId.Equals(_userManager.GetUserId(User))).OrderBy(x => x.id).ToList();
         }
     }
 }

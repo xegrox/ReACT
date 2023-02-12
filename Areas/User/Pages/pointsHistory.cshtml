@@ -8,13 +8,21 @@
     </div>
     <div class="hero-content text-black">
         <div class="max-w-prose">
-            <h1 class="mb-5 text-6xl font-bold">My Points Collection</h1>
+            <h1 class="mb-5 text-5xl font-bold">My Points Collection</h1>
         </div>
     </div>
 </div>
 
 <div class="overflow-x-auto mt-5">
-    <table class="table table-zebra w-full">
+    <div class="mb-5 flex items-center space-x-3">
+        <div class="flex-none input-group w-auto self-start">
+            <span class="bg-base-200 border-base-200 pr-0">
+                <i class="ph-magnifying-glass"></i>
+            </span>
+            <input type="text" placeholder="Search by date" id="myInput" class="input input-sm bg-base-200 focus:outline-0" onkeyup="myFunction()"/>
+        </div>
+    </div>
+    <table class="table table-zebra w-full" id="myTable">
         <thead>
             <tr>
                 <th></th>
@@ -24,15 +32,36 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var collection in Model.userCollections)
+            @foreach (var collection in Model.PointsHistoryList)
             {
                 <tr>
-                    <td>@collection.Key</td>
-                    <td>@collection.Value.CollectionDate</td>
-                    <td>Collection of @collection.Value.TotalWeight kg of recyclables by @collection.Value.AssignedCompany</td>
-                    <td>+ @collection.Value.PointsAllocated</td>
+                    <td>@collection.id</td>
+                    <td>@collection.activity_datetime</td>
+                    <td>@collection.activity_description (- @collection.points_spent points)</td>
+                    <td>+ @collection.points_gained</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<script>
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

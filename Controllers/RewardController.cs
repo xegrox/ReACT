@@ -1,7 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ReACT.Models;
+using ReACT.Services;
 
 namespace ReACT.Controllers;
 
@@ -26,9 +30,9 @@ public class RewardController : ControllerBase
         [Required] [FromForm] List<VariantFormModel> variants,
         [FromServices] IWebHostEnvironment env)
     {
-        var category = await _context.RewardCategories.FindAsync(categoryId);
+        var category = _context.RewardCategories.Include(c => c.Rewards).SingleOrDefault(c => c.Id == categoryId);
         if (category == null) return new BadRequestResult();
-        
+
         var imageUrl = $"/images/uploads/{Guid.NewGuid().ToString()}{Path.GetExtension(image.FileName)}";
         var imagePath = Path.Join(env.WebRootPath, imageUrl);
         Directory.CreateDirectory(Path.GetDirectoryName(imagePath)!);
@@ -41,13 +45,35 @@ public class RewardController : ControllerBase
             Name = name,
             ImageUrl = imageUrl,
             RedeemUrl = redeemUrl,
+            Popularity = 0,
             Variants = variants.Select(v => new RewardVariant
             {
                 Name = v.Name,
-                Points = v.Points
+                Points = v.Points,
+                Popularity = 0
             }).ToHashSet()
         };
-        
+
+        foreach (var oneVariant in reward.Variants)
+        {
+            var cw_prize = new CycleOfWaste_prizes
+            {
+                Name = name,
+                Points = 0,
+                RewardVariantId = oneVariant.Id,
+                RewardVariant = oneVariant
+            };
+            if (_context.CycleOfWaste_prizes.Count() < 8)
+            {
+                cw_prize.VisibleToUser = true;
+            }
+            else
+            {
+                cw_prize.VisibleToUser = false;
+            }
+            _context.CycleOfWaste_prizes.Add(cw_prize);
+        }
+
         category.Rewards.Add(reward);
         await _context.SaveChangesAsync();
         return new OkResult();
@@ -66,7 +92,12 @@ public class RewardController : ControllerBase
             name = reward.Name,
             imageUrl = reward.ImageUrl,
             redeemUrl = reward.RedeemUrl,
-            reward.Variants
+            variants = reward.Variants.Select(v => new
+            {
+                id = v.Id,
+                name = v.Name,
+                points = v.Points
+            })
         });
     }
 
@@ -118,7 +149,8 @@ public class RewardController : ControllerBase
 
             reward.Variants.Add(new RewardVariant {
                 Name = variantFormModel.Name,
-                Points = variantFormModel.Points
+                Points = variantFormModel.Points,
+                Popularity = 0
             });
         }
 
@@ -185,6 +217,41 @@ public class RewardController : ControllerBase
         _context.SaveChanges();
         return new OkResult();
     }
+
+    [HttpGet("{id:int}/Stock")]
+    public ActionResult GetStock(int id)
+    {
+        var variants = _context.RewardVariants.Where(v => v.RewardId == id).Include(v => v.Codes)
+            .Select(v => new
+            {
+                id = v.Id,
+                name = v.Name,
+                stock = v.Codes.Count
+            }).ToList();
+        if (variants.IsNullOrEmpty()) return new NotFoundResult();
+        return new JsonResult(variants);
+    }
+
+    [HttpPost("{id:int}/Stock")]
+    public ActionResult AddStock(int id, List<VariantStock> stock)
+    {
+        var variants = _context.Rewards.Include(r => r.Variants).ToList().FirstOrDefault(r => r.Id == id)?.Variants.ToList();
+        if (variants == null) return new NotFoundResult();
+        var codes = new List<RewardCode>();
+        foreach (var entry in stock)
+        {
+            var variant = variants.Find(v => v.Id == entry.Id);
+            if (variant == null) continue;
+            codes.AddRange(entry.Codes.Select(c => new RewardCode
+            {
+                Variant = variant,
+                Code = c
+            }));
+        }
+        _context.RewardCodes.AddRange(codes);
+        _context.SaveChanges();
+        return Ok();
+    }
 }
 
 public class VariantFormModel
@@ -194,4 +261,13 @@ public class VariantFormModel
     [Required] public string Name { get; set; }
 
     [Required] [Range(1, int.MaxValue)] public int Points { get; set; }
+}
+
+public class VariantStock
+{
+    [Required]
+    public int Id { get; set; }
+    
+    [Required]
+    public List<string> Codes { get; set; }
 }

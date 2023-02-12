@@ -17,6 +17,27 @@
     {
       "library": "htmx.org@1.8.4",
       "destination": "wwwroot/lib/htmx.org"
+    },
+    {
+      "library": "@rive-app/canvas-advanced@1.0.94",
+      "destination": "wwwroot/lib/rive-app/canvas-advanced"
+    },
+    {
+      "library": "@panzoom/panzoom@4.5.1",
+      "destination": "wwwroot/lib/panzoom/panzoom"
+    },
+    {
+      "library": "papaparse@5.3.2",
+      "destination": "wwwroot/lib/papaparse"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "alpine-turbo-drive-adapter@2.0.0",
+      "destination": "wwwroot/lib/alpine-turbo-drive-adapter"
+    },
+    {
+      "library": "qrcodejs@1.0.0",
+      "destination": "wwwroot/lib/qrcodejs"
     }
   ]
 }

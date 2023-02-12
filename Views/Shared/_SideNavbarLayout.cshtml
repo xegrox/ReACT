@@ -75,6 +75,7 @@
     </div>
     <div class="drawer-content">
         @RenderBody()
+        @await Html.PartialAsync("_FlashMessage")
     </div>
 </div>
 

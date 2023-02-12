@@ -1,9 +1,6 @@
-using FuzzySharp;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using ReACT.Helpers;
 using ReACT.Models;
 using System.Data;
 
@@ -28,7 +25,7 @@ public class ManageRewards : PageModel
         if (all)
         {
             rewardsIds = search == null ? _context.Rewards.Select(r => r.Id).ToList()
-                : _context.Rewards.Where(r => r.Name.FuzzyMatch(search)).Select(r => r.Id).ToList();
+                : _context.Rewards.Where(r => AuthDbContext.Difference(search, r.Name) >= 2).Select(r => r.Id).ToList();
         }
         else
         {
@@ -36,7 +33,7 @@ public class ManageRewards : PageModel
             if (categoryId == null) return RedirectToPage("ManageRewards", new { all = true });
             var category = _context.RewardCategories.Include(c => c.Rewards).SingleOrDefault(c => c.Id == categoryId);
             if (category == null) return RedirectToPage();
-            rewardsIds = category.Rewards.Where(r => search == null || r.Name.FuzzyMatch(search)).Select(r => r.Id).ToList();
+            rewardsIds = category.Rewards.Where(r => search == null || AuthDbContext.Difference(search, r.Name) >= 2).Select(r => r.Id).ToList();
             ViewData["activeCategoryId"] = categoryId;
         }
 
@@ -45,12 +42,17 @@ public class ManageRewards : PageModel
         rewardsIds = rewardsIds.Skip(rewardsPerPage * (pageIndex-1)).Take(rewardsPerPage).ToList();
 
         var rewards = _context.Rewards.Include(r => r.Variants).Where(r => rewardsIds.Contains(r.Id)).ToList();
+        var variantStockCounts = rewards.SelectMany(r => r.Variants)
+            .ToDictionary(v => v.Id, v => _context.RewardCodes.Count(c => c.VariantId == v.Id));
+        
 
         ViewData["rewardsPerPage"] = rewardsPerPage;
         ViewData["pageIndex"] = pageIndex;
         ViewData["pageCount"] = (totalRewardsCount - 1) / rewardsPerPage + 1;
         ViewData["search"] = search;
         ViewData["rewards"] = rewards;
+        ViewData["maxPopularity"] = _context.Rewards.Max<Reward, int?>(r => r.Popularity) ?? 0;
+        ViewData["variantStockCounts"] = variantStockCounts;
         ViewData["categories"] = _context.RewardCategories.ToList();
         return Page();
     }

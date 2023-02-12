@@ -1,0 +1,176 @@
+﻿@page
+@model ReACT.Areas.Company.Pages.ViewCollectionsModel
+@{
+    var completed = ViewData["completed"] as int?;
+}
+
+<div class="flex flex-col p-16">
+    <h3 class="text-2xl font-semibold mb-10">View Collections</h3>
+    <div class="mb-5 flex items-center space-x-3">
+        <div class="flex-none tabs tabs-boxed self-start !p-1.5">
+            @if (completed == 2)
+            {
+                <a class="tab space-x-2" href="?completed=false"><p>Pending</p></a>
+                <a class="tab space-x-2 tab-active" href="?completed=true"><p>Completed</p></a>
+            }
+            else
+            {
+                <a class="tab space-x-2 tab-active" href="?completed=false"><p>Pending</p></a>
+                <a class="tab space-x-2" href="?completed=true"><p>Completed</p></a>
+            }
+        </div>
+        <div class="flex-1"></div>
+        <div class="flex-none input-group">
+            <span class="bg-base-200 border-base-200 pr-0">
+                <i class="ph-magnifying-glass-bold"></i>
+            </span>
+            <input id="searchbar" type="text" placeholder="Search by collection id" class="input input-sm bg-base-200 focus:outline-0" onkeyup="search()" />
+        </div>
+    </div>
+    <div class="overflow-x-auto mt-5">
+        <table id="collectionTable" class="table table-zebra w-full">
+            @if (completed == 1)
+            {
+                <thead>
+                    <tr>
+                        <th>Collection Address</th>
+                        <th>Collection Date</th>
+                        <th>Assigned Company</th>
+                        <th>Details</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var collection in Model.CollectionList)
+                    {
+                        <tr>
+                            <td class="addr">@collection.Address</td>
+                            <td>@collection.CollectionDate.ToShortDateString()</td>
+                            <td>@collection.AssignedCompany</td>
+                            <td>
+                                <div class="tooltip" data-tip="View Collection Details">
+                                    <label for="view-collection-modal-@collection.Id">
+                                        <i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i>
+                                    </label>
+                                </div>
+
+                                @*Collection Details Modal*@
+
+                                <input type="checkbox" id="view-collection-modal-@collection.Id" class="modal-toggle" />
+                                <div class="modal">
+                                    <div class="modal-box">
+                                        <label for="view-collection-modal-@collection.Id" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+                                        <h3 class="font-bold text-lg mb-4">View Collection Details </h3>
+                                        <p><span class="font-medium">Collection ID</span>: @collection.Id</p>
+                                        <p><span class="font-medium">Collection Date</span>: @collection.CollectionDate.ToShortDateString()</p>
+                                        <p><span class="font-medium">User</span>: @collection.Username</p>
+                                        <p><span class="font-medium">Address</span>: @collection.Address</p>
+                                        @if (collection.AssignedCompany != "N/A")
+                                        {
+                                            <p><span class="font-medium">Assigned Company</span>: @collection.AssignedCompany</p>
+                                        }
+                                        else
+                                        {
+                                            <p><span class="font-medium">Assigned Company</span>: None</p>
+
+                                        }
+                                        <p><span class="font-medium">Status</span>: @collection.Status</p>
+                                        <div class="modal-action">
+                                            <label class="btn text-white" for="view-collection-modal-@collection.Id">Back</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tooltip" data-tip="Mark as done">
+                                    <a asp-page="/MarkCollection" asp-route-collectionId="@collection.Id"><i class="btn btn-sm btn-ghost btn-circle ph-check-bold"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+            else if (completed == 2)
+            {
+                <thead>
+                    <tr>
+                        <th>Collection Address</th>
+                        <th>Collection Date</th>
+                        <th>Assigned Company</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var collection in Model.CollectionList)
+                    {
+                        <tr>
+                            <td>@collection.Address</td>
+                            <td>@collection.CollectionDate.ToShortDateString()</td>
+                            <td>@collection.AssignedCompany</td>
+                            <td>@collection.Status</td>
+                            <td>
+                                <div class="tooltip" data-tip="View Collection Details">
+                                    <label for="view-collection-modal-@collection.Id">
+                                        <i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i>
+                                    </label>
+                                </div>
+
+                                @*Collection Details Modal*@
+
+                                <input type="checkbox" id="view-collection-modal-@collection.Id" class="modal-toggle" />
+                                <div class="modal">
+                                    <div class="modal-box">
+                                        <label for="view-collection-modal-@collection.Id" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
+                                        <h3 class="font-bold text-lg mb-4">View Collection Details </h3>
+                                        <p><span class="font-medium">Collection ID</span>: @collection.Id</p>
+                                        <p><span class="font-medium">Collection Date</span>: @collection.CollectionDate.ToShortDateString()</p>
+                                        <p><span class="font-medium">User</span>: @collection.Username</p>
+                                        <p><span class="font-medium">Address</span>: @collection.Address</p>
+                                        @if (collection.AssignedCompany != "N/A")
+                                        {
+                                            <p><span class="font-medium">Assigned Company</span>: @collection.AssignedCompany</p>
+                                        }
+                                        else
+                                        {
+                                            <p><span class="font-medium">Assigned Company</span>: None</p>
+
+                                        }
+                                        <p><span class="font-medium">Status</span>: @collection.Status</p>
+                                        <div class="modal-action">
+                                            <label class="btn text-white" for="view-collection-modal-@collection.Id">Back</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        </table>
+    </div>
+</div>
+
+<script>
+    function search() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchbar");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("collectionTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

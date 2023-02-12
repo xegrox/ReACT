@@ -1,26 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using ReACT.Services;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReACT.Areas.User.Pages
 {
+    [Authorize]
     public class ForumModel : PageModel
     {
-        [BindProperty]
-        public Models.Thread MyThread { get; set; } = new();
+        private readonly ForumService _forumService;
 
-        private readonly MockThreadsDb? _mockThreadsDb;
-
-        public ForumModel(MockThreadsDb mockThreadsDb)
+        public ForumModel(ForumService forumService)
         {
-            _mockThreadsDb = mockThreadsDb;
+            _forumService = forumService;
         }
+
+        [BindProperty, Required, StringLength(50, MinimumLength = 5, ErrorMessage = "The thread title must be between 5 and 50 characters.")]
+        public string Title { get; set; }
+        [BindProperty, Required, MaxLength(300, ErrorMessage = "The thread description must be less than 300 characters.")]
+        public string Content { get; set; }
 
         public List<Models.Thread>? threadList { get; set; } = new();
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            threadList = _mockThreadsDb?.GetAll();
+            threadList = _forumService.GetAll();
+            return Page();
+        }
+
+        public IActionResult OnPost()
+        {
+            if (ModelState.IsValid)
+            {
+                Models.Thread thread = new Models.Thread { Id = 4, Title = Title, Content = Content, ImageURL = "" };
+                _forumService.AddThread(thread);
+
+                return Redirect("/User/Forum");
+            }
+
+            return Page();
         }
     }
 }
