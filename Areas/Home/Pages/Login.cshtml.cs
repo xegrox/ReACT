@@ -11,6 +11,7 @@ namespace ReACT.Areas.Home.Pages
         [BindProperty]
         public Login LModel { get; set; }
 
+
         private readonly SignInManager<ApplicationUser> signInManager;
         private UserManager<ApplicationUser> userManager { get; }
         public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
