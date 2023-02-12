@@ -12,5 +12,10 @@ namespace ReACT.Models
 
         public DateTime Date { get; set; } = DateTime.Now;
         public string Status { get; set; } = "shown";
+
+        public string UserId { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+
+        public List<Message>? Messages { get; set; }
     }
 }

@@ -10,6 +10,7 @@
     </div>
 </div>
 
+<!-- Add Thread Button -->
 <div class="grid grid-cols-5">
     <div class="col-end-6">
         <label class="btn btn-md btn-primary rounded-full gap-1.5 text-base" for="newThread-modal-toggle">
@@ -35,7 +36,7 @@
                     <label class="label">
                         <span class="label-text">Thread Title</span>
                     </label>
-                    <input asp-for="Title" type="text" class="input input-bordered w-full max-w-xs" />
+                    <input asp-for="Title" type="text" placeholder="The title of your thread" class="input input-bordered w-full max-w-xs" />
                     <span asp-validation-for="Title" class="text-error"></span>
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -43,7 +44,7 @@
                         <span class="label-text">Thread Description</span>
                     </label>
                     @*<textarea asp-for="MyThread.Content" placeholder="Enter your thread description" class="input input-bordered w-full max-w-xs"></textarea>*@
-                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg" })
+                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg", @placeholder = "What your thread is about" })
                     <span asp-validation-for="Content" class="text-error"></span>
                 </div>
                 <div class="form-control w-full max-w-xs">
@@ -62,7 +63,7 @@
     </label>
 </div>
 
-@if (Model.threadList != null)
+@if (Model.threadList.Any())
 {
     @foreach (var thread in Model.threadList)
     {
@@ -97,7 +98,3 @@
         }
     }
 }
-else
-{
-    <p class="text-4xl text-center">No forum threads</p>
-} 

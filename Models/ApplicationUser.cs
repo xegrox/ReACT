@@ -22,6 +22,7 @@ namespace ReACT.Models
 
         public List<Collection>? Collections { get; set; }
         public List<Thread>? Threads { get; set; }
+        public List<Message>? Messages { get; set; }
         public List<CycleOfWaste>? CycleOfWaste_records { get; set; }
     }
 }
