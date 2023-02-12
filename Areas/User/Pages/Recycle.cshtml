@@ -25,23 +25,26 @@
 </div>
 
 <div class="flex flex-col p-16">
-    <form class="flex-1 flex flex-col space-y-2" method="post">
-        <div class="form-control w-full max-w-xs">
-            <label class="label">
-                <span class="label-text">Collection Date</span>
-            </label>
-            <input asp-for="Date" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="input input-bordered w-full max-w-xs" min="@DateTime.Today.ToString("yyyy-MM-dd")" max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" />
-            <span asp-validation-for="Date" class="text-error"></span>
-        </div>
-        <div class="form-control w-full max-w-xs">
-            <label class="label">
-                <span class="label-text">Address</span>
-            </label>
-            <input asp-for="Address" type="text" placeholder="Enter your address" class="input input-bordered w-full max-w-xs"/>
-            <span asp-validation-for="Address" class="text-error"></span>
-        </div>
-        <div class="form-control w-full max-w-xs">
-            <button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>
-        </div>
-    </form>
+    <turbo-frame id="recycleForm">
+        <form class="flex-1 flex flex-col space-y-2" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Collection Date</span>
+                </label>
+                <input asp-for="Date" type="date" placeholder="Choose a collection date" class="input input-bordered w-full max-w-xs" />
+                <span asp-validation-for="Date" class="text-error"></span>
+            </div>
+            <div class="form-control w-full max-w-xs">
+                <label class="label">
+                    <span class="label-text">Address</span>
+                </label>
+                <input asp-for="Address" type="text" placeholder="Enter your address" class="input input-bordered w-full max-w-xs" />
+                <span asp-validation-for="Address" class="text-error"></span>
+            </div>
+            <div class="form-control w-full max-w-xs">
+                <button class="btn btn-active btn-accent mt-3 text-white" type="submit">Submit</button>
+            </div>
+        </form>
+    </turbo-frame>
 </div>

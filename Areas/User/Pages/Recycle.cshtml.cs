@@ -70,7 +70,7 @@ public class Recycle : PageModel
 
             return Redirect("/User/Dashboard");
         }
-        return Page();
+        return RedirectToPage("/Recycle");
     }
 
     public IActionResult OnGetPaperSlips()
