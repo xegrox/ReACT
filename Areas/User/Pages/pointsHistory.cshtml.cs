@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ReACT.Areas.User.Pages
 {

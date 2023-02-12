@@ -4,7 +4,8 @@ namespace ReACT.ViewModels
 {
     public class EditUser
     {
-        [Required]
+
+         [Required]
         [DataType(DataType.Text)]
         public string? FirstName { get; set; }
 
