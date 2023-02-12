@@ -1,4 +1,13 @@
-<div x-data="{rewardId: null, rewardName: ''}" x-on:delete-reward.document="rewardId = $event.detail.rewardId; rewardName = $event.detail.rewardName; $refs.toggle.checked = true">
+<div x-data="{
+        rewardId: null,
+        rewardName: '',
+        async deleteReward() {
+            let res = await fetch(`/api/Reward/${this.rewardId}`, {method: 'DELETE'})
+            $refs.toggle.checked = false
+            if (res.ok) $dispatch('success')
+            else if (res.status == 409) $elemById('delete-reward-conflict-modal-toggle').checked = true
+        }
+    }" x-on:delete-reward.document="rewardId = $event.detail.rewardId; rewardName = $event.detail.rewardName; $refs.toggle.checked = true">
     <input type="checkbox" id="delete-reward-modal-toggle" class="modal-toggle" x-ref="toggle"/>
     <label for="delete-reward-modal-toggle" class="modal cursor-pointer">
         <label class="modal-box !p-10" for="">
@@ -10,9 +19,23 @@
             <p>All relevant reward codes will be deleted as well</p>
             <p>Are you sure?</p>
             <div class="modal-action">
-                <div class="btn btn-error" x-on:click="$fetchok(`/api/Reward/${rewardId}`, 'DELETE').then(ok => {if (ok) { $dispatch('success'); $refs.toggle.checked = false }})">Delete</div>
+                <div class="btn btn-error" x-on:click="deleteReward()">Delete</div>
             </div>
         </label>
     </label>
 </div>
 
+<input type="checkbox" id="delete-reward-conflict-modal-toggle" class="modal-toggle" x-ref="toggle"/>
+<label for="delete-reward-conflict-modal-toggle" class="modal cursor-pointer">
+    <label class="modal-box !p-10" for="">
+        <label for="delete-reward-conflict-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+            <i class="ph-x"></i>
+        </label>
+        <h3 class="text-2xl font-semibold mb-6">Failed to Delete Reward</h3>
+        <p>This reward is currently listed as one of the <b>Cycle Of Waste</b> prizes</p>
+        <p class="mt-1">Please remove it from the list of prizes before continuing</p>
+        <div class="modal-action">
+            <label for="delete-reward-conflict-modal-toggle" class="btn">Okay</label>
+        </div>
+    </label>
+</label>

@@ -6,6 +6,7 @@
     var width = ViewData["width"] as int? ?? 0;
     var height = ViewData["height"] as int? ?? 0;
     var checkpoints = ViewData["checkpoints"] as List<int> ?? new List<int>();
+    var claimedCheckpoints = ViewData["claimedCheckpoints"] as List<int> ?? new List<int>();
 
     // Calculate progress
     var pEndIndex = checkpoints.FindIndex(c => c > trees.Count);
@@ -53,12 +54,24 @@
                             </div>
                         </div>
                     </div>
+                    @{ var i = 0; }
                     @foreach (var c in checkpoints)
                     {
                         <div class="flex pl-4 relative">
                             @if (c <= trees.Count)
                             {
                                 var tree = trees[c - 1];
+                                @if (!claimedCheckpoints.Contains(c))
+                                {
+                                    <div class="bottom-full left-0 -translate-x-1/2 absolute z-20 cursor-pointer transition-opacity"
+                                         x-on:click="$fetchok('@Url.Page("Forest")?checkpointNo=@i', 'POST').then(ok => {if (ok) { $removeEl(); document.dispatchEvent(new Event('update-points')) }})">
+                                        <div class="px-0.5 pb-0.5 rounded-md bg-[#e6f2f1] border border-primary text-primary animate-bounce">
+                                            <div class="absolute border-[6px] !border-t-primary !border-transparent top-full left-1/2 -translate-x-1/2"></div>
+                                            <div class="absolute border-[5px] !border-t-[#e6f2f1] !border-transparent top-full left-1/2 -translate-x-1/2 -translate-y-px"></div>
+                                            <i class="ph-gift-bold text-lg align-middle"></i>
+                                        </div>
+                                    </div>
+                                }
                                 <div id="c-@c" class="z-10 w-3 h-3 rounded-full bg-primary absolute left-0 -translate-x-1/2 top-1/2 -translate-y-1/2"></div>
                                 <p class="mr-auto">@c.OrdinalString() tree planted @tree.Date.RelativeString()</p>
                                 <p class="text-base-content/80">@tree.Date.ToString("dd/MM/yy")</p>
@@ -69,6 +82,7 @@
                                 <p class="mr-auto">@c.OrdinalString() tree to be planted</p>
                             }
                         </div>
+                        i++;
                     }
                     <div class="absolute w-[105%] h-5 -bottom-1 right-0 bg-gradient-to-b from-transparent to-base-200"></div>
                 </div>
@@ -79,6 +93,10 @@
 
 <script>
 let simpleRenderTree
+
+function claimCheckpointReward() {
+  
+}
 </script>
 
 <script type="module">
