@@ -44,6 +44,7 @@ namespace ReACT.Models
         public DbSet<RewardHistory> RewardHistories { get; set; }
 
         public DbSet<Thread> Threads { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public DbSet<PointsHistory> PointsHistory { get; set; }
     }

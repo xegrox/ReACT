@@ -26,37 +26,37 @@ public class ViewCollectionModel : PageModel
     }
 
     public List<Collection> CollectionList { get; set; } = new();
-    public IActionResult OnGet(bool completed, int collectionId, string userId)
+    public async Task<IActionResult> OnGet(bool completed)
     {
+        var usersWithRole = await _userManager.GetUsersInRoleAsync("Company");
+        companies = usersWithRole.OfType<ApplicationUser>().ToList();
+
         if (completed)
         {
             CollectionList = _collectionService.GetCompletedCollections();
-            companies = _companyService.GetCompanies();
             ViewData["completed"] = 2;
         } else
         {
             CollectionList = _collectionService.GetPendingCollections();
-            companies = _companyService.GetCompanies();
             ViewData["completed"] = 1;
         }
 
         return Page();
     }
 
-    public int CompanyId { get; set; }
+    public string CompanyId { get; set; }
     public int CollectionId { get; set; }
     public Collection collection { get; set; }
-    public List<Models.Company> companies { get; set; } = new();
+    public List<ApplicationUser> companies { get; set; }
 
     // Assign company OnPost
-    public IActionResult OnPostAssignCompany(int CollectionId, int CompanyId)
+    public async Task<IActionResult> OnPostAssignCompany(int CollectionId, string CompanyId)
     {
         if (ModelState.IsValid)
         {
             var collection = _collectionService.GetCollection(CollectionId);
-            var company = _companyService.GetCompany(CompanyId);
-            //collection.Company.Id = CompanyId;
-            collection.AssignedCompany = company.Name;
+            var company = await _userManager.FindByIdAsync(CompanyId);
+            collection.AssignedCompany = company.FirstName;
             _collectionService.UpdateCollection(collection);
 
             return RedirectToPage("/ViewCollections");
@@ -69,7 +69,7 @@ public class ViewCollectionModel : PageModel
     public DateTime ParsedDate { get; set; }
 
     // Edit Collection OnPost
-    public IActionResult OnPostEditCollection(string EditDate, int CollectionId, int CompanyId)
+    public async Task<IActionResult> OnPostEditCollection(string EditDate, int CollectionId, string? CompanyId)
     {
         if (ModelState.IsValid)
         {
@@ -77,7 +77,11 @@ public class ViewCollectionModel : PageModel
 
             ParsedDate = DateTime.ParseExact(EditDate, "yyyy-MM-dd", CultureInfo.CurrentCulture);
             collection.CollectionDate = ParsedDate.Date;
-            //collection.Company.Id = CompanyId;
+            if (collection.AssignedCompany != "N/A")
+            {
+                var company = await _userManager.FindByIdAsync(CompanyId);
+                collection.AssignedCompany = company.FirstName;
+            }
             _collectionService.UpdateCollection(collection);
 
 

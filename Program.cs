@@ -31,6 +31,7 @@ builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<CycleOfWasteService>();
 builder.Services.AddScoped<EditCycleOfWasteService>();
 builder.Services.AddScoped<ForumService>();
+builder.Services.AddScoped<MessageService>();
 builder.Services.AddScoped<RecyclingTypeService>();
 
 

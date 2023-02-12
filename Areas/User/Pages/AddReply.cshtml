@@ -1,0 +1,58 @@
+﻿@page
+@model ReACT.Areas.User.Pages.ReplyModel
+@{
+}
+
+<!-- Back arrow -->
+<div class="flex absolute top-0">
+    @if (Model.MyMessage != null)
+    {
+        <a asp-page="/forumThread" asp-route-id="@Model.MyMessage.threadId">
+            <i class="ph-arrow-left text-4xl text-primary p-2"></i>
+        </a>
+    }
+    else 
+    {
+        <a asp-page="/Forum">
+            <i class="ph-arrow-left text-4xl text-primary p-2"></i>
+        </a>
+    }
+</div>
+
+
+@if (Model.MyMessage == null)
+{
+    <!-- Maximum depth -->
+    <p class="text-xl text-center font-semibold color-[#767676] w-full absolute top-1/2 left-40">Error: Maximum message depth reached</p>
+}
+else
+{
+    <!-- Message Content -->
+    <div class="grid grid-cols-12 gap-4 my-12">
+        <p class="text-xl text-primary col-start-3 col-span-8">You are sending a reply to: </p>
+        <div class="bg-emerald-100 text-primary rounded-lg col-start-3 col-span-8 grid grid-cols-12 mb-12">
+            <div class="col-span-8 ml-4 mt-5 mb-8">
+                <p class="text-lg">@Model.MyMessage.UserName</p>
+            </div>
+
+            <div class="col-span-8 ml-4 mb-12">
+                <p class="text-2xl">@Model.MyMessage.Content</p>
+            </div>
+        </div>
+
+        <div class="col-start-3 col-span-6">
+            <form class="flex-1 flex flex-col space-y-2" method="post">
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Message Content</span>
+                    </label>
+                    @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg" })
+                    <span asp-validation-for="Content" class="text-error"></span>
+                </div>
+                <div class="form-control w-1/5 max-w-xs">
+                    <input class="btn btn-active btn-accent mt-3 text-white" type="submit" value="Add Reply" />
+                </div>
+            </form>
+        </div>
+    </div>
+}

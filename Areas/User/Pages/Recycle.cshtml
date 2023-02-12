@@ -38,7 +38,7 @@
                 <label class="label">
                     <span class="label-text">Address</span>
                 </label>
-                <input asp-for="Address" type="text" placeholder="Enter your address" class="input input-bordered w-full max-w-xs" />
+                <input asp-for="Address" type="text" value="@Model.user.Address" class="input input-bordered w-full max-w-xs" />
                 <span asp-validation-for="Address" class="text-error"></span>
             </div>
             <div class="form-control w-full max-w-xs">
