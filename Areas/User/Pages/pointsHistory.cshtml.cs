@@ -7,7 +7,7 @@ using ReACT.Services;
 
 namespace ReACT.Areas.User.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     public class pointsHistoryModel : PageModel
     {
         private readonly AuthDbContext _authDbContext;

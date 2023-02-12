@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ReACT.Models;
 using ReACT.ViewModels;
+using System.Data;
 
 namespace ReACT.Areas.Admin.Pages
 {
+    [Authorize(Roles = "Admin")]
     public class EditUserModel : PageModel
     {
         [BindProperty]

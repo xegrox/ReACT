@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
+using System.Data;
 
 namespace ReACT.Areas.Admin.Pages
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteUserModel : PageModel
     {
 

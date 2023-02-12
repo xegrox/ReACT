@@ -16,11 +16,20 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AddAreaPageRoute("User", "/Dashboard", "/user");
 });
 
+
 builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
 builder.Services.ConfigureApplicationCookie(config =>
 {
     config.LoginPath = "/Home/Login";
+});
+
+builder.Services.Configure<IdentityOptions>(options => {
+
+    // Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.Lockout.AllowedForNewUsers = true;
 });
 
 

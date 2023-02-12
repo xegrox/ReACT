@@ -12,6 +12,7 @@ namespace ReACT.Areas.Home.Pages
         public AdminLogin AModel { get; set; }
 
         private readonly SignInManager<ApplicationUser> signInManager;
+
         private ApplicationUser user;
         private UserManager<ApplicationUser> userManager { get; }
         public AdminLoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
