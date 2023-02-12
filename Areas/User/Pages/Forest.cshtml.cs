@@ -1,30 +1,24 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Helpers;
 using ReACT.Models;
+using ReACT.Services;
 
 namespace ReACT.Areas.User.Pages;
 
 [Authorize]
 public class Forest : PageModel
 {
-    public void OnGet()
+    public void OnGet([FromServices] ForestService forest)
     {
+        forest.InsertRandomTree(20);
         var trees = MockForestDb.Trees;
         var dimens = MockForestDb.Trees.Aggregate((0, 0), (d, tree) => (
             (int) Math.Ceiling(Math.Max(d.Item1, Math.Abs(tree.X * 2) + 4000)),
             (int) Math.Ceiling(Math.Max(d.Item2, Math.Abs(tree.Y * 2) + 4000)))
         );
-        var plot = new ForestPlot(dimens.Item1, dimens.Item2, 100);
-        trees.ForEach(t => plot.InsertTree(t));
-        var newTree = plot.InsertRandomTree();
-        if (newTree != null)
-        {
-            MockForestDb.Trees.Add(newTree);
-            dimens.Item1 = (int) Math.Ceiling(Math.Max(dimens.Item1, Math.Abs(newTree.X * 2) + 4000));
-            dimens.Item2 = (int) Math.Ceiling(Math.Max(dimens.Item2, Math.Abs(newTree.Y * 2) + 4000));
-        }
-        ViewData["trees"] = plot.GetAll();
+        ViewData["trees"] = trees;
         ViewData["width"] = dimens.Item1;
         ViewData["height"] = dimens.Item2;
         var checkpoints = new List<int>();

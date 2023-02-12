@@ -9,7 +9,7 @@ public class ForestTree
     
     public DateTime Date { get; set; }
     
-    public int RecycledKg { get; set; }
+    public double RecycledKg { get; set; }
     public ForestTreeVariant Variant { get; set; }
 
     public ForestTreeStage getStage()

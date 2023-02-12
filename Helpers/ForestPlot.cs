@@ -32,11 +32,11 @@ public class ForestPlot
         return true;
     }
     
-    public ForestTree? InsertRandomTree()
+    public ForestTree? InsertRandomTree(double recycledKg)
     {
         if (_points.Count == 0)
         {
-            var tree = CreateTree(0, 0);
+            var tree = CreateTree(0, 0, recycledKg);
             InsertTree(tree);
             return tree;
         }
@@ -51,7 +51,7 @@ public class ForestPlot
                 var x = randTree.X + radius * Math.Cos(Math.PI * theta / 180);
                 var y = randTree.Y + radius * Math.Sin(Math.PI * theta / 180);
                 if (!IsValidPoint(x, y)) continue;
-                var newTree = CreateTree(x, y);
+                var newTree = CreateTree(x, y, recycledKg);
                 InsertTree(newTree);
                 return newTree;
             }
@@ -88,7 +88,7 @@ public class ForestPlot
         return Math.Sqrt(Math.Pow(x0 - x1, 2) + Math.Pow(y0 - y1, 2));
     }
 
-    private static ForestTree CreateTree(double x, double y) {
+    private static ForestTree CreateTree(double x, double y, double recycledKg) {
         var values = Enum.GetValues<ForestTreeVariant>();
         return new ForestTree
         {
@@ -96,7 +96,7 @@ public class ForestPlot
             Y = y,
             Active = true,
             Date = DateTime.Now,
-            RecycledKg = 10,
+            RecycledKg = recycledKg,
             Variant = values[new Random().Next(values.Length)]
         };
     }
