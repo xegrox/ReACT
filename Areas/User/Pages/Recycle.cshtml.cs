@@ -55,6 +55,7 @@ public class Recycle : PageModel
                 UserId = userId,
                 Username = $"{user.FirstName} {user.LastName}",
                 Address = Address,
+                ScheduledDate = ParsedDate.Date,
                 CollectionDate = ParsedDate.Date,
                 AssignedCompany = "N/A",
                 Status = "Not Completed"

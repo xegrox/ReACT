@@ -14,14 +14,16 @@ public class AllocatePoints : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RecyclingTypeService _recyclingTypeService;
     private readonly CompanyService _companyService;
+    private readonly ForestService _forestService;
 
-    public AllocatePoints(CollectionService collectionService, AuthDbContext authDbContext, UserManager<ApplicationUser> userManager, RecyclingTypeService recyclingTypeService, CompanyService companyService)
+    public AllocatePoints(CollectionService collectionService, AuthDbContext authDbContext, UserManager<ApplicationUser> userManager, RecyclingTypeService recyclingTypeService, CompanyService companyService, ForestService forestService)
     {
         _collectionService = collectionService;
         _authDbContext = authDbContext;
         _userManager = userManager;
         _recyclingTypeService = recyclingTypeService;
         _companyService = companyService;
+        _forestService = forestService;
     }
 
     [BindProperty]
@@ -32,6 +34,9 @@ public class AllocatePoints : PageModel
     public List<ApplicationUser> UsersList { get; set; } = new();
 
     public List<RecyclingType> RecyclingTypeList { get; set; } = new();
+
+    [BindProperty]
+    public string recyclingMethod { get; set; }
 
     public void OnGet()
     {
@@ -44,25 +49,16 @@ public class AllocatePoints : PageModel
                 UsersList.Add(oneUser);
             }
         }
+        RecyclingTypeList = _recyclingTypeService.GetAllTypes();
     }
 
     public async Task<ActionResult> OnPostAdd_Collection()
     {
+        string myMessage = "";
         ApplicationUser? selectedUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(oneCollection.UserId));
         if (selectedUser != null)
         {
             var pointsPerKG = 0;
-
-            // get PointsPerKG conversion rate
-            RecyclingTypeList = _recyclingTypeService.GetAllTypes();
-            foreach (var recyclingType in RecyclingTypeList)
-            {
-                if (recyclingType.Name == "Collection")
-                {
-                    pointsPerKG = recyclingType.PointsPerKg;
-                    break;
-                }
-            }
 
             // get company
             var companyList = _companyService.GetCompany(1);
@@ -75,26 +71,69 @@ public class AllocatePoints : PageModel
                     return Page();
                 }
 
+                // get PointsPerKG conversion rate
+                RecyclingTypeList = _recyclingTypeService.GetAllTypes();
+                foreach (var recyclingType in RecyclingTypeList)
+                {
+                    if (recyclingMethod == $"Collection ({recyclingType.PointsPerKg} points/kg)")
+                    {
+                        pointsPerKG = recyclingType.PointsPerKg;
+                        break;
+                    }
+                    else if (recyclingMethod == $"Self recycled ({recyclingType.PointsPerKg} points/kg)")
+                    {
+                        pointsPerKG = recyclingType.PointsPerKg;
+                        break;
+                    }
+                }
+
                 // update collection status
-                oneCollection.UserId = selectedUser.Id;
-                oneCollection.CollectionDate = DateTime.Now;
-                oneCollection.AssignedCompany = companyList.Name;
-                oneCollection.Status = "Completed";
-                oneCollection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
-                oneCollection.Company = companyList;
-                selectedUser.Total_Points += oneCollection.PointsAllocated;
-                _collectionService.UpdateCollection(oneCollection);
+                check_collection.UserId = check_collection.UserId;
+                check_collection.Username = check_collection.Username;
+                check_collection.Address = check_collection.Address;
+                check_collection.ScheduledDate = check_collection.ScheduledDate;
+                check_collection.CollectionDate = DateTime.Now;
+                check_collection.AssignedCompany = companyList.Name;
+                check_collection.Status = "Completed";
+                check_collection.TotalWeight = oneCollection.TotalWeight;
+                check_collection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
+                check_collection.Company = companyList;
+                _collectionService.UpdateCollection(check_collection);
+
+                // add user points
+                selectedUser.Total_Points += check_collection.PointsAllocated;
+
+                foreach (var recyclingType in RecyclingTypeList)
+                {
+                    if (recyclingMethod == $"Collection ({recyclingType.PointsPerKg} points/kg)")
+                    {
+                        myMessage = $"{check_collection.AssignedCompany} collected {check_collection.TotalWeight}kg of recyclables.";
+                        break;
+                    }
+                    else if (recyclingMethod == $"Self recycled ({recyclingType.PointsPerKg} points/kg)")
+                    {
+                        myMessage = $"You recycled {check_collection.TotalWeight}kg of recyclables.";
+                        break;
+                    }
+                }
 
                 // add points history
                 PointsHistory addRow = new PointsHistory
                 {
-                    userId = selectedUser.Id,
+                    userId = check_collection.UserId,
                     points_spent = 0,
-                    activity_description = oneCollection.TotalWeight + "kg of recyclables collected by " + companyList.Name,
-                    points_gained = oneCollection.PointsAllocated
+                    activity_description = myMessage,
+                    points_gained = check_collection.PointsAllocated
                 };
                 _authDbContext.PointsHistory.Add(addRow);
                 await _authDbContext.SaveChangesAsync();
+
+                // add tree
+                _forestService.InsertRandomTree(Convert.ToDouble(check_collection.TotalWeight));
+                if (selectedUser.chance_TreeTask == 0)
+                {
+                    selectedUser.chance_TreeTask = 1;
+                }
 
                 // return
                 return RedirectToPage("/ScanRecyclable");
@@ -110,7 +149,7 @@ public class AllocatePoints : PageModel
         else
         {
             // cannot find user with userId
-            ModelState.AddModelError("", "Barcode string does not exist.");
+            ModelState.AddModelError("", "Cannot find user with this QR Code");
             return Page();
         }
     }

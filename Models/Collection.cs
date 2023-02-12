@@ -12,7 +12,11 @@ namespace ReACT.Models
         public string Address { get; set; }
 
         [DataType(DataType.Date)]
+        public DateTime ScheduledDate { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime CollectionDate { get; set; }
+
         public string AssignedCompany { get; set; }
         public string Status { get; set; }
 

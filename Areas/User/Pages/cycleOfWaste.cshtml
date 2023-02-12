@@ -90,7 +90,7 @@
                     </div>
                 </div>
                 <div class="col-xs-6" align="center">
-                    @if (Convert.ToInt32(ViewData["chances_counter"]) == 0 || Convert.ToInt32(ViewData["total_points"]) < 50)
+                    @if (Convert.ToInt32(ViewData["chances_counter"]) == 0 || (Convert.ToInt32(ViewData["total_points"]) < 50 && Convert.ToInt32(ViewData["free_chances"]) == 0))
                     {
                         <button class="btn btn-success" disabled>
                             <i class="ph-plus-circle text-sm"></i> 50   Spin Now!
