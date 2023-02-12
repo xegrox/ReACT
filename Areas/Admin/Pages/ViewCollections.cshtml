@@ -72,7 +72,7 @@
                                         Model.companies.Select(m => new SelectListItem
                                         {
                                         Value = m.Id.ToString(),
-                                        Text = m.Name
+                                        Text = m.FirstName
                                         }),
                                         new { @class = "select select-bordered w-full max-w-none" })
                                                 </div>
@@ -116,11 +116,11 @@
                                             {
                                                 <div class="form-control w-full max-w-none pt-4">
                                                     <span class="label-text text-base mb-1">Assigned Company</span>
-                                                    @Html.DropDownList("Id",
+                                                    @Html.DropDownList("CompanyId",
                                         Model.companies.Select(m => new SelectListItem
                                         {
                                         Value = m.Id.ToString(),
-                                        Text = m.Name
+                                        Text = m.FirstName
                                         }),
                                         new { @class = "select select-bordered w-full max-w-none" })
                                                 </div>

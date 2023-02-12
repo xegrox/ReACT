@@ -28,6 +28,15 @@ public class Recycle : PageModel
         _companyService = companyService;
     }
 
+    public IActionResult OnGet()
+    {
+        string userId = UserManager.GetUserId(User);
+        ApplicationUser? currentUser = _context.Users.FirstOrDefault(x => x.Id.Equals(userId));
+        user = currentUser;
+
+        return Page();
+    }
+
     [BindProperty, Required]
     public string Date { get; set; }
     public DateTime ParsedDate { get; set; }
@@ -44,15 +53,15 @@ public class Recycle : PageModel
             ApplicationUser? currentUser = _context.Users.FirstOrDefault(x => x.Id.Equals(userId));
             user = currentUser;
 
-            currentUser.Address = Address;
-            await UserManager.UpdateAsync(currentUser);
-            _context.SaveChanges();
+            //currentUser.Address = Address;
+            //await UserManager.UpdateAsync(currentUser);
+            //_context.SaveChanges();
 
             ParsedDate = DateTime.ParseExact(Date, "yyyy-MM-dd", CultureInfo.CurrentCulture);
 
             var collection = new Collection()
             {
-                UserId = userId,
+                UserId = user.Id,
                 Username = $"{user.FirstName} {user.LastName}",
                 Address = Address,
                 ScheduledDate = ParsedDate.Date,
@@ -62,13 +71,13 @@ public class Recycle : PageModel
             };
             _collectionService.AddCollection(collection);
 
-            var company = new Models.Company()
-            {
-                Name = "Company Test",
-                ContactNo = "12345678",
-                Address = "Recycling Inc. 123456"
-            };
-            _companyService.AddCompany(company);
+            //var company = new Models.Company()
+            //{
+            //    Name = "Company Test",
+            //    ContactNo = "12345678",
+            //    Address = "Recycling Inc. 123456"
+            //};
+            //_companyService.AddCompany(company);
 
             return Redirect("/User/Dashboard");
         }

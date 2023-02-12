@@ -8,6 +8,7 @@ namespace ReACT.Models
         public string? LastName { get; set; }
         public string Address { get; set; }
         public string? Profile { get; set; }
+        public int contactNo { get; set; }
         public bool? PublicPrivate { get; set; }
         public int Total_Points { get; set; } = 0;
         public int chances_Default { get; set; } = 3;
