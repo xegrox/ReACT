@@ -32,12 +32,12 @@
                     </button>
                     <p class="text-lg font-semibold">Details</p>
                 </div>
-                <div class="rounded-lg bg-base-300 bg-opacity-60 flex justify-center h-36">
+                <div class="rounded-lg bg-base-300 bg-opacity-60 flex justify-center h-36 p-4">
                     <canvas width="100" height="100" x-on:show-tree.document="simpleRenderTree($el, $event.detail)">
                     </canvas>
                 </div>
                 <div class="pl-2 text-base-content/80">
-                    <p x-text="tree?.data.name" class="font-semibold text-xl mb-1"></p>
+                    <p x-text="tree?.name" class="font-semibold text-xl mb-1"></p>
                     <p class="text-sm" x-text="`Planted ${tree?.data.dateStr} | Recycled ${tree?.data.recycledKg}kg`"></p>
                 </div>
             </div>
@@ -79,7 +79,9 @@
 
 <script>
 let simpleRenderTree
+</script>
 
+<script type="module">
 let startC = document.getElementById("c-@pStartC")
 let endC = document.getElementById("c-@pEndC")
 let progressFg = document.getElementById("progress-fg")
@@ -101,18 +103,46 @@ const rive = await RiveCanvas({
     locateFile: (_) => '/lib/rive-app/canvas-advanced/rive.wasm'
 });
 
+function getTreeUrl(stage, variant) {
+    switch (stage.toLowerCase()) {
+        case "seedling": return "/images/rive/seedling.riv"
+        case "sapling": return "/images/rive/sapling.riv"
+        case "tree": switch (variant.toLowerCase()) {
+            case "oak": return "/images/rive/oak_tree.riv"
+            case "pine": return "/images/rive/pine_tree.riv"
+        }
+    }
+}
+
 class TreeInstanceData {
-    constructor(artboard, x, y, data) {
-        this.data = data
-        this.artboard = artboard
-        this.machine = new rive.StateMachineInstance(
-            artboard.stateMachineByName("default"),
-            artboard
-        )
+    constructor(stage, variant, x, y, data) {
+        this.stage = stage.toLowerCase()
+        this.variant = variant.toLowerCase()
         this.x = x
         this.y = y
-        this.width = 100
-        this.height = 100
+        this.data = data
+        this.width = 220
+        this.height = 220
+    }
+    
+    static _cache = {}
+    
+    async init() {
+        let url = getTreeUrl(this.stage, this.variant) 
+        TreeInstanceData._cache[url] ??= await (await fetch(new Request(url))).arrayBuffer()
+        let file = await rive.load(new Uint8Array(TreeInstanceData._cache[url]))
+        this.artboard = file.defaultArtboard()
+        this.machine = new rive.StateMachineInstance(
+            this.artboard.stateMachineByName("default"),
+            this.artboard
+        )
+    }
+    
+    get name() {
+        function capitalize(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+        }
+        return capitalize(this.stage === "tree" ? `${this.variant} Tree` : this.stage)
     }
 }
 
@@ -133,10 +163,8 @@ function configureDimens() {
 
 function setupPanzoom() {
     const elem = document.getElementById("panzoom")
-    console.log((elem.width - elem.parentElement.offsetWidth)/2)
     const panzoom = Panzoom(elem, {
-        contain: "outside",
-        
+        contain: "outside",        
         startX: -(elem.width - elem.parentElement.offsetWidth)/2,
         startY: -(elem.height - elem.parentElement.offsetHeight)/2
     })
@@ -166,7 +194,7 @@ function renderBg() {
     const img = new Image()
     img.src = "/images/grass.png"
     img.addEventListener('load', () => {
-        fillPattern(canvas, img, 150, 150)
+        fillPattern(canvas, img, 300, 300)
         canvas.addEventListener("redraw", () => fillPattern(canvas, img, 150, 150))
     })
 }
@@ -210,26 +238,25 @@ function renderFg(trees) {
 }
 
 async function fetchTrees() {
-    const bytes = await (await fetch(new Request("/images/rive/sapling.riv"))).arrayBuffer()
-    const file = await rive.load(new Uint8Array(bytes))
-    const trees = new Set()
+    const trees = []
     
     @foreach (var tree in trees)
     {
         <text>
-        trees.add(new TreeInstanceData(
-            file.defaultArtboard(),
+        trees.push(new TreeInstanceData(
+            "@tree.getStage()",
+            "@tree.Variant",
             @tree.X,
             @tree.Y,
             {
-                name: "Oak Sapling",
                 dateStr: "@tree.Date.ToString("dd/MM/yyyy")",
                 recycledKg: @tree.RecycledKg
             }
         ))
         </text>
     }
-    
+    trees.sort((a, b) => a.y - b.y)
+    await Promise.all(trees.map(t => t.init()))
     return trees
 }
 

@@ -12,8 +12,8 @@ public class Forest : PageModel
     {
         var trees = MockForestDb.Trees;
         var dimens = MockForestDb.Trees.Aggregate((0, 0), (d, tree) => (
-            (int) Math.Ceiling(Math.Max(d.Item1, Math.Abs(tree.X * 2) + 2000)),
-            (int) Math.Ceiling(Math.Max(d.Item2, Math.Abs(tree.Y * 2) + 200)))
+            (int) Math.Ceiling(Math.Max(d.Item1, Math.Abs(tree.X * 2) + 4000)),
+            (int) Math.Ceiling(Math.Max(d.Item2, Math.Abs(tree.Y * 2) + 4000)))
         );
         var plot = new ForestPlot(dimens.Item1, dimens.Item2, 100);
         trees.ForEach(t => plot.InsertTree(t));
@@ -21,8 +21,8 @@ public class Forest : PageModel
         if (newTree != null)
         {
             MockForestDb.Trees.Add(newTree);
-            dimens.Item1 = (int) Math.Ceiling(Math.Max(dimens.Item1, Math.Abs(newTree.X * 2) + 2000));
-            dimens.Item2 = (int) Math.Ceiling(Math.Max(dimens.Item2, Math.Abs(newTree.Y * 2) + 2000));
+            dimens.Item1 = (int) Math.Ceiling(Math.Max(dimens.Item1, Math.Abs(newTree.X * 2) + 4000));
+            dimens.Item2 = (int) Math.Ceiling(Math.Max(dimens.Item2, Math.Abs(newTree.Y * 2) + 4000));
         }
         ViewData["trees"] = plot.GetAll();
         ViewData["width"] = dimens.Item1;
