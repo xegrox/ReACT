@@ -18,6 +18,11 @@
             Alpine.evaluate(el, `${property} = ${num}`)
         }, interval)
     })
+    Alpine.magic('removeEl', (el) => () => {
+        el.style.opacity = 0
+        el.addEventListener('transitionend', el.remove)
+    })
+    
     Alpine.directive('loading', (el, {expression}) => {
         if (el.disabled) return
         const getLoading = Alpine.evaluateLater(el, expression)
