@@ -26,6 +26,7 @@
             "POST"
         )
         this.loading = false
+        if (!success) return
         this.alert = "success"
         document.dispatchEvent(new Event("update-points"))
     }

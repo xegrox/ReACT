@@ -39,12 +39,17 @@ public class ManageRewards : PageModel
         rewardsIds = rewardsIds.Skip(rewardsPerPage * (pageIndex-1)).Take(rewardsPerPage).ToList();
 
         var rewards = _context.Rewards.Include(r => r.Variants).Where(r => rewardsIds.Contains(r.Id)).ToList();
+        var variantStockCounts = rewards.SelectMany(r => r.Variants)
+            .ToDictionary(v => v.Id, v => _context.RewardCodes.Count(c => c.VariantId == v.Id));
+        
 
         ViewData["rewardsPerPage"] = rewardsPerPage;
         ViewData["pageIndex"] = pageIndex;
         ViewData["pageCount"] = (totalRewardsCount - 1) / rewardsPerPage + 1;
         ViewData["search"] = search;
         ViewData["rewards"] = rewards;
+        ViewData["maxPopularity"] = _context.Rewards.Max<Reward, int?>(r => r.Popularity) ?? 0;
+        ViewData["variantStockCounts"] = variantStockCounts;
         ViewData["categories"] = _context.RewardCategories.ToList();
         return Page();
     }

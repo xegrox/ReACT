@@ -45,10 +45,12 @@ public class RewardController : ControllerBase
             Name = name,
             ImageUrl = imageUrl,
             RedeemUrl = redeemUrl,
+            Popularity = 0,
             Variants = variants.Select(v => new RewardVariant
             {
                 Name = v.Name,
-                Points = v.Points
+                Points = v.Points,
+                Popularity = 0
             }).ToHashSet()
         };
 
@@ -147,7 +149,8 @@ public class RewardController : ControllerBase
 
             reward.Variants.Add(new RewardVariant {
                 Name = variantFormModel.Name,
-                Points = variantFormModel.Points
+                Points = variantFormModel.Points,
+                Popularity = 0
             });
         }
 

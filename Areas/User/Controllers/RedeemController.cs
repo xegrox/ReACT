@@ -61,6 +61,8 @@ public class RedeemController : Controller
             $"<p>Please redeem it at <a href='{variant.Reward.RedeemUrl}'>{variant.Reward.RedeemUrl}</a></p>" +
             "<p>Thank you for using ReACT, happy recycling!</p>");
         _context.RewardCodes.Remove(code);
+        variant.Popularity += 1;
+        variant.Reward.Popularity += 1;
         _context.RewardHistories.Add(new RewardHistory
         {
             UserId = user.Id,
