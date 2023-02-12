@@ -1,5 +1,5 @@
-@page
-@model ReACT.Areas.Admin.Pages.ViewCollectionModel
+﻿@page
+@model ReACT.Areas.Company.Pages.ViewCollectionsModel
 @{
     var completed = ViewData["completed"] as int?;
 }
@@ -46,91 +46,12 @@
                         <tr>
                             <td class="addr">@collection.Address</td>
                             <td>@collection.CollectionDate.ToShortDateString()</td>
-                            @if (collection.AssignedCompany != "N/A")
-                            {
-                                <td>@collection.AssignedCompany</td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <label class="btn btn-sm btn-primary animate-none" for="assign-company-modal-@collection.Id">
-                                        <i class="ph-plus-bold pr-2"></i>
-                                        Add Company
-                                    </label>
-
-                                    @*Assign Company Modal*@
-
-                                    <input type="checkbox" id="assign-company-modal-@collection.Id" class="modal-toggle" />
-                                    <div class="modal">
-                                        <div class="modal-box">
-                                            <label for="assign-company-modal-@collection.Id" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
-                                            <h3 class="font-bold text-lg">Assign Company for Collection </h3>
-                                            <form method="post" class="mt-4">
-                                                <input asp-for="CollectionId" type="hidden" value="@collection.Id" />
-                                                <div class="form-control w-full max-w-none">
-                                                    @Html.DropDownList("CompanyId",
-                                        Model.companies.Select(m => new SelectListItem
-                                        {
-                                        Value = m.Id.ToString(),
-                                        Text = m.Name
-                                        }),
-                                        new { @class = "select select-bordered w-full max-w-none" })
-                                                </div>
-                                                <div class="modal-action">
-                                                    <label class="btn hover:bg-red-600 text-white" for="assign-company-modal-@collection.Id">Cancel</label>
-                                                    <button class="btn hover:bg-green-600 text-white" type="submit" asp-page-handler="AssignCompany">Submit</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </td>
-                            }
+                            <td>@collection.AssignedCompany</td>
                             <td>
                                 <div class="tooltip" data-tip="View Collection Details">
                                     <label for="view-collection-modal-@collection.Id">
                                         <i class="btn btn-sm btn-ghost btn-circle ph-info-bold"></i>
                                     </label>
-                                </div>
-                                
-                                <div class="tooltip" data-tip="Edit Collection Details">
-                                    <label for="edit-collection-modal-@collection.Id">
-                                        <i class="btn btn-sm btn-ghost btn-circle ph-pencil-simple-bold"></i>
-                                    </label>
-                                </div>
-
-                                @*Edit Collection Modal*@
-
-                                <input type="checkbox" id="edit-collection-modal-@collection.Id" class="modal-toggle" />
-                                <div class="modal">
-                                    <div class="modal-box">
-                                        <label for="edit-collection-modal-@collection.Id" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
-                                        <h3 class="font-bold text-lg">Edit Collection </h3>
-                                        <form method="post" class="mt-4">
-                                            <input asp-for="CollectionId" type="hidden" value="@collection.Id" />
-                                            <div class="form-control w-full max-w-none">
-                                                <span class="label-text text-base mb-1">Collection Date</span>
-                                                <input asp-for="EditDate" type="date" value="@collection.CollectionDate.ToString("yyyy-MM-dd")" class="input input-bordered w-full max-w-xs" min="@DateTime.Today.ToString("yyyy-MM-dd")" max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" />
-                                                <span asp-validation-for="EditDate" class="text-error"></span>
-                                            </div>
-                                            @if (collection.AssignedCompany != "N/A")
-                                            {
-                                                <div class="form-control w-full max-w-none pt-4">
-                                                    <span class="label-text text-base mb-1">Assigned Company</span>
-                                                    @Html.DropDownList("Id",
-                                        Model.companies.Select(m => new SelectListItem
-                                        {
-                                        Value = m.Id.ToString(),
-                                        Text = m.Name
-                                        }),
-                                        new { @class = "select select-bordered w-full max-w-none" })
-                                                </div>
-                                            }
-                                            <div class="modal-action">
-                                                <label class="btn hover:bg-red-600 text-white" for="edit-collection-modal-@collection.Id">Cancel</label>
-                                                <button class="btn hover:bg-green-600 text-white" asp-page-handler="EditCollection">Submit</button>
-                                            </div>
-                                        </form>
-                                    </div>
                                 </div>
 
                                 @*Collection Details Modal*@
@@ -143,7 +64,7 @@
                                         <p><span class="font-medium">Collection ID</span>: @collection.Id</p>
                                         <p><span class="font-medium">Collection Date</span>: @collection.CollectionDate.ToShortDateString()</p>
                                         <p><span class="font-medium">User</span>: @collection.Username</p>
-                                <p><span class="font-medium">Address</span>: @collection.Address</p>
+                                        <p><span class="font-medium">Address</span>: @collection.Address</p>
                                         @if (collection.AssignedCompany != "N/A")
                                         {
                                             <p><span class="font-medium">Assigned Company</span>: @collection.AssignedCompany</p>
