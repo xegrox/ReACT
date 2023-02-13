@@ -79,7 +79,7 @@ public class Recycle : PageModel
             //};
             //_companyService.AddCompany(company);
 
-            return Redirect("/User/Dashboard");
+            return Redirect("/user/Recycle?handler=paperslips");
         }
         return Page();
     }
