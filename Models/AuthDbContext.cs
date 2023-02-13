@@ -47,5 +47,7 @@ namespace ReACT.Models
         public DbSet<Message> Messages { get; set; }
 
         public DbSet<PointsHistory> PointsHistory { get; set; }
+        
+        public DbSet<ForestTree> ForestTrees { get; set; }
     }
 }

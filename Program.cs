@@ -34,7 +34,7 @@ builder.Services.Configure<IdentityOptions>(options => {
 
 
 builder.Services.AddSingleton<EmailSender>();
-builder.Services.AddSingleton<ForestService>();
+builder.Services.AddScoped<ForestService>();
 builder.Services.AddScoped<CollectionService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<CycleOfWasteService>();

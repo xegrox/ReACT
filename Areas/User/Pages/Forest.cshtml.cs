@@ -12,11 +12,22 @@ namespace ReACT.Areas.User.Pages;
 [Authorize(Roles = "Admin, User"), IgnoreAntiforgeryToken]
 public class Forest : PageModel
 {
-    public async Task OnGet([FromServices] ForestService forest, [FromServices] UserManager<ApplicationUser> userManager)
+    private readonly ForestService _forest;
+    private readonly AuthDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public Forest(ForestService forest, AuthDbContext context, UserManager<ApplicationUser> userManager)
     {
-        forest.InsertRandomTree(20);
-        var trees = MockForestDb.Trees;
-        var dimens = MockForestDb.Trees.Aggregate((0, 0), (d, tree) => (
+        _forest = forest;
+        _context = context;
+        _userManager = userManager;
+    }
+
+    public async Task OnGet()
+    {
+        // _forest.InsertRandomTree(20);
+        var trees = _context.ForestTrees.ToList();
+        var dimens = trees.Aggregate((0, 0), (d, tree) => (
             (int) Math.Ceiling(Math.Max(d.Item1, Math.Abs(tree.X * 2) + 4000)),
             (int) Math.Ceiling(Math.Max(d.Item2, Math.Abs(tree.Y * 2) + 4000)))
         );
@@ -31,15 +42,15 @@ public class Forest : PageModel
         }
         ViewData["checkpoints"] = checkpoints;
 
-        var user = await userManager.GetUserAsync(User);
-        var claim = (await userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "ForestClaimedCheckpoints");
+        var user = await _userManager.GetUserAsync(User);
+        var claim = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "ForestClaimedCheckpoints");
         if (claim != null) ViewData["claimedCheckpoints"] = JsonConvert.DeserializeObject<List<int>>(claim.Value);
     }
 
     public async Task<IActionResult> OnPost([FromServices] UserManager<ApplicationUser> userManager, int checkpointNo)
     {
         var checkpoint = GetCheckpoints().ElementAt(checkpointNo);
-        var level = MockForestDb.Trees.Count;
+        var level = _context.ForestTrees.Count();
         if (checkpoint > level) return new BadRequestResult();
         
         var user = await userManager.GetUserAsync(User);
