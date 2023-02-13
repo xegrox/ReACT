@@ -23,15 +23,15 @@
                             <div class="h-full w-full flex flex-col pl-1" x-page="1">
                                 <turbo-frame id="hello">
                                     <form class="flex-1 flex flex-col space-y-2" method="post">
-                                        <div asp-validation-summary="All" class="text-danger"></div>
+                                        <div asp-validation-summary="All" class="text-danger text-red-600"></div>
                                         <div class="form-control w-full max-w-xs">
                                             <label class="label">
                                                 QR Code
                                             </label>
                                             <div id="reader"></div>
-                                            <input placeholder="No user found yet..." id="result" 
-                                            class="input input-bordered w-full max-w-xs" asp-for="oneCollection.UserId" readonly />
-                                            <span asp-validation-for="oneCollection.UserId" class="text-danger"></span>
+                                            <input placeholder="No user found yet..." id="result"
+                                                   class="input input-bordered w-full max-w-xs" asp-for="userID" readonly />
+                                            <span asp-validation-for="userID" class="text-danger text-red-600"></span>
                                         </div>
                                         <div class="form-control w-full max-w-xs">
                                             <label class="label-text">
@@ -48,9 +48,9 @@
                                             <label class="label-text">
                                                 Total Recyclable Weight
                                             </label>
-                                            <input type="number" placeholder="Enter total recyclable weight" class="input input-bordered w-full max-w-xs" 
-                                            asp-for="oneCollection.TotalWeight" required />
-                                            <span asp-validation-for="oneCollection.TotalWeight" class="text-danger"></span>
+                                            <input type="number" placeholder="Enter total recyclable weight" class="input input-bordered w-full max-w-xs"
+                                                   asp-for="totalWeight" required />
+                                            <span asp-validation-for="totalWeight" class="text-danger text-red-600"></span>
                                         </div>
                                         <div class="flex-1"></div>
                                         <div class="modal-action">

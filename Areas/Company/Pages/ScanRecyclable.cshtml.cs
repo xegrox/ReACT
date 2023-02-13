@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ReACT.Models;
 using ReACT.Services;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Runtime.Intrinsics.X86;
 
@@ -29,8 +32,16 @@ public class AllocatePoints : PageModel
         _forestService = forestService;
     }
 
+    //[BindProperty]
+    //public Collection oneCollection { get; set; } = new();
+
     [BindProperty]
-    public Collection oneCollection { get; set; } = new();
+    public string userID { get; set; }
+
+    [BindProperty]
+    [Range(1, 10000)]
+    [Column(TypeName = "decimal(7,2)")]
+    public decimal totalWeight { get; set; }
 
     public List<Collection> RecyclableCollectionList { get; set; } = new();
 
@@ -44,24 +55,15 @@ public class AllocatePoints : PageModel
     public async void OnGet()
     {
         RecyclingTypeList = _recyclingTypeService.GetAllTypes();
-        var myCompany = await _userManager.GetUserAsync(User);
-        RecyclableCollectionList = _collectionService.GetCollectionsByCompany(myCompany.FirstName);
-        foreach (var collection in RecyclableCollectionList)
-        {
-            var oneUser = _authDbContext.Users.FirstOrDefault(x => x.Id == collection.UserId);
-            if (oneUser != null)
-            {
-                UsersList.Add(oneUser);
-            }
-        }
-
-        //RecyclingTypeList = _authDbContext.RecyclingType.OrderBy(x => x.Id).ToList();   
+        string userId = _userManager.GetUserId(User);
+        ApplicationUser? currentUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(userId));
+        RecyclableCollectionList = _collectionService.GetCollectionsByCompany(currentUser.FirstName);
     }
 
     public async Task<ActionResult> OnPostAdd_Collection()
     {
         string myMessage = "";
-        ApplicationUser? selectedUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(oneCollection.UserId));
+        ApplicationUser? selectedUser = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(userID));
         if (selectedUser != null)
         {
             var pointsPerKG = 0;
@@ -101,8 +103,8 @@ public class AllocatePoints : PageModel
                 check_collection.CollectionDate = DateTime.Now;
                 check_collection.AssignedCompany = companyList.FirstName;
                 check_collection.Status = "Completed";
-                check_collection.TotalWeight = oneCollection.TotalWeight;
-                check_collection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
+                check_collection.TotalWeight = totalWeight;
+                check_collection.PointsAllocated = Convert.ToInt32(totalWeight * Convert.ToDecimal(pointsPerKG));
                 _collectionService.UpdateCollection(check_collection);
 
                 // add user points
@@ -145,7 +147,7 @@ public class AllocatePoints : PageModel
                 await _authDbContext.SaveChangesAsync();
 
                 // return
-                return RedirectToPage("/ScanRecyclable");
+                return Page();
             }
             else
             {
