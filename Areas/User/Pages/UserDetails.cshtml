@@ -22,9 +22,9 @@
                 </div>
                 <hr class="h-px my-8 bg-gray-700 border-0 rounded">
                 <div style="float:right; margin-bottom: 50px">
-                    <label for="edit-user-modal">
+                    <a asp-page="/EditDetails">
                         <i class="ph-pencil"></i>
-                    </label>
+                    </a>
                 </div>
                 <br />
                 <div class="flow-root m-6">
@@ -42,16 +42,16 @@
             </div>
         </div>
         <div class="flow-root mx-6">
-            <label class="btn btn-primary mt-4 float-left" for="change-password-modal">
+            <a class="btn btn-primary mt-4 float-left" asp-page="/ChangePassword">
                 Change Password
-            </label>
+            </a>
             <label class="btn btn-error mt-4 float-right" for="delete-user-modal">
                 Delete Account
             </label>
         </div>    
     </div>
 
-    <div class="input-group">
+@*    <div class="input-group">
         <input type="checkbox" id="change-password-modal" class="modal-toggle" />
         <div class="modal">
             <div class="modal-box">
@@ -79,8 +79,8 @@
                 </form>
             </div>
         </div>
-    </div>
-@*
+    </div>*@
+
     <input type="checkbox" id="delete-user-modal" class="modal-toggle" />
     <div class="modal">
         <div class="modal-box">
@@ -93,39 +93,7 @@
                 </div>
             </form>
         </div>
-    </div>*@
-
-@*    <input type="checkbox" id="edit-user-modal" class="modal-toggle" />
-    <div class="modal">
-        <div class="modal-box">
-            <label for="edit-user-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
-            <h3 class="font-bold text-lg">Edit Account Details</h3>
-            <form method="post">
-                <div class="form-control" style="margin: 20px">
-                    <div class=" text-black mb-4">
-                        <input type="text" asp-for="EModel.FirstName" value="@Model.user.FirstName.ToString()" class="input input-bordered w-full px-3 py-1.5" />
-                        <span asp-validation-for="EModel.FirstName" class="text-danger"></span>
-                    </div>
-                    <div class=" text-black mb-4">
-                        <input type="text" asp-for="EModel.LastName" value="@Model.user.LastName.ToString()" class="input input-bordered w-full px-3 py-1.5 " />
-                        <span asp-validation-for="EModel.LastName" class="text-danger"></span>
-                    </div>
-                    <div class=" text-black mb-4">
-                        <input type="text" asp-for="EModel.Address" placeholder="Address" value="@Model.user.Address.ToString()" class="input input-bordered w-full px-3 py-1.5" />
-                        <span asp-validation-for="EModel.Address" class="text-danger"></span>
-                    </div>
-                    <label class="cursor-pointer label">
-                        <span class="label-text text-black text-base">Make Account Public</span>
-                        <input type="checkbox" asp-for="EModel.PublicPrivate" class="checkbox checkbox-accent">
-                    </label>
-                </div>
-                <div class="modal-action">
-                    <button class="btn text-white" asp-page-handler="No_Edit_User">Cancel</button>
-                    <button class="btn hover:bg-orange-600 text-white" asp-page-handler="Edit_User">Confirm</button>
-                </div>
-            </form>
-        </div>
     </div>
-</div>*@
+</div>
 
 

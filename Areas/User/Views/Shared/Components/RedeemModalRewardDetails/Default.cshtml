@@ -2,7 +2,9 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Reward
 @inject UserManager<ApplicationUser> UserManager
-
+@{
+    var variantStockCounts = ViewData["variantStockCounts"] as Dictionary<int, int>;
+}
 <!DOCTYPE html>
 <div class="flex flex-col h-full" x-data='
 {
@@ -10,7 +12,7 @@
     hasRecipient: false,
     recipient: "",
     selectedIndex: 0,
-    variants: @Html.Raw(Json.Serialize(Model.Variants.Select(v => new { id = v.Id, name = v.Name, points = v.Points }))),
+    variants: @Html.Raw(Json.Serialize(Model.Variants.Select(v => new { id = v.Id, name = v.Name, points = v.Points, stock = variantStockCounts?[v.Id] }))),
     loading: false,
     alert: null,
     currentVariant() { return this.variants[this.selectedIndex] },
@@ -26,9 +28,12 @@
             "POST"
         )
         this.loading = false
-        if (!success) return
-        this.alert = "success"
-        document.dispatchEvent(new Event("update-points"))
+        if (success) {
+            this.alert = "success"
+            document.dispatchEvent(new Event("update-points"))
+        } else {
+            this.alert = "failure"
+        }
     }
 }'>
     <div class="flex space-x-8 items-center mb-7 h-12">
@@ -68,9 +73,12 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="btn btn-primary w-full my-4" :disabled="userPoints < currentVariant().points" x-loading="loading">
+                <button x-show="currentVariant().stock != 0" type="submit" class="btn btn-primary w-full my-4" :disabled="userPoints < currentVariant().points" x-loading="loading">
                     Claim for<i class="ph-moon-bold pl-1 pr-0.5"></i>
                     <p x-text="currentVariant().points"></p>
+                </button>
+                <button x-show="currentVariant().stock == 0" class="btn btn-primary w-full my-4" disabled>
+                    Out of stock
                 </button>
             </div>
         </form>
@@ -79,6 +87,15 @@
         <div class="flex w-full">
             <i class="ph-check-circle-bold text-lg"></i>
             <p>Reward has been delivered to <span class="font-bold" x-text="hasRecipient ? recipient : 'your email inbox'"></span></p>
+            <div class="ml-auto btn btn-ghost btn-circle btn-sm" x-on:click="alert = null">
+                <i class="ph-x-bold"></i>
+            </div>
+        </div>
+    </div>
+    <div class="mt-auto alert alert-error shadow-lg" x-show="alert == 'failure'">
+        <div class="flex w-full">
+            <i class="ph-x-circle-bold text-lg"></i>
+            <p>Oh no! This reward has ran out of stock, please come back another time.</p>
             <div class="ml-auto btn btn-ghost btn-circle btn-sm" x-on:click="alert = null">
                 <i class="ph-x-bold"></i>
             </div>

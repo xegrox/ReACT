@@ -16,6 +16,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AddAreaPageRoute("User", "/Dashboard", "/user");
 });
 
+
 builder.Services.AddDbContext<AuthDbContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>();
 builder.Services.ConfigureApplicationCookie(config =>
@@ -23,9 +24,17 @@ builder.Services.ConfigureApplicationCookie(config =>
     config.LoginPath = "/Home/Login";
 });
 
+builder.Services.Configure<IdentityOptions>(options => {
+
+    // Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.Lockout.AllowedForNewUsers = true;
+});
+
 
 builder.Services.AddSingleton<EmailSender>();
-builder.Services.AddSingleton<ForestService>();
+builder.Services.AddScoped<ForestService>();
 builder.Services.AddScoped<CollectionService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<CycleOfWasteService>();

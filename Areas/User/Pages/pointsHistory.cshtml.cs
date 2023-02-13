@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ReACT.Areas.User.Pages
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     public class pointsHistoryModel : PageModel
     {
         private readonly AuthDbContext _authDbContext;

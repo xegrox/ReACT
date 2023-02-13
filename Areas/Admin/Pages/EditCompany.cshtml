@@ -1,0 +1,46 @@
+﻿@page
+@model ReACT.Areas.Admin.Pages.EditCompanyModel
+@{
+}
+
+<div class="hero h-1/3 bg-white">
+    <div class="hero-overlay bg-opacity-20"></div>
+    <div class="hero-contenttext-black">
+        <div class="max-w-prose">
+            <h1 class="mb-5 text-6xl font-bold">Edit Company Details</h1>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mx-auto w-8/12 my-8">
+    <div class="flex justify-center rounded-lg" style="background: #F3F3F3">
+        <div class="w-8/12 m-8 p-5">
+            <form method="post" data-turbo=false>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="EDModel.FirstName" value="@Model.MyUser.FirstName" placeholder="Company Name" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="EDModel.FirstName" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="EDModel.Address" placeholder="Company Location" value="@Model.MyUser.Address" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="EDModel.Address" class="text-danger"></span>
+                </div>
+                <div class=" text-black mb-4">
+                    <input type="text" asp-for="EDModel.ContactNo" placeholder="Company Contact" value="@Model.MyUser.contactNo" class="input w-full px-3 py-1.5" />
+                    <span asp-validation-for="EDModel.ContactNo" class="text-danger"></span>
+                </div>
+                <input type="hidden" asp-for="Id" />
+                <div class="flow-root mx-6">
+                    <button type="submit" class="btn btn-primary mt-4 float-left" asp-page-handler="No_Edit_Company">
+                        Back
+                    </button>
+                    <button type="submit" class="btn btn-primary mt-4 float-right" asp-page-handler="Edit_Company">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ReACT.Models;
 using ReACT.Services;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace ReACT.Areas.User.Pages
 {
+    [Authorize(Roles = "Admin, User")]
     public class ReplyModel : PageModel
     {
         private readonly MessageService _messageService;
@@ -43,6 +46,18 @@ namespace ReACT.Areas.User.Pages
 
                 Message message = new Message { Content = Content, replyTo = messageId, UserId = currentUserId, UserName = currentUserName, threadId = threadId };
                 _messageService.AddMessage(message);
+
+                var currentUser = _authDbContext.Users.Where(u => u.Id == currentUserId).FirstOrDefault();
+                if (currentUser.postComments_counter < 5)
+                {
+                    currentUser.postComments_counter += 1;
+                }
+                if (currentUser.postComments_counter == 5 && currentUser.chance_CommentTask == 0)
+                {
+                    currentUser.chance_CommentTask = 1;
+                    currentUser.chances_Free += 1;
+                }
+                _authDbContext.SaveChanges();
 
                 var redirectURL = "/forumThread?id=" + messageId.ToString();
                 return Redirect(redirectURL);

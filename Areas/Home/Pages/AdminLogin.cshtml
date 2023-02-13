@@ -3,6 +3,7 @@
 @{
 }
 
+
 <div class="h-full md:h-screen lg:flex lg:flex-wrap g-0 lg:rounded-r-lg rounded-b-lg lg:rounded-bl-none">
     <div class="lg:w-6/12 flex items-center">
         <div class="text-white  md:p-12 md:mx-6">
@@ -25,7 +26,10 @@
                         <span asp-validaton-for="LModel.Email" class="text-danger"></span>
                     </div>
                     <div class=" text-black mb-4">
-                        <input type="text" asp-for="AModel.Password" placeholder="Password" class="input w-full px-3 py-1.5 " />
+                        <div class ="inputContainer">
+                            <input type="password" asp-for="AModel.Password" placeholder="Password" class="input foricon w-full px-3 py-1.5 " id="id_password" />
+                            <i class="ph-eye" id="togglePassword" style="margin-left: -30px; cursor: pointer;"></i>
+                        </div>
                         <span asp-validaton-for="LModel.Password" class="text-danger"></span>
                     </div>
                     <div class="text-center pt-1 mb-4 pb-1">
@@ -44,3 +48,16 @@
         </div>
     </div>
 </div>
+
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#id_password');
+
+    togglePassword.addEventListener('click', function (e) {
+        // toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        // toggle the eye slash icon
+        this.classList.toggle('ph-eye-slash');
+    });
+</script>

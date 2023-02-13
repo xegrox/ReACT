@@ -18,11 +18,6 @@ namespace ReACT.Areas.User.Pages
 
         public String accType { get; set; }
 
-        [BindProperty]
-        public ChangePassword CModel { get; set; }
-
-        [BindProperty]
-        public EditUser EModel { get; set; }
 
         [BindProperty]
         public ApplicationUser user { get; set; }
@@ -52,39 +47,6 @@ namespace ReACT.Areas.User.Pages
         }
 
 
-
-        public async Task <IActionResult> OnPostChange_PasswordAsync()
-        {
-            if (ModelState.IsValid)
-            {
-                var userId = UserManager.GetUserId(User);
-                var user = await UserManager.FindByIdAsync(userId);
-
-                if (user != null)
-                {
-                    IdentityResult result = await UserManager.ChangePasswordAsync(user, CModel.CurrentPassword, CModel.NewPassword);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToPage("/UserDetails");
-                        //return RedirectToPage("/UserDetails", new { area = "User" });
-                    }
-
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-
-                }
-            }
-
-            return Page();
-        }
-
-        public IActionResult OnPostNo_Change_Password()
-        {
-            return RedirectToPage("/UserDetails");
-        }
-
         public async Task<IActionResult> OnPostDelete_UserAsync()
         {
             var userId = UserManager.GetUserId(User);
@@ -112,36 +74,9 @@ namespace ReACT.Areas.User.Pages
             return RedirectToPage("/UserDetails");
         }
 
-        public async Task<IActionResult> OnPostEdit_UserAsync()
+        public IActionResult OnPostChange_Password_Page()
         {
-            var userId = UserManager.GetUserId(User);
-            var user = await UserManager.FindByIdAsync(userId);
-            if (!ModelState.IsValid)
-            {
-                user.FirstName = EModel.FirstName;
-                user.LastName = EModel.LastName;
-                user.Address = EModel.Address;
-                user.PublicPrivate = EModel.PublicPrivate;
-
-                var result = await UserManager.UpdateAsync(user);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToPage("/UserDetails");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-
-            }
-            return Page();
-        }
-
-        public IActionResult OnPostNo_Edit_User()
-        {
-            return RedirectToPage("/UserDetails");
+            return RedirectToPage("/ChangePassword");
         }
     }
 }

@@ -19,6 +19,8 @@ public class RedeemModalRewardDetailsViewComponent : ViewComponent
             .Include(r => r.Variants)
             .Include(r => r.Category)
             .SingleOrDefault(reward => reward.Id == rewardId);
+        ViewData["variantStockCounts"] = _context.RewardVariants.Where(v => v.RewardId == rewardId)
+            .Select(v => new {v.Id, Stock = v.Codes.Count}).ToDictionary(v => v.Id, v=> v.Stock);
         return reward == null ? Task.FromResult<IViewComponentResult?>(null) : Task.FromResult<IViewComponentResult?>(View(reward));
     }
 }

@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.inputContainer {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.input.foricon {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.ph-eye {
+    position: absolute;
+    right: 10px;
+}

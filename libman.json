@@ -38,6 +38,10 @@
     {
       "library": "qrcodejs@1.0.0",
       "destination": "wwwroot/lib/qrcodejs"
+    },
+    {
+      "library": "html2canvas@1.4.1",
+      "destination": "wwwroot/lib/html2canvas"
     }
   ]
 }

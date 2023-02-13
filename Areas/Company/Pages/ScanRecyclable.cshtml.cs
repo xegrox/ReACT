@@ -41,9 +41,11 @@ public class AllocatePoints : PageModel
     [BindProperty]
     public string recyclingMethod { get; set; }
 
-    public void OnGet()
+    public async void OnGet()
     {
-        RecyclableCollectionList = _collectionService.GetCollectionsByCompany("Company Test");
+        RecyclingTypeList = _recyclingTypeService.GetAllTypes();
+        var myCompany = await _userManager.GetUserAsync(User);
+        RecyclableCollectionList = _collectionService.GetCollectionsByCompany(myCompany.FirstName);
         foreach (var collection in RecyclableCollectionList)
         {
             var oneUser = _authDbContext.Users.FirstOrDefault(x => x.Id == collection.UserId);
@@ -52,7 +54,8 @@ public class AllocatePoints : PageModel
                 UsersList.Add(oneUser);
             }
         }
-        RecyclingTypeList = _recyclingTypeService.GetAllTypes();
+
+        //RecyclingTypeList = _authDbContext.RecyclingType.OrderBy(x => x.Id).ToList();   
     }
 
     public async Task<ActionResult> OnPostAdd_Collection()
@@ -64,7 +67,7 @@ public class AllocatePoints : PageModel
             var pointsPerKG = 0;
 
             // get company
-            var companyList = _companyService.GetCompany(1);
+            var companyList = await _userManager.GetUserAsync(User);
             if (companyList != null)
             {
                 // check if user has scheduled a recyclable collection
@@ -96,11 +99,10 @@ public class AllocatePoints : PageModel
                 check_collection.Address = check_collection.Address;
                 check_collection.ScheduledDate = check_collection.ScheduledDate;
                 check_collection.CollectionDate = DateTime.Now;
-                check_collection.AssignedCompany = companyList.Name;
+                check_collection.AssignedCompany = companyList.FirstName;
                 check_collection.Status = "Completed";
                 check_collection.TotalWeight = oneCollection.TotalWeight;
                 check_collection.PointsAllocated = Convert.ToInt32(oneCollection.TotalWeight * Convert.ToDecimal(pointsPerKG));
-                check_collection.Company = companyList;
                 _collectionService.UpdateCollection(check_collection);
 
                 // add user points
@@ -136,7 +138,11 @@ public class AllocatePoints : PageModel
                 if (selectedUser.chance_TreeTask == 0)
                 {
                     selectedUser.chance_TreeTask = 1;
+                    selectedUser.chances_Free += 1;
                 }
+
+                _authDbContext.Users.Update(selectedUser);
+                await _authDbContext.SaveChangesAsync();
 
                 // return
                 return RedirectToPage("/ScanRecyclable");
