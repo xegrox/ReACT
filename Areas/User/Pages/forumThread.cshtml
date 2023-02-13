@@ -22,8 +22,12 @@
         <div class="">
             @if (Model.MyThread.ImageURL != "")
             {
-                <img class="" src="@Model.MyThread.ImageURL" loading="lazy" />
+                <img class="" src="@Model.MyThread.ImageURL" loading="lazy"/>
             }
+        </div>
+
+        <div class="col-span-10 ml-4 mb-3">
+            <p class="text-sm">@Model.GetPostTime(Model.MyThread.Date)</p>
         </div>
     </div>
 
@@ -41,7 +45,7 @@
     </div>
 
     <div x-data>
-        <input type="checkbox" id="newMessage-modal-toggle" class="modal-toggle" x-on:change.once="$dispatch('showNewMessageModal')" />
+        <input type="checkbox" id="newMessage-modal-toggle" class="modal-toggle" x-on:change.once="$dispatch('showNewMessageModal')"/>
         <label for="newMessage-modal-toggle" class="modal cursor-pointer" x-ref="modalNewMessage">
             <label class="modal-box relative w-[50vw] max-w-none h-[85vh]" for="">
 
@@ -60,7 +64,7 @@
                         <span asp-validation-for="Content" class="text-error"></span>
                     </div>
                     <div class="form-control w-1/3 max-w-xs">
-                        <input class="btn btn-active btn-accent mt-3 text-white" type="submit" value="Add Message" />
+                        <input class="btn btn-active btn-accent mt-3 text-white" type="submit" value="Add Message"/>
                     </div>
                 </form>
 
@@ -120,7 +124,7 @@
 
                                 <a class="text-secondary text-sm" asp-page="/AddReply" asp-route-id="@message2.Id">Reply</a>
                             </div>
-                                
+
                             //Message depth 3
                             <div>
                                 @foreach (var message3 in Model.messageList)
