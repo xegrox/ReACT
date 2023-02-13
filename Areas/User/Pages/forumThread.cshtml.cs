@@ -33,6 +33,13 @@ namespace ReACT.Areas.User.Pages
 
         public ApplicationUser? currentUser { get; set; }
 
+        public string GetPostTime(DateTime dateTime)
+        {
+            return _forumService.CalcTime(dateTime);
+        }
+
+        public ApplicationUser? currentUser { get; set; }
+
         public IActionResult OnGet(int id)
         {
             Models.Thread? thread = _forumService.GetThread(id);
