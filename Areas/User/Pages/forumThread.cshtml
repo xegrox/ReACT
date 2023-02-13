@@ -22,7 +22,7 @@
         <div class="">
             @if (Model.MyThread.ImageURL != "")
             {
-                <img class="" src="@Model.MyThread.ImageURL" loading="lazy" />
+                <img class="" src="@Model.MyThread.ImageURL" loading="lazy"/>
             }
         </div>
 
@@ -36,7 +36,122 @@
         <p class="text-xl">Messages</p>
     </div>
 
+    <!-- Add Message Button -->
+    <div class="col-span-3 col-end-12">
+        <label class="btn btn-sm btn-primary rounded-full gap-1.5 text-base" for="newMessage-modal-toggle">
+            <i class="ph-chats-bold"></i>
+            Add Message
+        </label>
+    </div>
+
+    <div x-data>
+        <input type="checkbox" id="newMessage-modal-toggle" class="modal-toggle" x-on:change.once="$dispatch('showNewMessageModal')"/>
+        <label for="newMessage-modal-toggle" class="modal cursor-pointer" x-ref="modalNewMessage">
+            <label class="modal-box relative w-[50vw] max-w-none h-[85vh]" for="">
+
+                @*<label for="newThread-modal-toggle" class="btn btn-sm btn-circle absolute right-2 top-2">
+                        <i class="ph-x"></i>
+                    </label>*@
+
+                <!--Modal content goes here-->
+                <h1 class="text-3xl">Add a Message</h1>
+                <form class="flex-1 flex flex-col space-y-2" method="post">
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label">
+                            <span class="label-text">Message Content</span>
+                        </label>
+                        @Html.TextAreaFor(model => model.Content, new { @class = "input input-bordered w-full max-w-lg" })
+                        <span asp-validation-for="Content" class="text-error"></span>
+                    </div>
+                    <div class="form-control w-1/3 max-w-xs">
+                        <input class="btn btn-active btn-accent mt-3 text-white" type="submit" value="Add Message"/>
+                    </div>
+                </form>
+
+                <label for="newMessage-modal-toggle" class="btn btn-secondary mt-5">
+                    <p>Cancel</p>
+                </label>
+                <div hx-get="@Url.ActionLink("ModalRootFrame", "Add Message")" hx-trigger="showNewMessageModal from:#newMessage-modal-toggle" hx-swap="outerHTML"></div>
+
+
+            </label>
+        </label>
+    </div>
+
+    <!-- Messages -->
     <div class="col-start-2 col-span-10 bg-emerald-100 text-primary rounded-lg">
-        <p>lorem ipsum</p>
+        @if (!Model.messageList.Any())
+        {
+            <p class="text-xl text-center font-bold py-4">No messages have been posted in this thread.</p>
+        }
+        else
+        {
+            //Message depth 1
+            @foreach (var message in Model.messageList)
+            {
+                @if (message.status != "hidden" && message.replyTo == 0)
+                {
+                    <div class="ml-4 my-3">
+                        <p class="text-md font-semibold my-1">@message.UserName</p>
+                        @if (message.status != "deleted")
+                        {
+                            <p class="text-lg my-1">@message.Content</p>
+                        }
+                        else
+                        {
+                            <p class="text-lg italic text-secondary my-1">This comment has been deleted.</p>
+                        }
+
+                        <a class="text-secondary text-sm mt-5 mb-2" asp-page="/AddReply" asp-route-id="@message.Id">Reply</a>
+                    </div>
+
+                    //Message depth 2
+                    @foreach (var message2 in Model.messageList)
+                    {
+                        @if (message2.status != "hidden" && message2.replyTo == message.Id)
+                        {
+                            <div class="ml-10 mb-3">
+                                <p class="text-md font-semibold">@message2.UserName</p>
+                                <p class="text-xs">Replied to @message.UserName</p>
+                                @if (message2.status != "deleted")
+                                {
+                                    <p class="text-lg">@message2.Content</p>
+                                }
+                                else
+                                {
+                                    <p class="text-lg italic text-secondary">This comment has been deleted.</p>
+                                }
+
+                                <a class="text-secondary text-sm" asp-page="/AddReply" asp-route-id="@message2.Id">Reply</a>
+                            </div>
+
+                            //Message depth 3
+                            <div>
+                                @foreach (var message3 in Model.messageList)
+                                {
+                                    @if (message3.status != "hidden" && message3.replyTo == message2.Id)
+                                    {
+                                        <div class="ml-16 mb-3">
+                                            <p class="text-base font-semibold">@message3.UserName</p>
+                                            <p class="text-xs">Replied to @message2.UserName</p>
+                                            @if (message3.status != "deleted")
+                                            {
+                                                <p class="text-lg">@message3.Content</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-lg italic text-secondary">This comment has been deleted.</p>
+                                            }
+
+                                            <a class="text-secondary text-sm" asp-page="/AddReply">Reply</a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        }
+                    }
+                }
+            }
+        }
     </div>
 </div>

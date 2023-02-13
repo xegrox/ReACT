@@ -38,7 +38,14 @@ namespace ReACT.Areas.User.Pages
         public void OnGet()
         {
             var prize_list = _editCycleOfWasteService.GetAll();
-            ListOfPrizes = prize_list;
+            if (prize_list.Count <= 8)
+            {
+                ListOfPrizes = prize_list;
+            }
+            else
+            {
+                ListOfPrizes = prize_list.Take(8).ToList();
+            }
             var currentUserId = _userManager.GetUserId(User);
             ApplicationUser? currentUser1 = _authDbContext.Users.FirstOrDefault(x => x.Id.Equals(currentUserId));
             if (currentUser1 != null)

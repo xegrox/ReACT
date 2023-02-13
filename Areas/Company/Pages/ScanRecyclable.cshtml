@@ -119,16 +119,8 @@
                                         <label for="view-collection-@collection.UserId-modal" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="ph-x"></i></label>
                                         <h2 class="card-title">User Details</h2>
                                         <br/>
-                                        @foreach (var user in Model.UsersList) {
-                                            if (collection.UserId == user.Id) {
-                                                <p>User: @user.FirstName @user.LastName</p>
-                                                if (user.Address is null) {
-                                                    <p>Address: -</p>
-                                                }
-                                                <p>Address: @user.Address</p>
-                                            }
-                                        }
-                                        
+                                        <p>User: @collection.Username</p>
+                                        <p>Address: @collection.Address</p>
                                     </div>
                                 </div>
                             </div>
