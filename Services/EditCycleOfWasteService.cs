@@ -13,7 +13,7 @@ namespace ReACT.Services
 
         public List<CycleOfWaste_prizes> GetAll()
         {
-            return _context.CycleOfWaste_prizes.OrderBy(x => x.Id).ToList();
+            return _context.CycleOfWaste_prizes.Where(x => x.VisibleToUser.Equals(true)).ToList();
         }
     }
 }
